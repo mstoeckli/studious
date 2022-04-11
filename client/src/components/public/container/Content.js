@@ -40,7 +40,7 @@ export const Content = ({ contentKey, iSidebarWidthPx }) => {
         <StyledContent
             style={{ width: `calc(100% - ${iSidebarWidthPx}px)` }}>
             <Routes>
-                <Route path="/home" element={<Home />} />
+                <Route path="/" element={<Home />} />
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={
                     <SignUpProvider>
