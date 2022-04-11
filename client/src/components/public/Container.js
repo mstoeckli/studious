@@ -14,7 +14,7 @@ export const Container = () => {
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Update content key for displaying active JSX element in content component
      *  @type {[contentKey:string, setContentKey:function]} */
-    const [ contentKey, setContentKey ] = useState("signup");
+    const [ contentKey, setContentKey ] = useState("");
 
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Used for calling hook "useEffect" in component Sidebar to handle toggling
