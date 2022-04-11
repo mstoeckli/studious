@@ -1,0 +1,61 @@
+{
+  "Base": {
+    "entries": "Einträge",
+    "Search": {
+      "placeholder": "Suchen"
+    }
+  },
+  "Container": {
+    "Sidebar": {
+      "Overview": {
+        "title": "Übersicht",
+        "Home": {
+          "title": "Startseite"
+        },
+        "Schools": {
+          "title": "Schulen"
+        },
+        "News": {
+          "title": "Neuigkeiten"
+        }
+      },
+      "PersonalSpace": {
+        "title": "Persönlicher Bereich",
+        "Dashboard": {
+          "title": "Dashboard"
+        }
+      },
+      "Onboarding": {
+        "title": "Onboarding",
+        "Project": {
+          "title": "Projekt Anlegen",
+          "description": "Teile deine Fähigkeiten mit der Welt"
+        }
+      }
+    },
+    "Content": {
+
+    },
+    "Header": {
+      "Dropdown": {
+        "Config": {
+          "Documentation": {
+            "title": "Dokumentation"
+          },
+          "Support": {
+            "title": "Support"
+          },
+          "Profile": {
+            "title": "Profil"
+          },
+          "SignIn": {
+            "title": "Anmelden"
+          },
+          "SignOut": {
+            "title": "Abmelden"
+          }
+        }
+      }
+    }
+  }
+}

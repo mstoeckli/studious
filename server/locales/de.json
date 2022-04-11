@@ -1,0 +1,7 @@
+{
+  "signin" : "Für diese Aktion müssen Sie angemeldet sein!",
+  "unauthorized" : "Sie besitzen keine Berechtigung für diese Aktion",
+  "invalidPassword" : "Fehlerhaftes Passwort",
+  "emailNotFound" : "Die angegebene Email-Adresse konnte im System nicht eruiert werden",
+  "mongooseFailure" : "Ein unbekannter Verbindungsfehler ist aufgetreten. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut"
+}
