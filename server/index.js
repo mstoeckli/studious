@@ -26,7 +26,7 @@ api.use(bodyParser.json({ limit: "30mb", extended: true }));
 
 /** @desc Cross-Origin Resource Sharing is a system, consisting of transmitting HTTP headers */
 api.use(cors({
-    origin: process.env.CLIENT_URL_TEST,
+    // origin: process.env.CLIENT_URL_TEST,
     methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD"],
     credentials: true,
 }));
@@ -37,6 +37,10 @@ api.use(i18n.init);
 /** @desc Initialize passport authentication strategies */
 api.use(passport.initialize());
 passport.strategies();
+
+api.get("/", (req, res) => {
+    res.send("Home");
+});
 
 api.use("/authenticate", authenticateRoute);
 
