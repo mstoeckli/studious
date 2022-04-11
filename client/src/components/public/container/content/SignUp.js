@@ -5,6 +5,8 @@ import { StyledSignUp } from '../../../../styles/public/container/content/SignUp
 import { Provider } from './signUp/Provider';
 import { User } from './signUp/User';
 import { Password } from './signUp/Password';
+import { School } from './signUp/School';
+import { License } from './signUp/License';
 
 import { Copyright } from "../../../core/Copyright";
 
@@ -48,6 +50,8 @@ export const SignUp = () => {
                 <Provider />
                 <User />
                 <Password />
+                <School />
+                <License />
             </form>
             <Copyright />
         </StyledSignUp>

@@ -20,8 +20,19 @@ export const StyledButton = styled.button`
   border-radius: 5px;
   min-height: 44px;
   margin-top: 1rem;
+  padding: 0 1rem;
+  
+  &:disabled {
+    background-color: var(--color-duotone-light);
+  }
+  
+  & svg {
+    color: #fff;
+    font-size: 1.25rem;
+  }
   
   & span {
+    flex-grow: 1;
     color: #fff;
   }
 `

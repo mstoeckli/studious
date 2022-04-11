@@ -31,7 +31,7 @@ export const Content = ({ contentKey, iSidebarWidthPx }) => {
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
     useEffect(() => {
         if (activeContentKey !== contentKey) {
-            oNavigate(`/${contentKey}`);
+            oNavigate(`${contentKey === "home" ? "/" : `/${contentKey}`}`);
             setActiveContentKey(contentKey);
         }
     }, [contentKey, oNavigate]);

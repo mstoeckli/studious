@@ -96,7 +96,7 @@ export const StyledSignUp = styled.div`
         top: 0;
         width: 25px;
         height: 25px;
-        border-bottom: 1px solid var(--color-icon-default);
+        border-bottom: 1px solid var(--color-duotone-light);
       }
     }
     
@@ -104,7 +104,7 @@ export const StyledSignUp = styled.div`
       display: none;
       opacity: 0;
       width: 400px;
-      height: 400px;
+      height: auto;
       border: none;
       
       & .signup-provider {

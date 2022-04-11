@@ -20,7 +20,7 @@ export const GlobalStyle = createGlobalStyle`
     --border-color-dropdown-filter-hover: var(--title-color-nav-group);
     --background-color-dropdown-filter-hover: var(--background-color-nav-menu-hover);
     --background-color-completed: #e0ffe0;
-    --color-completed: #4fd83f;    
+    --color-completed: #35ad0d;    
     --color-error: #d83f3f;
     --color-icon-default: #455a64;
     --color-input-border: #e9e9e9;
@@ -31,6 +31,7 @@ export const GlobalStyle = createGlobalStyle`
     --color-icon-sellers-country: var(--color-icon-default);
     --color-icon-comments: var(--color-icon-default);
     --color-submit-button: var(--color-icon-default);
+    --color-duotone-light: #8f9ca2;
     --webkit-scrollbar-width: 4px;
     --webkit-scrollbar-border-radius: 8px;
     --webkit-scrollbar-background: #e9e9e9;

@@ -1,54 +1,56 @@
-import React from 'react';
-
+import React, {useContext, useState} from 'react';
+import {SignInProps} from "../../../../../models/public/container/content/SignIn";
 import {FormInput} from "../../../../base/forms/Input";
 import {RegexExp} from "../../../../../constants/RegexExp";
 import {FormButton} from "../../../../base/forms/Button";
-import { useSignUpContext } from "../../../../../context/SignUpProvider";
+import {useSignUpContext} from "../../../../../context/SignUpProvider";
 
 /** @public
  *  @constructor
- *  @returns {JSX.Element} User */
-export const User = () => {
+ *  @returns {JSX.Element} School */
+export const School = () => {
     /** @desc Get context properties for handling signing up progress */
-    const { values, progress, properties, onAddValue, onProgressNext, onProgressBack } = useSignUpContext();
-
-    /** @private
-     *  @param {MouseEvent<HTMLButtonElement>} oEvt */
-    const _onClickStep1 = (oEvt) => {
-        oEvt.preventDefault();
-        onProgressBack({
-            id: "user",
-            isCompleted: values.email && values.username,
-            isActive: false
-        }, {
-            id: "provider",
-            isCompleted: false,
-            isActive: true
-        });
-    }
+    const { values, progress, properties, onAddValue, onProgressBack, onProgressNext } = useSignUpContext();
 
     /** @private
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
     const _onClickStep3 = (oEvt) => {
         oEvt.preventDefault();
-        onProgressNext({
-            id: "user",
-            isCompleted: values.email && values.username,
+        onProgressBack({
+            id: "school",
+            isCompleted: false,
             isActive: false
         }, {
             id: "password",
+            isCompleted: values.password && values.confirmPassword,
+            isActive: true
+        });
+    }
+
+    /** @private
+     *  @param {MouseEvent<HTMLButtonElement>} oEvt */
+    const _onClickStep5 = (oEvt) => {
+        oEvt.preventDefault();
+        onProgressNext({
+            id: "school",
+            isCompleted: true,
+            isActive: false
+        }, {
+            id: "license",
             isCompleted: false,
             isActive: true
         });
     }
 
+
+
     const _onChange = (oEvt) => onAddValue(oEvt.target.name, oEvt.target.value);
 
     /** @private
      *  @param   {function} fnCallbackPrevious
-     *  @param   {function} fnCallbackNext
+     *  @param   {function} fnCallbackSignUp
      *  @returns {JSX.Element} */
-    const _addNavButtons = (fnCallbackPrevious, fnCallbackNext) => (
+    const _addNavButtons = (fnCallbackPrevious, fnCallbackSignUp) => (
         <div className="nav-buttons">
             <FormButton
                 text="Zurück"
@@ -57,22 +59,22 @@ export const User = () => {
             <FormButton
                 text="Weiter"
                 showRightIcon={true}
-                disabled={!(values.email && values.username)}
-                onClick={fnCallbackNext}/>
+                disabled={!(values.password && values.confirmPassword && values.password === values.confirmPassword)}
+                onClick={fnCallbackSignUp}/>
         </div>
     );
 
     return (
-        <fieldset className={progress.find(({ id }) => id === "user").isActive ? "active" : String()}>
-            <h1>Definiere einen Administrator</h1>
+        <fieldset className={progress.find(({ id }) => id === "school").isActive ? "active" : String()}>
+            <h1>Verwalte deine Schule</h1>
             <p></p>
-            {properties["user"].map((oInput) => (
+            {properties["school"].map((oInput) => (
                 <FormInput
                     {...oInput}
                     pattern={RegexExp(oInput.name)}
                     fnChange={_onChange}/>
             ))}
-            {_addNavButtons(_onClickStep1, _onClickStep3)}
+            {_addNavButtons(_onClickStep3, _onClickStep5)}
         </fieldset>
     )
 };

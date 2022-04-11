@@ -11,7 +11,7 @@ export const SignUpProgress = [{
 }, {
     id: "user",
     icon: "faSignature",
-    title: "Benutzer",
+    title: "Administrator",
     isActive: false,
     isCompleted: false
 }, {
@@ -20,20 +20,28 @@ export const SignUpProgress = [{
     title: "Passwort",
     isActive: false,
     isCompleted: false
+}, {
+    id: "school",
+    icon: "faGraduationCap",
+    title: "Schule",
+    isActive: false,
+    isCompleted: false
+}, {
+    id: "license",
+    icon: "faFileCertificate",
+    title: "Lizenzen",
+    isActive: false,
+    isCompleted: false
+}, {
+    id: "abo",
+    icon: "faCoins",
+    title: "Abonnement",
+    isActive: false,
+    isCompleted: false
 }];
 
 export const AuthProperties = {
     "provider": [{
-        id: 1,
-        title: "Weiter mit Google",
-        image: Google,
-        imageAlt: "Google"
-    }, {
-        id: 2,
-        title: "Weiter mit Twitter",
-        image: Twitter,
-        imageAlt: "Twitter"
-    },{
         id: 3,
         title: "Weiter mit E-Mail",
         image: Mail,
@@ -43,7 +51,7 @@ export const AuthProperties = {
         id: 1,
         name: "email",
         type: "text",
-        placeholder: "hans.muster@codemize.ch",
+        placeholder: "marc.stoeckli@example.ch",
         message: "Invalid email address",
         label: "E-Mail Adresse",
         required: true,
@@ -52,8 +60,8 @@ export const AuthProperties = {
         id: 2,
         name: "username",
         type: "text",
-        placeholder: "hmuster",
-        message: "Invalid username",
+        placeholder: "mstoeckli",
+        message: "Username should be 4-20 characters and does not include any special characters and has to be one word",
         label: "Benutzername",
         required: true,
         icon: "faUser"
@@ -76,5 +84,70 @@ export const AuthProperties = {
         label: "Passwort wiederholen",
         required: true,
         icon: "faKey"
+    }],
+    "school": [{
+        id: 1,
+        name: "name",
+        type: "text",
+        placeholder: "Grundschule Musterhausen",
+        message: "Input must not be empty",
+        label: "Name der Schule",
+        required: true,
+        icon: "faGraduationCap"
+    }, {
+        id: 2,
+        name: "country",
+        type: "text",
+        placeholder: "Schweiz",
+        message: "Input must not be empty",
+        label: "Land",
+        required: true,
+        icon: "faEarthEurope"
+    }, {
+        id: 2,
+        name: "postalCode",
+        type: "text",
+        placeholder: "5442",
+        message: "Input must not be empty",
+        label: "Postleitzahl",
+        required: true,
+        icon: "faInputNumeric"
+    }, {
+        id: 2,
+        name: "city",
+        type: "text",
+        placeholder: "Musterhausen",
+        message: "Input must not be empty",
+        label: "Ortschaft",
+        required: true,
+        icon: "faMapPin"
+    }, {
+        id: 3,
+        name: "address",
+        type: "text",
+        placeholder: "Feldstrasse 31",
+        message: "Input must not be empty",
+        label: "Adresse",
+        required: true,
+        icon: "faMapPin"
+    }],
+    "license": [{
+        id: 1,
+        name: "teacher",
+        type: "number",
+        placeholder: "10",
+        message: "Input must not be empty",
+        label: "Anzahl Lehrer-Lizenzen",
+        required: true,
+        icon: "faChalkboardUser"
+    }, {
+        id: 2,
+        name: "students",
+        type: "number",
+        placeholder: "82",
+        message: "Input must not be empty",
+        label: "Anzahl Schüler-Lizenzen",
+        required: true,
+        icon: "faScreenUsers"
     }]
 }
