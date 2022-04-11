@@ -6,6 +6,7 @@ import { StyledContent } from '../../../styles/public/container/Content.styles';
 
 import { PrivateRoute } from '../../../routes/PrivateRoute';
 
+import { Home } from './content/Home';
 import { SignIn } from "./content/SignIn";
 import { SignUp } from "./content/SignUp";
 
@@ -39,6 +40,7 @@ export const Content = ({ contentKey, iSidebarWidthPx }) => {
         <StyledContent
             style={{ width: `calc(100% - ${iSidebarWidthPx}px)` }}>
             <Routes>
+                <Route path="/home" element={<Home />} />
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={
                     <SignUpProvider>

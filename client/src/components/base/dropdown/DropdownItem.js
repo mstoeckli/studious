@@ -1,10 +1,10 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 
 import { StyledDropdownItem } from '../../../styles/base/dropdown/DropdownItem.styles'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
-import {Link} from "react-router-dom";
 
 /** @public
  *  @constructor
