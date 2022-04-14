@@ -81,40 +81,24 @@ export const AuthProperties = {
     }],
     "school": [{
         id: 1,
-        name: "name",
+        name: "schoolName",
         type: "text",
         placeholder: "Grundschule Musterhausen",
         message: "School name should be 4-40 characters",
         label: "Name der Schule",
         required: true,
-        icon: "faGraduationCap"
+        icon: "faGraduationCap",
+        isAddress: false
     }, {
         id: 2,
-        name: "country",
+        name: "address",
         type: "text",
-        placeholder: "Schweiz",
-        message: "Input must not be empty",
-        label: "Land",
-        required: true,
-        icon: "faEarthEurope"
-    }, {
-        id: 3,
-        name: "city",
-        type: "text",
-        placeholder: "5442, Fislisbach",
-        message: "Input must not be empty",
-        label: "Ortschaft",
-        required: true,
-        icon: "faMapPin"
-    }, {
-        id: 4,
-        name: "street",
-        type: "text",
-        placeholder: "Feldstrasse 31",
+        placeholder: "Feldstrasse 31g, (5442) Fislisbach, Switzerland",
         message: "Input must not be empty",
         label: "Adresse",
         required: true,
-        icon: "faMapPin"
+        icon: "faMapPin",
+        isAddress: true
     }],
     "license": [{
         id: 1,

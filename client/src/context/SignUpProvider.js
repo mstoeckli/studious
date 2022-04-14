@@ -25,25 +25,25 @@ export const SignUpProvider = ({ children }) => {
             password: false,
             confirmPassword: false
         },
-        name: String(),
-        country: String(),
-        city: String(),
-        street: String(),
+        schoolName: String(),
+        address: String(),
+        latitude: 0,
+        longitude: 0,
         schoolPatternMatches: {
-            name: false,
-            country: false,
-            city: false,
-            street: false
+            address: false,
+            schoolName: false,
+            route: false,
+            street_number: false,
+            postal_code: false,
+            locality: false,
+            country: false
         }
     });
 
     const onAddValue = ( sKey, sValue) => {
-        debugger
         setValues((oValues) => {
-            debugger
-
             return {...oValues, [sKey]: sValue}
-        })
+        });
     };
 
     const onProgressNext = (oCurrent, oNext) => _onProgressChange(oCurrent, oNext);

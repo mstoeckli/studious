@@ -13,7 +13,6 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons'
  *  @param   {string} oProperties.icon
  *  @param   {function} oProperties.fnChange
  *  @param   {object} oProperties.inputProps
- *  @desc    Initialize and return component for displaying form button object
  *  @returns {JSX.Element} FormInput */
 export const FormInput = ({ label, message, icon, fnChange, ...inputProps }) => {
     /** @desc Returns a stateful value, and a function to update it.
@@ -26,7 +25,7 @@ export const FormInput = ({ label, message, icon, fnChange, ...inputProps }) => 
 
     return (
         <StyledInput>
-            <label>{label}</label>
+            <label className={inputProps.required ? "required" : String()}>{label}</label>
             <input
                 {...inputProps}
                 onChange={fnChange}

@@ -68,6 +68,46 @@ export const GlobalStyle = createGlobalStyle`
     color: var(--color-icon-default) !important;
   }
 
+  & .pac-container {
+    margin-top: 0.25rem;
+    border: 1px solid #e9e9e9;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.06) 0 1px 2px;
+    
+    &:after {
+      background-image: none !important;
+      height: 0;
+    }
+  }
+
+  & .pac-icon {
+    display: none;
+  }
+  
+  & .pac-item {
+    padding: 0 0.75rem;
+    color: var(--title-color-nav-group);
+  }
+  
+  & .pac-item:hover {
+      background-color: var(--background-color-nav-menu-hover) !important;
+  }
+
+  & .pac-item-selected {
+    color: var(--title-color-nav-group);
+    background-color: var(--background-color-nav-menu-hover) !important;
+  }
+  
+  & .pac-item-query {
+    font-size: 0.675rem;
+    color: var(--description-color);
+  }
+  
+  & .pac-matched {
+    font-size: 0.675rem;
+    color: var(--title-color);
+  }
+  
   & .skeleton {
     opacity: 0.7;
     animation: skeleton-loading 1s linear infinite alternate  ;

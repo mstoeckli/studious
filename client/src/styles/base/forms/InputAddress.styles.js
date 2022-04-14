@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-/**  @return {React.RefAttributes<HTMLDivElement>} StyledInput */
-export const StyledInput = styled.div`
+/**  @return {React.RefAttributes<HTMLDivElement>} StyledInputAddress */
+export const StyledInputAddress = styled.div`
   & label {
     box-sizing: border-box;
     display: block;
