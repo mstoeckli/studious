@@ -220,4 +220,12 @@ export const StyledSignUp = styled.div`
       width: 350px !important;
     }
   }
+
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px) {
+    & form ul {
+      margin-bottom: 32px;
+    }
+  }
 `
