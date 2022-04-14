@@ -5,7 +5,7 @@ export const StyledContent = styled.div`
   position: fixed;
   height: calc(100% - 50px);
   overflow: hidden;
-  background: #fdfdfd;
+  background: #fefefe;
 
   // iPhone SE
   @media only screen

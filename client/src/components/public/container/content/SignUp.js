@@ -45,15 +45,16 @@ export const SignUp = () => {
     return (
         <StyledSignUp>
             <div className="container">
-            <form>
-                <ul>{progress.map((oProgress) => _addSignUpProgressItem(oProgress))}</ul>
-                <Provider />
-                <User />
-                <Password />
-                <School />
-                <License />
-            </form>
-            <Copyright />
+                <form>
+                    <ul>{progress.map((oProgress) => _addSignUpProgressItem(oProgress))}</ul>
+                    <Provider />
+                    <User />
+                    <Password />
+                    <School />
+                    <License />
+                </form>
+                <p className="made-in-switzerland">Made in Switzerland</p>
+                <Copyright />
             </div>
         </StyledSignUp>
     )

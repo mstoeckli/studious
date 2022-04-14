@@ -12,6 +12,7 @@ export const useSignUpContext = () => useContext(SignUpContext);
 export const SignUpProvider = ({ children }) => {
 
     const [ progress, setProgress ] = useState(SignUpProgress);
+
     const [ values, setValues ] = useState({
         email: String(),
         username: String(),
@@ -37,6 +38,14 @@ export const SignUpProvider = ({ children }) => {
             postal_code: false,
             locality: false,
             country: false
+        },
+        classTeacher: 0,
+        subjectTeacher: 0,
+        students: 0,
+        licensePatternMatches: {
+            classTeacher: false,
+            subjectTeacher: false,
+            students: false
         }
     });
 

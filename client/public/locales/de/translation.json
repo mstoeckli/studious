@@ -48,6 +48,9 @@
           "Profile": {
             "title": "Profil"
           },
+          "SignUp": {
+            "title": "Registrieren"
+          },
           "SignIn": {
             "title": "Anmelden"
           },

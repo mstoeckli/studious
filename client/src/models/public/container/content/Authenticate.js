@@ -94,7 +94,7 @@ export const AuthProperties = {
         name: "address",
         type: "text",
         placeholder: "Feldstrasse 31g, (5442) Fislisbach, Switzerland",
-        message: "Input must not be empty",
+        message: "Address has to be selected through Google API. Start entering.",
         label: "Adresse",
         required: true,
         icon: "faMapPin",
@@ -114,9 +114,8 @@ export const AuthProperties = {
         name: "subjectTeacher",
         type: "number",
         placeholder: "22",
-        message: "Input must not be empty",
         label: "Fachlehrer-Lizenzen",
-        required: true,
+        required: false,
         icon: "faRectangleHistoryCircleUser"
     },{
         id: 3,

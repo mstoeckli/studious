@@ -19,6 +19,13 @@ export const DropdownItems = {
         "isPublic": false,
         "isPrivate": true,
     }, {
+        "icon": "faUsersViewfinder",
+        "iconColor": "#3f6ad8",
+        "title": "Container.Header.Dropdown.Config.SignUp.title",
+        "routerLink": "signup",
+        "isPublic": true,
+        "isPrivate": false
+    }, {
         "icon": "faRightToBracket",
         "iconColor": "#3f6ad8",
         "title": "Container.Header.Dropdown.Config.SignIn.title",

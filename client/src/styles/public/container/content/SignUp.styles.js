@@ -21,15 +21,14 @@ export const StyledSignUp = styled.div`
   & p {
     font-size: 0.8rem;
     font-weight: 400;
-    margin: 32px 0;
     text-align: center;
     color: var(--description-color);
-    
-    & a, & strong {
-      font-weight: 600;
-      color: var(--title-color);
-      text-decoration: none;
-    }
+  }
+  
+  & .made-in-switzerland {
+    font-weight: 600;
+    margin-top: 32px;
+    color: #d71313;
   }
 
   & .container {
@@ -42,6 +41,16 @@ export const StyledSignUp = styled.div`
       align-items: center;
       margin-top: 32px;
 
+      & p {
+        margin: 32px 0;
+
+        & a, & strong {
+          font-weight: 600;
+          color: var(--title-color);
+          text-decoration: none;
+        }
+      }
+      
       & ul {
         margin-bottom: 56px;
         overflow: hidden;

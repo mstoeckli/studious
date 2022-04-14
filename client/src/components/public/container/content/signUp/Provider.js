@@ -1,24 +1,19 @@
 import { useSignUpContext } from "../../../../../context/SignUpProvider";
 
+import { progressNext } from "../../../../../helpers/container/content/SignUp";
+
 /** @public
  *  @constructor
  *  @returns {JSX.Element} Provider */
-export const Provider = ({ onProgressChange }) => {
+export const Provider = () => {
+    /** @desc Get context properties for handling signing up progress */
     const { progress, properties, onProgressNext } = useSignUpContext();
 
     /** @private
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
     const _onClickStep2 = (oEvt) => {
         oEvt.preventDefault();
-        onProgressNext({
-            id: "provider",
-            isCompleted: true,
-            isActive: false
-        }, {
-            id: "user",
-            isCompleted: false,
-            isActive: true
-        });
+        progressNext(onProgressNext, "provider", true, "user");
     }
 
     return (

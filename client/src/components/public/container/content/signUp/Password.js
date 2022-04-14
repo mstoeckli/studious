@@ -1,9 +1,12 @@
 import React from 'react';
 
+import { NavButtons } from "./NavButtons";
+
 import { FormInput } from '../../../../base/forms/Input';
-import { FormButton } from '../../../../base/forms/Button';
 
 import { RegexExp } from '../../../../../constants/RegexExp';
+
+import { progressPrev, progressNext } from '../../../../../helpers/container/content/SignUp';
 
 import { useSignUpContext } from '../../../../../context/SignUpProvider';
 
@@ -18,37 +21,15 @@ export const Password = () => {
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
     const _onClickStep2 = (oEvt) => {
         oEvt.preventDefault();
-
-        /** @desc Go back to progress user component
-         *  @host {src/components/public/container/content/SignUp.js} */
-        onProgressBack({
-            id: "password",
-            isCompleted: _isPatternMatching(),
-            isActive: false
-        }, {
-            id: "user",
-            isActive: true
-        });
+        progressPrev(onProgressBack, "password", _isPatternMatching(), "user");
     }
 
     /** @private
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
     const _onClickStep4 = (oEvt) => {
         oEvt.preventDefault();
-
-        /** @desc Go forward to progress school component
-         *  @host {src/components/public/container/content/SignUp.js} */
-        onProgressNext({
-            id: "password",
-            isCompleted: _isPatternMatching(),
-            isActive: false
-        }, {
-            id: "school",
-            isCompleted: false,
-            isActive: true
-        });
+        progressNext(onProgressNext, "password", _isPatternMatching(), "school");
     }
-
 
     /** @private
      *  @param {Event<HTMLInputElement>} oEvt */
@@ -61,26 +42,6 @@ export const Password = () => {
      *  @returns {boolean} */
     const _isPatternMatching = () => values.securityPatternMatches.password && values.securityPatternMatches.confirmPassword && values.password === values.confirmPassword
 
-    /** @private
-     *  @param   {function} fnCallbackPrevious
-     *  @param   {function} fnCallbackSignUp
-     *  @returns {JSX.Element} */
-    const _addNavButtons = (fnCallbackPrevious, fnCallbackSignUp) => (
-        <div className="nav-buttons">
-            <FormButton
-                className="back"
-                text="Zurück"
-                showLeftIcon={true}
-                onClick={fnCallbackPrevious}/>
-            <FormButton
-                className={_isPatternMatching() ? "next" : "next-disabled"}
-                text="Weiter"
-                showRightIcon={true}
-                disabled={!(_isPatternMatching())}
-                onClick={fnCallbackSignUp}/>
-        </div>
-    );
-
     return (
         <fieldset className={progress.find(({ id }) => id === "password").isActive ? "active" : String()}>
             <h1>Wähle dein Passwort</h1>
@@ -91,7 +52,10 @@ export const Password = () => {
                     pattern={RegexExp(oInput.name)}
                     fnChange={_onChange}/>
             ))}
-            {_addNavButtons(_onClickStep2, _onClickStep4)}
+            <NavButtons
+                isNextDisabled={_isPatternMatching()}
+                callbackPrev={_onClickStep2}
+                callbackNext={_onClickStep4} />
         </fieldset>
     )
 };

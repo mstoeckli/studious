@@ -1,12 +1,15 @@
 import React from 'react';
 
+import { NavButtons } from "./NavButtons";
+
 import { FormInput } from '../../../../base/forms/Input';
 import { FormInputAddress } from '../../../../base/forms/InputAddress';
-import { FormButton } from '../../../../base/forms/Button';
 
 import { RegexExp } from '../../../../../constants/RegexExp';
 
 import { useSignUpContext } from '../../../../../context/SignUpProvider';
+
+import { progressPrev, progressNext} from "../../../../../helpers/container/content/SignUp";
 
 import { AddressParts } from '../../../../../models/base/forms/InputAddress';
 
@@ -21,29 +24,14 @@ export const School = () => {
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
     const _onClickStep3 = (oEvt) => {
         oEvt.preventDefault();
-        onProgressBack({
-            id: "school",
-            isCompleted: _isPatternMatching(),
-            isActive: false
-        }, {
-            id: "password",
-            isActive: true
-        });
+        progressPrev(onProgressBack, "school", _isPatternMatching(), "password");
     }
 
     /** @private
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
     const _onClickStep5 = (oEvt) => {
         oEvt.preventDefault();
-        onProgressNext({
-            id: "school",
-            isCompleted: _isPatternMatching(),
-            isActive: false
-        }, {
-            id: "license",
-            isCompleted: false,
-            isActive: true
-        });
+        progressNext(onProgressNext, "school", _isPatternMatching(), "license");
     }
 
     /** @private
@@ -89,25 +77,6 @@ export const School = () => {
         && values.schoolPatternMatches.postal_code && values.schoolPatternMatches.locality
         && values.schoolPatternMatches.country;
 
-    /** @private
-     *  @param   {function} fnCallbackPrevious
-     *  @param   {function} fnCallbackSignUp
-     *  @returns {JSX.Element} */
-    const _addNavButtons = (fnCallbackPrevious, fnCallbackSignUp) => (
-        <div className="nav-buttons">
-            <FormButton
-                text="Zurück"
-                showLeftIcon={true}
-                onClick={fnCallbackPrevious}/>
-            <FormButton
-                className={_isPatternMatching() ? "next" : "next-disabled"}
-                text="Weiter"
-                showRightIcon={true}
-                disabled={!(_isPatternMatching())}
-                onClick={fnCallbackSignUp}/>
-        </div>
-    );
-
     return (
         <fieldset className={progress.find(({ id }) => id === "school").isActive ? "active" : String()}>
             <h1>Verwalte deine Schule</h1>
@@ -126,7 +95,10 @@ export const School = () => {
                         fnChange={_onChange}/>
                 )
             })}
-            {_addNavButtons(_onClickStep3, _onClickStep5)}
+            <NavButtons
+                isNextDisabled={_isPatternMatching()}
+                callbackPrev={_onClickStep3}
+                callbackNext={_onClickStep5} />
         </fieldset>
     )
 };

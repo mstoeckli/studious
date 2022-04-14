@@ -86,7 +86,6 @@ export const GlobalStyle = createGlobalStyle`
   
   & .pac-item {
     padding: 0 0.75rem;
-    color: var(--title-color-nav-group);
   }
   
   & .pac-item:hover {
