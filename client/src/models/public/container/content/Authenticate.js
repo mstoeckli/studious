@@ -32,12 +32,6 @@ export const SignUpProgress = [{
     title: "Lizenzen",
     isActive: false,
     isCompleted: false
-}, {
-    id: "abo",
-    icon: "faCoins",
-    title: "Abonnement",
-    isActive: false,
-    isCompleted: false
 }];
 
 export const AuthProperties = {
@@ -90,7 +84,7 @@ export const AuthProperties = {
         name: "name",
         type: "text",
         placeholder: "Grundschule Musterhausen",
-        message: "Input must not be empty",
+        message: "School name should be 4-40 characters",
         label: "Name der Schule",
         required: true,
         icon: "faGraduationCap"
@@ -104,26 +98,17 @@ export const AuthProperties = {
         required: true,
         icon: "faEarthEurope"
     }, {
-        id: 2,
-        name: "postalCode",
-        type: "text",
-        placeholder: "5442",
-        message: "Input must not be empty",
-        label: "Postleitzahl",
-        required: true,
-        icon: "faInputNumeric"
-    }, {
-        id: 2,
+        id: 3,
         name: "city",
         type: "text",
-        placeholder: "Musterhausen",
+        placeholder: "5442, Fislisbach",
         message: "Input must not be empty",
         label: "Ortschaft",
         required: true,
         icon: "faMapPin"
     }, {
-        id: 3,
-        name: "address",
+        id: 4,
+        name: "street",
         type: "text",
         placeholder: "Feldstrasse 31",
         message: "Input must not be empty",
@@ -133,20 +118,29 @@ export const AuthProperties = {
     }],
     "license": [{
         id: 1,
-        name: "teacher",
+        name: "classTeacher",
         type: "number",
         placeholder: "10",
         message: "Input must not be empty",
-        label: "Anzahl Lehrer-Lizenzen",
+        label: "Klassenlehrer-Lizenzen",
         required: true,
         icon: "faChalkboardUser"
     }, {
         id: 2,
+        name: "subjectTeacher",
+        type: "number",
+        placeholder: "22",
+        message: "Input must not be empty",
+        label: "Fachlehrer-Lizenzen",
+        required: true,
+        icon: "faRectangleHistoryCircleUser"
+    },{
+        id: 3,
         name: "students",
         type: "number",
         placeholder: "82",
         message: "Input must not be empty",
-        label: "Anzahl Schüler-Lizenzen",
+        label: "Schüler-Lizenzen",
         required: true,
         icon: "faScreenUsers"
     }]

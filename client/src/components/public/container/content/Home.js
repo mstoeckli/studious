@@ -6,6 +6,12 @@ import { Link } from "react-router-dom";
  *  @returns {JSX.Element} Home */
 export const Home = () => {
     return (
-        <Link to="/signup">Registrierung</Link>
+        <div>
+            <Link to="/signup">Registrierung</Link>
+            <p>Automatisierte Diktat-Prüfung (Deutsch)</p>
+            <p>Formular-Generierung Prüfung (z.B.: Geschichte, Sprachen, Wirtschaft, Informatik)</p>
+            <p>Verwaltung der Schule (Klassen, Klassenlehrer, Fachlehrer, Schüler, Budget, Ausflüge,... )</p>
+
+        </div>
     )
 }

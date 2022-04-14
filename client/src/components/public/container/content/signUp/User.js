@@ -1,8 +1,10 @@
 import React from 'react';
 
-import {FormInput} from "../../../../base/forms/Input";
-import {RegexExp} from "../../../../../constants/RegexExp";
-import {FormButton} from "../../../../base/forms/Button";
+import { FormInput } from "../../../../base/forms/Input";
+import { FormButton } from "../../../../base/forms/Button";
+
+import { RegexExp } from "../../../../../constants/RegexExp";
+
 import { useSignUpContext } from "../../../../../context/SignUpProvider";
 
 /** @public
@@ -16,13 +18,15 @@ export const User = () => {
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
     const _onClickStep1 = (oEvt) => {
         oEvt.preventDefault();
+
+        /** @desc Go back to progress provider component
+         *  @host {src/components/public/container/content/SignUp.js} */
         onProgressBack({
             id: "user",
-            isCompleted: values.email && values.username,
+            isCompleted: _isPatternMatching(),
             isActive: false
         }, {
             id: "provider",
-            isCompleted: false,
             isActive: true
         });
     }
@@ -31,9 +35,12 @@ export const User = () => {
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
     const _onClickStep3 = (oEvt) => {
         oEvt.preventDefault();
+
+        /** @desc Go forward to progress password component
+         *  @host {src/components/public/container/content/SignUp.js} */
         onProgressNext({
             id: "user",
-            isCompleted: values.email && values.username,
+            isCompleted: _isPatternMatching(),
             isActive: false
         }, {
             id: "password",
@@ -42,7 +49,16 @@ export const User = () => {
         });
     }
 
-    const _onChange = (oEvt) => onAddValue(oEvt.target.name, oEvt.target.value);
+    /** @private
+     *  @returns {boolean} */
+    const _isPatternMatching = () => values.userPatternMatches.email && values.userPatternMatches.username
+
+    /** @private
+     *  @param {Event<HTMLInputElement>} oEvt */
+    const _onChange = (oEvt) => {
+        values.userPatternMatches[oEvt.target.name] = new RegExp(RegexExp(oEvt.target.name)).test(oEvt.target.value)
+        return onAddValue(oEvt.target.name, oEvt.target.value);
+    }
 
     /** @private
      *  @param   {function} fnCallbackPrevious
@@ -51,13 +67,15 @@ export const User = () => {
     const _addNavButtons = (fnCallbackPrevious, fnCallbackNext) => (
         <div className="nav-buttons">
             <FormButton
+                className="back"
                 text="Zurück"
                 showLeftIcon={true}
                 onClick={fnCallbackPrevious}/>
             <FormButton
+                className={_isPatternMatching() ? "next" : "next-disabled"}
                 text="Weiter"
                 showRightIcon={true}
-                disabled={!(values.email && values.username)}
+                disabled={!(_isPatternMatching())}
                 onClick={fnCallbackNext}/>
         </div>
     );
@@ -65,7 +83,7 @@ export const User = () => {
     return (
         <fieldset className={progress.find(({ id }) => id === "user").isActive ? "active" : String()}>
             <h1>Definiere einen Administrator</h1>
-            <p></p>
+            <p>Der Administrator dient als <strong>Ansprechstelle</strong> innerhalb der Schul-Organisation.</p>
             {properties["user"].map((oInput) => (
                 <FormInput
                     {...oInput}

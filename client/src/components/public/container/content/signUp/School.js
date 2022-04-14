@@ -1,9 +1,11 @@
-import React, {useContext, useState} from 'react';
-import {SignInProps} from "../../../../../models/public/container/content/SignIn";
-import {FormInput} from "../../../../base/forms/Input";
-import {RegexExp} from "../../../../../constants/RegexExp";
-import {FormButton} from "../../../../base/forms/Button";
-import {useSignUpContext} from "../../../../../context/SignUpProvider";
+import React from 'react';
+
+import { FormInput } from '../../../../base/forms/Input';
+import { FormButton } from '../../../../base/forms/Button';
+
+import { RegexExp } from '../../../../../constants/RegexExp';
+
+import { useSignUpContext } from '../../../../../context/SignUpProvider';
 
 /** @public
  *  @constructor
@@ -18,11 +20,10 @@ export const School = () => {
         oEvt.preventDefault();
         onProgressBack({
             id: "school",
-            isCompleted: false,
+            isCompleted: _isPatternMatching(),
             isActive: false
         }, {
             id: "password",
-            isCompleted: values.password && values.confirmPassword,
             isActive: true
         });
     }
@@ -33,7 +34,7 @@ export const School = () => {
         oEvt.preventDefault();
         onProgressNext({
             id: "school",
-            isCompleted: true,
+            isCompleted: _isPatternMatching(),
             isActive: false
         }, {
             id: "license",
@@ -42,9 +43,16 @@ export const School = () => {
         });
     }
 
+    /** @private
+     *  @param {Event<HTMLInputElement>} oEvt */
+    const _onChange = (oEvt) => {
+        values.schoolPatternMatches[oEvt.target.name] = new RegExp(RegexExp(oEvt.target.name)).test(oEvt.target.value)
+        return onAddValue(oEvt.target.name, oEvt.target.value);
+    }
 
-
-    const _onChange = (oEvt) => onAddValue(oEvt.target.name, oEvt.target.value);
+    /** @private
+     *  @returns {boolean} */
+    const _isPatternMatching = () => values.schoolPatternMatches.name && values.schoolPatternMatches.country && values.schoolPatternMatches.city && values.schoolPatternMatches.street;
 
     /** @private
      *  @param   {function} fnCallbackPrevious
@@ -57,9 +65,10 @@ export const School = () => {
                 showLeftIcon={true}
                 onClick={fnCallbackPrevious}/>
             <FormButton
+                className={_isPatternMatching() ? "next" : "next-disabled"}
                 text="Weiter"
                 showRightIcon={true}
-                disabled={!(values.password && values.confirmPassword && values.password === values.confirmPassword)}
+                disabled={!(_isPatternMatching())}
                 onClick={fnCallbackSignUp}/>
         </div>
     );
@@ -67,7 +76,7 @@ export const School = () => {
     return (
         <fieldset className={progress.find(({ id }) => id === "school").isActive ? "active" : String()}>
             <h1>Verwalte deine Schule</h1>
-            <p></p>
+            <p>Erfassen Sie hier Ihre Informationen zu der Schule. Diese Informationen dienen der späteren Einsicht aller registrierten Schulen, sowie möglicher <strong>Partnerprogramme</strong> zwischen Schulen</p>
             {properties["school"].map((oInput) => (
                 <FormInput
                     {...oInput}

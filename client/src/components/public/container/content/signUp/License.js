@@ -1,5 +1,4 @@
 import React, {useContext, useState} from 'react';
-import {SignInProps} from "../../../../../models/public/container/content/SignIn";
 import {FormInput} from "../../../../base/forms/Input";
 import {RegexExp} from "../../../../../constants/RegexExp";
 import {FormButton} from "../../../../base/forms/Button";
@@ -14,7 +13,7 @@ export const License = () => {
 
     /** @private
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
-    const _onClickStep3 = (oEvt) => {
+    const _onClickStep4 = (oEvt) => {
         oEvt.preventDefault();
         onProgressBack({
             id: "license",
@@ -42,7 +41,8 @@ export const License = () => {
                 showLeftIcon={true}
                 onClick={fnCallbackPrevious}/>
             <FormButton
-                text="Weiter"
+                text="Abschliessen"
+                rightIcon="faFlagCheckered"
                 showRightIcon={true}
                 onClick={fnCallbackSignUp}/>
         </div>
@@ -51,14 +51,14 @@ export const License = () => {
     return (
         <fieldset className={progress.find(({ id }) => id === "license").isActive ? "active" : String()}>
             <h1>Definiere die Anzahl Lizenzen</h1>
-            <p></p>
+            <p>Die Kosten für die Klassenlehrer-Lizenz betragen <br /><strong>CHF 29.90/Monat</strong>, die Fachlehrer-Lizenz <strong>CHF 9.90/Monat</strong><br /> und die Schüler-Lizenz <strong>CHF 14.90/Monat</strong><br /> Preise können varieren!</p>
             {properties["license"].map((oInput) => (
                 <FormInput
                     {...oInput}
                     pattern={RegexExp(oInput.name)}
                     fnChange={_onChange}/>
             ))}
-            {_addNavButtons(_onClickStep3, () => {})}
+            {_addNavButtons(_onClickStep4, () => {})}
         </fieldset>
     )
 };

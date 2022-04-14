@@ -14,7 +14,6 @@ import { Copyright } from "../../../core/Copyright";
 import { RegexExp } from '../../../../constants/RegexExp';
 import { PrefixId } from '../../../../constants/PrefixComponent';
 
-import { SignInProps } from '../../../../models/public/container/content/SignIn';
 
 
 import img5 from '../../../../assets/pictures/img_13.png';

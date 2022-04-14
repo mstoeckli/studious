@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 
-import { AuthProperties, SignUpProgress } from '../models/public/container/content/SignIn';
+import { AuthProperties, SignUpProgress } from '../models/public/container/content/Authenticate';
 
 /** @desc Create auth context for global usage */
 const SignUpContext = createContext({});
@@ -15,14 +15,33 @@ export const SignUpProvider = ({ children }) => {
     const [ values, setValues ] = useState({
         email: String(),
         username: String(),
+        userPatternMatches: {
+            email: false,
+            username: false
+        },
         password: String(),
-        confirmPassword: String()
+        confirmPassword: String(),
+        securityPatternMatches: {
+            password: false,
+            confirmPassword: false
+        },
+        name: String(),
+        country: String(),
+        city: String(),
+        street: String(),
+        schoolPatternMatches: {
+            name: false,
+            country: false,
+            city: false,
+            street: false
+        }
     });
 
-    const onAddValue = (sKey, sValue) => {
+    const onAddValue = ( sKey, sValue) => {
         debugger
         setValues((oValues) => {
             debugger
+
             return {...oValues, [sKey]: sValue}
         })
     };

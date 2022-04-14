@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
 import { StyledSignUp } from '../../../../styles/public/container/content/SignUp.styles';
 
@@ -20,6 +20,7 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @constructor
  *  @returns {JSX.Element} SignUp */
 export const SignUp = () => {
+    /** @desc Get progress context */
     const { progress } = useSignUpContext();
 
     /** @private
@@ -43,10 +44,9 @@ export const SignUp = () => {
 
     return (
         <StyledSignUp>
+            <div className="container">
             <form>
-                <ul>
-                    {progress.map((oProgress) => _addSignUpProgressItem(oProgress))}
-                </ul>
+                <ul>{progress.map((oProgress) => _addSignUpProgressItem(oProgress))}</ul>
                 <Provider />
                 <User />
                 <Password />
@@ -54,6 +54,7 @@ export const SignUp = () => {
                 <License />
             </form>
             <Copyright />
+            </div>
         </StyledSignUp>
     )
 }

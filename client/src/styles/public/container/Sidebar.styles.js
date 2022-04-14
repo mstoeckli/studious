@@ -10,6 +10,7 @@ export const StyledSidebar = styled.nav`
   padding: 0.5rem 0.75rem;
   border-right: 1px solid lightgray;
   box-shadow: rgb(0 0 0 / 10%) 0 1px 5px 0;
+  z-index: var(--z-index-dropdown-active);
 
   & menu {
     display: flex;
@@ -163,5 +164,12 @@ export const StyledSidebar = styled.nav`
       border-radius: var(--webkit-scrollbar-border-radius);
       background: var(--webkit-scrollbar-background);
     }
+  }
+
+  // iPhone SE
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px) {
+    display: none;
   }
 `

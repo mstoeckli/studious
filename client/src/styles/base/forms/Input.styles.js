@@ -62,7 +62,7 @@ export const StyledInput = styled.div`
     margin-left: 10px;
     margin-top: -45px;
     position: relative;
-    z-index: 2;
+    z-index: var(--z-index-dropdown-active);
     color: var(--color-icon-default);
   }
 `

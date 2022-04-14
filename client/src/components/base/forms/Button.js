@@ -8,16 +8,18 @@ import * as FaSolidIcons from "@fortawesome/pro-solid-svg-icons";
 /** @public
  *  @constructor
  *  @param   {object} oProperties
- *  @param   {boolean} oProperties.disabled
  *  @param   {string} oProperties.text
  *  @param   {boolean=} oProperties.showLeftIcon
  *  @param   {boolean=} oProperties.showRightIcon
  *  @param   {string=} oProperties.leftIcon
  *  @param   {string=} oProperties.rightIcon
+ *  @param   {boolean=} oProperties.disabled
+ *  @param   {string=} oProperties.className
  *  @param   {function} oProperties.onClick
  *  @returns {JSX.Element} FormButton */
 export const FormButton = (oProperties) => (
     <StyledButton
+        className={oProperties.className}
         onClick={(oEvt) => {
             oEvt.preventDefault();
             oProperties.onClick(oEvt)
