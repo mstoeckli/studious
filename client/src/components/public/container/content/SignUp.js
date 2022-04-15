@@ -52,9 +52,9 @@ export const SignUp = () => {
                     <Password />
                     <School />
                     <License />
+                    <p className="made-in-switzerland">Made in Switzerland</p>
+                    <Copyright />
                 </form>
-                <p className="made-in-switzerland">Made in Switzerland</p>
-                <Copyright />
             </div>
         </StyledSignUp>
     )

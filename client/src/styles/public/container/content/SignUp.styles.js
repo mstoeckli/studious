@@ -27,8 +27,7 @@ export const StyledSignUp = styled.div`
   
   & .made-in-switzerland {
     font-weight: 600;
-    margin-top: 32px;
-    color: #d71313;
+    margin: 16px 0 8px 0 !important;
   }
 
   & .container {

@@ -80,7 +80,7 @@ export const School = () => {
     return (
         <fieldset className={progress.find(({ id }) => id === "school").isActive ? "active" : String()}>
             <h1>Verwalte deine Schule</h1>
-            <p>Über die Informationen können Sie als Schule für mögliche <strong>Partnerprojekte</strong> in studious gefunden werden. <br /> Diese Informationen dienen ebenfalls als <strong>Korrespondenz</strong> zwischen ihnen und studious</p>
+            <p>Über die Informationen können Sie als Schule für mögliche <strong>Partnerprojekte</strong> in studious gefunden werden. Die Informationen dienen ebenfalls als <strong>Korrespondenz</strong> zwischen der Schule und studious</p>
             {properties["school"].map((oInput) => {
                 return oInput.isAddress ? (
                     <FormInputAddress

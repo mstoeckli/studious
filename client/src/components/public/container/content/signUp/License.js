@@ -38,7 +38,7 @@ export const License = () => {
     return (
         <fieldset className={progress.find(({ id }) => id === "license").isActive ? "active" : String()}>
             <h1>Definiere die Anzahl Lizenzen</h1>
-            <p>Die Kosten für die Klassenlehrer-Lizenz betragen <br /><strong>CHF 29.90/Monat</strong>, die Fachlehrer-Lizenz <strong>CHF 9.90/Monat</strong> und die Schüler-Lizenz <strong>CHF 14.90/Monat</strong><br /> Preise können varieren!</p>
+            <p>Die Kosten für die Klassenlehrer-Lizenz betragen <strong>CHF 29.90/Monat</strong>, die Fachlehrer-Lizenz <strong>CHF 9.90/Monat</strong> und die Schüler-Lizenz <strong>CHF 14.90/Monat</strong><br /> Preise können varieren!</p>
             {properties["license"].map((oInput) => (
                 <FormInput
                     {...oInput}
