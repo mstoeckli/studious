@@ -1,57 +1,33 @@
 import { createContext, useContext, useState } from 'react';
 
-import { SignUpProperties, SignUpProgress } from '../models/public/container/content/Authenticate';
+import { SignInProgress, SignInProperties } from '../models/public/container/content/Authenticate';
 
 /** @desc Create auth context for global usage */
-const SignUpContext = createContext({});
-export const useSignUpContext = () => useContext(SignUpContext);
+const SignInContext = createContext({});
+export const useSignInContext = () => useContext(SignInContext);
 
 /** @public
  *  @constructor
  *  @param {JSX.Element} children */
-export const SignUpProvider = ({ children }) => {
+export const SignInProvider = ({ children }) => {
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Current signup progress for displaying to the user
      *  @type {[progress:{id:string, icon:string, title:string, isActive:boolean, isCompleted:boolean}, setProgress:function]}*/
-    const [ progress, setProgress ] = useState(SignUpProgress);
+    const [ progress, setProgress ] = useState(SignInProgress);
 
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Defines the initial signup values
      *  @type {[values:{}, setValues:function]} */
     const [ values, setValues ] = useState({
-        email: String(),
-        username: String(),
-        userPatternMatches: {
-            email: false,
-            username: false
-        },
-        password: String(),
-        confirmPassword: String(),
-        securityPatternMatches: {
-            password: false,
-            confirmPassword: false
-        },
-        schoolKey: 0,
-        schoolName: String(),
-        address: String(),
-        latitude: 0,
-        longitude: 0,
+        schoolKey: null,
         schoolPatternMatches: {
-            address: false,
-            schoolName: false,
-            route: false,
-            street_number: false,
-            postal_code: false,
-            locality: false,
-            country: false
+            schoolKey: false
         },
-        classTeacher: 0,
-        subjectTeacher: 0,
-        students: 0,
-        licensePatternMatches: {
-            classTeacher: false,
-            subjectTeacher: false,
-            students: false
+        username: String(),
+        password: String(),
+        userPatternMatches: {
+            username: false,
+            password: false
         }
     });
 
@@ -120,14 +96,14 @@ export const SignUpProvider = ({ children }) => {
         onAddValue,
         onProgressNext,
         onProgressBack,
-        properties: SignUpProperties,
+        properties: SignInProperties
     }
 
     return (
-        <SignUpContext.Provider value={oValue}>
+        <SignInContext.Provider value={oValue}>
             {children}
-        </SignUpContext.Provider>
+        </SignInContext.Provider>
     )
 };
 
-export default SignUpContext;
+export default SignInContext;

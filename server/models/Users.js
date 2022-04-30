@@ -3,20 +3,20 @@ const bcrypt = require('bcryptjs');
 
 /** @public */
 const UserSchema = new mongoose.Schema({
-    email : {
-        type : mongoose.Schema.Types.String,
-        unique : true,
-        required : true,
-        lowercase : true
+    email: {
+        type: mongoose.Schema.Types.String,
+        unique: true,
+        required: true,
+        lowercase: true
     },
-    password : {
-        type : mongoose.Schema.Types.String,
-        required : true
+    username: {
+        type: mongoose.Schema.Types.String,
+        required: true
     },
-    projects : [{
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'projects'
-    }]
+    password: {
+        type: mongoose.Schema.Types.String,
+        required: true
+    }
 });
 
 /** @public */

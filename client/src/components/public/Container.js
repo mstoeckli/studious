@@ -7,6 +7,8 @@ import { Sidebar } from './container/Sidebar';
 import { Header } from './container/Header';
 import { Content } from './container/Content'
 
+import { ContentProvider } from '../../context/ContentProvider';
+
 /** @public
  *  @constructor
  *  @returns {JSX.Element} Container */
@@ -14,7 +16,7 @@ export const Container = () => {
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Update content key for displaying active JSX element in content component
      *  @type {[contentKey:string, setContentKey:function]} */
-    const [ contentKey, setContentKey ] = useState("");
+    const [ contentKey, setContentKey ] = useState(String());
 
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Used for calling hook "useEffect" in component Sidebar to handle toggling
@@ -29,6 +31,16 @@ export const Container = () => {
         closed: 75
     });
 
+    /** @private
+     *  @param {number} iKey */
+    const _callHeaderFn = (iKey) => {
+        switch (iKey) {
+            case 11:
+                setSidebarToggle(sidebarToggle => !sidebarToggle);
+                break;
+        }
+    };
+
     return (
         <StyledContainer
             style={!sidebarToggle
@@ -37,10 +49,12 @@ export const Container = () => {
             <Sidebar
                 bSidebarToggle={sidebarToggle}
                 onNavMenuClick={(sContentKey) => setContentKey(sContentKey)}/>
-            <Header onClick={() => { setSidebarToggle(sidebarToggle => !sidebarToggle) }}/>
-            <Content
-                iSidebarWidthPx={!sidebarToggle ? sidebarWidth.opened : sidebarWidth.closed}
-                contentKey={contentKey}/>
+            <Header onClick={(oEvt, iNavbarItemKey) => _callHeaderFn(iNavbarItemKey)}/>
+            <ContentProvider>
+                <Content
+                    iSidebarWidthPx={!sidebarToggle ? sidebarWidth.opened : sidebarWidth.closed}
+                    contentKey={contentKey}/>
+            </ContentProvider>
         </StyledContainer>
     )
 }

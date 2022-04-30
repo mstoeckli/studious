@@ -10,6 +10,7 @@ export const StyledInput = styled.div`
     letter-spacing: 0.75px;
     text-transform: uppercase;
     color: var(--description-color);
+    padding-left: 0.25rem;
   }
   
   & label.required:after {
@@ -32,7 +33,7 @@ export const StyledInput = styled.div`
     background: #fff;
     transition: border 0.3s ease;
     outline: none;
-    border: 1px solid #e9e9e9;
+    border: 1px solid var(--color-input-border);
     border-radius: 5px;
     
     &:invalid[focused="true"] ~ span {
@@ -60,6 +61,7 @@ export const StyledInput = styled.div`
     color: var(--color-error);
     display: none;
     margin-bottom: 1rem;
+    padding: 0 0.25rem;
     transition: display 0.5s ease-in;
   }
   

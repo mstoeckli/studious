@@ -9,6 +9,7 @@ const passport = require('./services/Passport.js');
 const { getPort } = require('./config/Environment.js');
 
 const authenticateRoute = require('./routes/AuthenticateRoute.js');
+const schoolRoute = require('./routes/SchoolRoute');
 
 /** @desc Initialize API */
 const api = express();
@@ -26,7 +27,7 @@ api.use(bodyParser.json({ limit: "30mb", extended: true }));
 
 /** @desc Cross-Origin Resource Sharing is a system, consisting of transmitting HTTP headers */
 api.use(cors({
-    // origin: process.env.CLIENT_URL_TEST,
+    origin: process.env.CLIENT_URL_TEST,
     methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD"],
     credentials: true,
 }));
@@ -38,11 +39,9 @@ api.use(i18n.init);
 api.use(passport.initialize());
 passport.strategies();
 
-api.get("/", (req, res) => {
-    res.send("Home");
-});
-
+api.get("/", (req, res) => res.send("API available!"));
 api.use("/authenticate", authenticateRoute);
+api.use("/school", schoolRoute);
 
 /** @desc Start express server */
 api.listen(getPort(), () => console.log(`Server started successfully on port ${getPort()}`));

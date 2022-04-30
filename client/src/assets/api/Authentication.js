@@ -22,11 +22,13 @@ export const signUp = (oData) => authRequest({
     method: "POST"
 });
 
-
 /** @public
+ *  @param   {object} oData
+ *  @param   {string} oData.id
  *  @returns {Promise<array>} */
-export const signOut = () => authRequest({
-    url: "http://localhost:3010/authenticate/signout",
+export const getUserById = (oData) => authRequest({
+    url: "http://localhost:3010/authenticate/userById",
+    data: oData,
     method: "POST"
 });
 
@@ -37,4 +39,15 @@ export const isValid = () => authRequest({
     headers: {
         Authorization: `Bearer ${document.cookie.replace(/(?:(?:^|.*;\s*)accessToken\s*\=\s*([^;]*).*$)|^.*$/, "$1")}`
     }
-})
+});
+
+/** @public
+ *  @param   {object} oData
+ *  @param   {string} oData.key
+ *  @param   {string} oData.value
+ *  @returns {Promise<array>} */
+export const isValidInput = (oData) => authRequest({
+    url: "http://localhost:3010/authenticate/inputValidity",
+    data: oData,
+    method: "POST"
+});

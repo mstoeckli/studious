@@ -75,7 +75,7 @@ export const Dropdown = (oProperties) => {
         <DropdownItem
             icon={oConfigItem.icon}
             iconColor={oConfigItem.iconColor}
-            title={oConfigItem.hasOwnProperty("title") ? t(`${oConfigItem.title}`) : user.email}
+            title={oConfigItem.hasOwnProperty("title") ? t(`${oConfigItem.title}`) : user.username}
             routerLink={oConfigItem?.routerLink}
             onClick={oProperties.onListItemClick}/>
     );

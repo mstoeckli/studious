@@ -1,5 +1,7 @@
 {
   "Base": {
+    "back": "Zurück",
+    "next": "Weiter",
     "entries": "Einträge",
     "Search": {
       "placeholder": "Suchen"
@@ -17,24 +19,203 @@
         },
         "News": {
           "title": "Neuigkeiten"
+        },
+        "Roadmap": {
+          "title": "Roadmap"
         }
       },
-      "PersonalSpace": {
-        "title": "Persönlicher Bereich",
-        "Dashboard": {
-          "title": "Dashboard"
+      "SchoolManagement": {
+        "title": "Schulverwaltung",
+        "Admin": {
+          "title": "Administration"
+        },
+        "Schedule": {
+          "title": "Stundenplan"
+        },
+        "ProjectWorks": {
+          "title": "Projektarbeiten"
+        },
+        "MeetingMinutes": {
+          "title": "Sitzungsprotokoll"
+        },
+        "ToDo": {
+          "title": "ToDo's"
+        },
+        "Doctor": {
+          "title": "Arztbesuch"
+        },
+        "Manuals": {
+          "title": "Handbücher"
+        },
+        "Rooms": {
+          "title": "Raumverwaltung"
+        }
+      },
+      "SchoolLife": {
+        "title": "Schulalltag",
+        "Absence": {
+          "title": "Absenzen"
+        },
+        "ParentsMeeting": {
+          "title": "Elterngespräch"
+        },
+        "Testimonial": {
+          "title": "Noten/Zeugnisse"
+        },
+        "Services": {
+          "title": "Dienste"
+        }
+      },
+      "Reports": {
+        "title": "Auswertungen",
+        "PerformanceImprovement": {
+          "title": "Leistungssteigerung"
+        }
+      },
+      "Communication": {
+        "title": "Kommunikation",
+        "ParentPortal": {
+          "title": "Elternportal"
         }
       },
       "Onboarding": {
-        "title": "Onboarding",
-        "Project": {
-          "title": "Projekt Anlegen",
-          "description": "Teile deine Fähigkeiten mit der Welt"
-        }
+        "title": "Onboarding"
       }
     },
     "Content": {
-
+      "Authenticate": {
+        "SignUpProgress": {
+          "Provider": {
+            "title": "Provider"
+          },
+          "Administrator": {
+            "title": "Administrator"
+          },
+          "Password": {
+            "title": "Passwort"
+          },
+          "School": {
+            "title": "Schule"
+          },
+          "License": {
+            "title": "Lizenzen"
+          }
+        },
+        "SignInProgress": {
+          "School": {
+            "title": "Schule"
+          },
+          "User": {
+            "title": "Benutzer"
+          }
+        },
+        "SignUpProperties": {
+          "Provider": {
+            "title": "Weiter mit E-Mail"
+          },
+          "User": {
+            "Email": {
+              "label": "E-Mail Adresse",
+              "message": "Ungültige E-Mail Adresse"
+            },
+            "Username": {
+              "label": "Benutzername",
+              "message": "Der Benutzername sollte 6-20 Zeichen lang sein und darf keine Sonderzeichen enthalten und muss aus einem Wort bestehen."
+            }
+          },
+          "Password": {
+            "Password": {
+              "label": "Passwort",
+              "message": "Das Passwort sollte 6-20 Zeichen lang sein und mindestens 1 Buchstaben, 1 Zahl und 1 Sonderzeichen enthalten."
+            },
+            "ConfirmPassword": {
+              "label": "Passwort wiederholen",
+              "message": "Passwort stimmt nicht überein"
+            }
+          },
+          "School": {
+            "SchoolKey": {
+              "label": "Schul-Identifikation",
+              "message": "Schulschlüssel sollte 4 Zeichen lang sein"
+            },
+            "SchoolName": {
+              "label": "Name der Schule",
+              "message": "Der Name der Schule sollte 4-40 Zeichen lang sein."
+            },
+            "Address": {
+              "label": "Adresse",
+              "message": "Die Adresse muss über die Google API ausgewählt werden. Beginnen Sie mit der Eingabe."
+            }
+          },
+          "License": {
+            "ClassTeacher": {
+              "label": "Klassenlehrer-Lizenzen",
+              "message": "Eingabe darf nicht leer sein"
+            },
+            "SubjectTeacher": {
+              "label": "Fachlehrer-Lizenzen"
+            },
+            "Students": {
+              "label": "Schüler-Lizenzen",
+              "message": "Eingabe darf nicht leer sein"
+            }
+          }
+        },
+        "SignInProperties": {
+          "School": {
+            "SchoolKey": {
+              "label": "Schul-Identifikation",
+              "message": "Schulschlüssel sollte 4 Zeichen lang sein"
+            }
+          },
+          "User": {
+            "Username": {
+              "label": "Benutzername",
+              "message": "Der Benutzername sollte 6-20 Zeichen lang sein und darf keine Sonderzeichen enthalten und muss aus einem Wort bestehen."
+            },
+            "Password": {
+              "label": "Passwort",
+              "message": "Das Passwort sollte 6-20 Zeichen lang sein und mindestens 1 Buchstaben, 1 Zahl und 1 Sonderzeichen enthalten."
+            }
+          }
+        }
+      },
+      "SignIn": {
+        "School": {
+          "title": "Identifikation",
+          "description": "Die <strong>Schul-Identifikation</strong> kann über den Administrator innerhalb der <strong>Schul-Organisation</strong> bezogen werden."
+        },
+        "User": {
+          "title": "Anmelde-Informationen",
+          "description": "Willkommen zurück bei studios. Erfasse deine Anmelde-Informationen um <strong>Zugriff</strong> auf die <strong>Schul-Inhalte</strong> zu erhalten.",
+          "nextButtonText": "Anmelden"
+        }
+      },
+      "SignUp": {
+        "Provider": {
+          "title": "Wähle deinen Provider",
+          "description": "Durch das Erstellen eines Kontos erklärst du dich mit <br/>unseren <0>Nutzungsbedingungen</0> einverstanden und <br/> bestätigst, dass du unsere <1>Datenschutzerklärung</1> gelesen <br/>und verstanden hast."
+        },
+        "User": {
+          "title": "Definiere einen Administrator",
+          "description": "Der Administrator dient als <strong>Ansprechstelle</strong> innerhalb der Schul-Organisation.",
+          "invalidMailMessage": "E-Mail Adresse bereits verwendet",
+          "invalidUsernameMessage": "Benutzername bereits verwendet"
+        },
+        "Password": {
+          "title": "Wähle dein Passwort",
+          "description": "Das Passwort sollte <strong>6-20 Zeichen</strong> lang sein und mindestens <strong>1 Buchstaben</strong>, <strong>1 Zahl</strong> und <strong>1 Sonderzeichen</strong> enthalten."
+        },
+        "School": {
+          "title": "Verwalte deine Schule",
+          "description": "Über die Informationen können Sie als Schule für mögliche <strong>Partnerprojekte</strong> in studious gefunden werden. Die Informationen dienen ebenfalls als <strong>Korrespondenz</strong> zwischen der Schule und studious"
+        },
+        "License": {
+          "title": "Definiere die Anzahl Lizenzen",
+          "description": "Die Kosten für die Klassenlehrer-Lizenz betragen <strong>CHF 29.90/Monat</strong>, die Fachlehrer-Lizenz <strong>CHF 9.90/Monat</strong> und die Schüler-Lizenz (inkl. Eltern-Lizenz) <strong>CHF 19.90/Monat</strong><br /> Preise können varieren!",
+          "navButtonTextNext": "Abschliessen"
+        }
+      }
     },
     "Header": {
       "Dropdown": {

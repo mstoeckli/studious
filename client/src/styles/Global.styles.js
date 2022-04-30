@@ -38,6 +38,7 @@ export const GlobalStyle = createGlobalStyle`
     --webkit-scrollbar-thumb-height: 1rem;
     --webkit-scrollbar-thumb-border-radius: var(--webkit-scrollbar-border-radius);
     --webkit-scrollbar-thumb-background-color: rgb(44 62 80 / 43%);
+    --z-index-loader: 10;
     --z-index-dropdown-active: 2;
     --z-index-dropdown-inactive: -1;
   }

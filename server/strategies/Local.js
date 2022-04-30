@@ -2,6 +2,7 @@ const passport = require('passport');
 const { Strategy } = require('passport-local');
 
 const { Users } = require('../models/Mongoose.js');
+
 const i18n = require('../services/I18n.js');
 
 /** @desc Called after function "done" in strategy is called */
@@ -15,12 +16,10 @@ passport.deserializeUser((id, done) => {
 /** @public
  *  @returns {Strategy} */
 exports.localStrategy = () => {
-    return new Strategy({
-        usernameField : "email"
-    }, async (email, password, done) => {
-        Users.findOne({ email }, (oErr, oUser) => {
+    return new Strategy({}, async (username, password, done) => {
+        Users.findOne({ username }, (oErr, oUser) => {
             /** @desc Function "done" is calling callback passport.authenticate in file "Authenticate.js" */
-            /** @desc Connection error while reading user data by email */
+            /** @desc Connection error while reading user data */
             if (oErr) done(oErr, false, i18n.__('mongooseFailure'));
 
             /** @desc Check if user by email was found or not */

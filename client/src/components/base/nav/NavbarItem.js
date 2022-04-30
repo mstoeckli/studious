@@ -18,14 +18,6 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @returns {JSX.Element} NavbarItem */
 export const NavbarItem = (oProperties) => {
     /** @private
-     *  @param {MouseEvent<SVGSVGElement>} oEvt
-     *  @param {function} onClick */
-    const _onClick = (oEvt, onClick) => {
-        /** @desc Call callback function for custom handling */
-        onClick(oEvt);
-    }
-
-    /** @private
      *  @param   {object} oProperties
      *  @param   {string} oProperties.icon
      *  @param   {function} oProperties.onClick
@@ -39,7 +31,7 @@ export const NavbarItem = (oProperties) => {
             <FontAwesomeIcon
                 className={oProperties.isActive ? "active" : String()}
                 icon={FaDuotoneIcons[oProperties.icon]}
-                onClick={(oEvt) => _onClick(oEvt, oProperties.onClick)}>
+                onClick={(oEvt) => oProperties.onClick(oEvt)}>
             </FontAwesomeIcon>
             {oProperties.children}
         </div>

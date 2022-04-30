@@ -13,8 +13,9 @@ mongoose.connect(getDatabase().studious.toString(), {
 
 /** @desc Handle errors after initial connection was established */
 mongoose.connection.on("error", (oErr) => {
-    console.log("connection error")
+    console.log(oErr)
 });
 
 module.exports.Users = require("./Users");
+module.exports.Schools = require("./Schools");
 

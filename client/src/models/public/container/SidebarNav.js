@@ -25,60 +25,138 @@ export const SidebarNav = [{
         "title": "Container.Sidebar.Overview.News.title",
         "icon": "faNewspaper",
         "isActive": false
+    }, {
+        "key": 14,
+        "keyGroup": 1,
+        "contentKey": "roadmap",
+        "title": "Container.Sidebar.Overview.Roadmap.title",
+        "icon": "faSnowplow",
+        "isActive": false
     }]
 }, {
     "key": 2,
-    "title": "Container.Sidebar.PersonalSpace.title",
+    "title": "Container.Sidebar.SchoolManagement.title",
     "hasNavMenu": true,
     "isOpen": true,
     "isPrivate": true,
     "navMenu": [{
-        "key": 20,
-        "keyGroup": 1,
-        "contentKey": "dashboard",
-        "title": "Container.Sidebar.PersonalSpace.Dashboard.title",
-        "icon": "faGripHorizontal",
-        "isActive": false,
-    }, {
-        "key": 15,
-        "keyGroup": 1,
-        "contentKey": "collections",
-        "title": "Container.Sidebar.PersonalSpace.Collections.title",
-        "icon": "faBoxOpen",
+        "key": 21,
+        "keyGroup": 2,
+        "contentKey": "admin",
+        "title": "Container.Sidebar.SchoolManagement.Admin.title",
+        "icon": "faBookUser",
         "isActive": false
     }, {
-        "key": 19,
-        "keyGroup": 1,
-        "contentKey": "bookmark",
-        "title": "Container.Sidebar.PersonalSpace.Bookmark.title",
-        "icon": "faBookmark",
+        "key": 22,
+        "keyGroup": 2,
+        "contentKey": "schedule",
+        "title": "Container.Sidebar.SchoolManagement.Schedule.title",
+        "icon": "faCalendarRange",
         "isActive": false
     }, {
-        "key": 16,
-        "keyGroup": 1,
-        "contentKey": "purchases",
-        "title": "Container.Sidebar.PersonalSpace.Purchases.title",
-        "icon": "faShoppingBasket",
+        "key": 23,
+        "keyGroup": 2,
+        "contentKey": "projectWorks",
+        "title": "Container.Sidebar.SchoolManagement.ProjectWorks.title",
+        "icon": "faDiagramProject",
         "isActive": false
     }, {
-        "key": 17,
-        "keyGroup": 1,
-        "contentKey": "credit",
-        "title": "Container.Sidebar.PersonalSpace.Credits.title",
-        "icon": "faCreditCard",
+        "key": 24,
+        "keyGroup": 2,
+        "contentKey": "meetingMinutes",
+        "title": "Container.Sidebar.SchoolManagement.MeetingMinutes.title",
+        "icon": "faHandshake",
         "isActive": false
     }, {
-        "key": 18,
-        "keyGroup": 1,
-        "contentKey": "inbox",
-        "title": "Container.Sidebar.PersonalSpace.Inbox.title",
-        "icon": "faInbox",
+        "key": 25,
+        "keyGroup": 2,
+        "contentKey": "todo",
+        "title": "Container.Sidebar.SchoolManagement.ToDo.title",
+        "icon": "faClipboardListCheck",
+        "isActive": false
+    }, {
+        "key": 26,
+        "keyGroup": 2,
+        "contentKey": "doctor",
+        "title": "Container.Sidebar.SchoolManagement.Doctor.title",
+        "icon": "faFilesMedical",
+        "isActive": false
+    }, {
+        "key": 27,
+        "keyGroup": 2,
+        "contentKey": "manuals",
+        "title": "Container.Sidebar.SchoolManagement.Manuals.title",
+        "icon": "faBookOpenCover",
+        "isActive": false
+    }, {
+        "key": 28,
+        "keyGroup": 2,
+        "contentKey": "rooms",
+        "title": "Container.Sidebar.SchoolManagement.Rooms.title",
+        "icon": "faDoorClosed",
         "isActive": false
     }]
 }, {
     "key": 3,
-    "title": "Container.Sidebar.Onboarding.title",
-    "hasNavMenu": false,
+    "title": "Container.Sidebar.SchoolLife.title",
+    "hasNavMenu": true,
     "isOpen": true,
-    "htmlContentKey": "onboarding"
+    "isPrivate": true,
+    "navMenu": [{
+        "key": 31,
+        "keyGroup": 3,
+        "contentKey": "absence",
+        "title": "Container.Sidebar.SchoolLife.Absence.title",
+        "icon": "faAlarmExclamation",
+        "isActive": false
+    }, {
+        "key": 32,
+        "keyGroup": 3,
+        "contentKey": "parentsMeeting",
+        "title": "Container.Sidebar.SchoolLife.ParentsMeeting.title",
+        "icon": "faFamily",
+        "isActive": false
+    }, {
+        "key": 33,
+        "keyGroup": 3,
+        "contentKey": "testimonial",
+        "title": "Container.Sidebar.SchoolLife.Testimonial.title",
+        "icon": "faFileCertificate",
+        "isActive": false
+    }, {
+        "key": 34,
+        "keyGroup": 3,
+        "contentKey": "services",
+        "title": "Container.Sidebar.SchoolLife.Services.title",
+        "icon": "faHandHoldingHand",
+        "isActive": false
+    }]
+}, {
+    "key": 4,
+    "title": "Container.Sidebar.Reports.title",
+    "hasNavMenu": true,
+    "isOpen": true,
+    "isPrivate": true,
+    "navMenu": [{
+        "key": 41,
+        "keyGroup": 3,
+        "contentKey": "performanceImprovement",
+        "title": "Container.Sidebar.Reports.PerformanceImprovement.title",
+        "icon": "faChartLineUp",
+        "isActive": false
+    }]
+}, {
+    "key": 5,
+    "title": "Container.Sidebar.Communication.title",
+    "hasNavMenu": true,
+    "isOpen": true,
+    "isPrivate": true,
+    "navMenu": [{
+        "key": 51,
+        "keyGroup": 3,
+        "contentKey": "parentPortal",
+        "title": "Container.Sidebar.Communication.ParentPortal.title",
+        "icon": "faHouseLaptop",
+        "isActive": false
+    }]
 }]

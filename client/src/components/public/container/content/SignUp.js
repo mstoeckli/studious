@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { StyledSignUp } from '../../../../styles/public/container/content/SignUp.styles';
 
@@ -9,19 +10,79 @@ import { School } from './signUp/School';
 import { License } from './signUp/License';
 
 import { Copyright } from "../../../core/Copyright";
+import { MadeInSwitzerland } from "../../../core/MadeInSwitzerland";
 
 import { useSignUpContext } from "../../../../context/SignUpProvider";
 
+import { signUp } from '../../../../assets/api/Authentication';
+import { createSchool } from '../../../../assets/api/School';
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
-
 
 /** @public
  *  @constructor
  *  @returns {JSX.Element} SignUp */
 export const SignUp = () => {
-    /** @desc Get progress context */
-    const { progress } = useSignUpContext();
+    /** @desc Get signup provider context */
+    const { values, progress } = useSignUpContext();
+
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Update error message after api call
+     *  @type {[error:string, setError:function]} */
+    const [ error, setError ] = useState(String());
+
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Show/Hide busy indicator/loader
+     *  @type {[showLoader:boolean, setShowLoader:function]} */
+    const [ showLoader, setShowLoader ] = useState(false);
+
+    /** @desc In a suspense-enabled app, the navigate function is aware of when your app is suspending.
+     *        -> Used for changing the content after successful sign up */
+    const oNavigate = useNavigate();
+
+    /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
+    useEffect(() => setError(String()), [values]);
+
+    /** @private
+     *  @param {Event} oEvt */
+    const _onSignUp = (oEvt) => {
+        oEvt.preventDefault();
+
+        /** @desc Show busy indicator/loader */
+        setShowLoader(true);
+
+        /** @desc Call api for singing up a user */
+        signUp({
+            email: values.email,
+            username: values.username,
+            password: values.password
+        })
+        .then((oUser) => _createSchool(oUser.data.userId))
+        .catch((oErr) => setError(oErr.message));
+    };
+
+    /** @private
+     *  @param   {number} iUserId
+     *  @returns {Promise<*>} */
+    const _createSchool = (iUserId) => createSchool({
+        key: values.schoolKey,
+        name: values.schoolName,
+        address: values.address,
+        latitude: values.latitude,
+        longitude: values.longitude,
+        classTeacher: values.classTeacher,
+        subjectTeacher: values.subjectTeacher,
+        students: values.students,
+        admin: iUserId,
+        users: [iUserId]
+    })
+    .then(() => {
+        /** @desc Hide busy indicator/loader and go forward to sign in page */
+        setShowLoader(false);
+        oNavigate("/signin");
+    })
+    .catch((oErr) => setError(oErr.message));
 
     /** @private
      *  @param   {object} oProgress
@@ -51,8 +112,11 @@ export const SignUp = () => {
                     <User />
                     <Password />
                     <School />
-                    <License />
-                    <p className="made-in-switzerland">Made in Switzerland</p>
+                    <License
+                        errorMessage={error}
+                        showLoader={showLoader}
+                        onSignUp={_onSignUp}/>
+                    <MadeInSwitzerland />
                     <Copyright />
                 </form>
             </div>

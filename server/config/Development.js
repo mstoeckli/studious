@@ -10,7 +10,8 @@ exports.devCodes = {
 }
 
 exports.devDatabase = {
-    studious: "mongodb+srv://mstoeckli:RfAO8wO1mUkuUEFy@apperra.bnqck.mongodb.net/Apperra?retryWrites=true&w=majority"
+    studious: "mongodb+srv://mongooseadmin:XoLx6PX2KrUDP5k0@studious.sbbro.mongodb.net/studious?retryWrites=true&w=majority"
+
 }
 
 module.exports = exports;

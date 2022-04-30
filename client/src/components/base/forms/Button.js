@@ -20,10 +20,7 @@ import * as FaSolidIcons from "@fortawesome/pro-solid-svg-icons";
 export const FormButton = (oProperties) => (
     <StyledButton
         className={oProperties.className}
-        onClick={(oEvt) => {
-            oEvt.preventDefault();
-            oProperties.onClick(oEvt)
-        }}
+        onClick={oProperties.onClick}
         disabled={oProperties.disabled}>
         {oProperties.showLeftIcon && <FontAwesomeIcon icon={FaSolidIcons[`${oProperties?.leftIcon ? oProperties.leftIcon : "faLeft"}`]} />}
         <span>{oProperties.text}</span>

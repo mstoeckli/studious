@@ -1,10 +1,5 @@
 export const DropdownItems = {
     "ContainerNavConfig": [{
-        "icon": "faCoins",
-        "title": "Container.Header.Dropdown.Config.Seller.title",
-        "isPublic": false,
-        "isPrivate": true
-    }, {
         "icon": "faBooks",
         "title": "Container.Header.Dropdown.Config.Documentation.title",
         "isPublic": true,
@@ -19,7 +14,7 @@ export const DropdownItems = {
         "isPublic": false,
         "isPrivate": true,
     }, {
-        "icon": "faUsersViewfinder",
+        "icon": "faUserPlus",
         "iconColor": "#3f6ad8",
         "title": "Container.Header.Dropdown.Config.SignUp.title",
         "routerLink": "signup",

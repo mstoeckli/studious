@@ -9,8 +9,11 @@ import { PrivateRoute } from '../../../routes/PrivateRoute';
 import { Home } from './content/Home';
 import { SignIn } from "./content/SignIn";
 import { SignUp } from "./content/SignUp";
+import { Schools } from "./content/Schools";
 
+import { useContentContext } from '../../../context/ContentProvider';
 import { SignUpProvider } from '../../../context/SignUpProvider';
+import { SignInProvider } from '../../../context/SignInProvider';
 
 /** @public
  *  @constructor
@@ -19,6 +22,9 @@ import { SignUpProvider } from '../../../context/SignUpProvider';
  *  @param   {string} oProperties.contentKey
  *  @returns {JSX.Element} Content */
 export const Content = ({ contentKey, iSidebarWidthPx }) => {
+    /** @desc Get content provider context */
+    const { values, setSidebarWidthPx } = useContentContext();
+
     /** @desc In a suspense-enabled app, the navigate function is aware of when your app is suspending.
      *        -> Used for changing the content after clicking element in the sidebar */
     const oNavigate = useNavigate();
@@ -33,20 +39,25 @@ export const Content = ({ contentKey, iSidebarWidthPx }) => {
         if (activeContentKey !== contentKey) {
             oNavigate(`${contentKey === "home" ? "/" : `/${contentKey}`}`);
             setActiveContentKey(contentKey);
-        }
-    }, [contentKey, oNavigate]);
+        } setSidebarWidthPx(iSidebarWidthPx);
+    }, [contentKey, iSidebarWidthPx, oNavigate]);
 
     return (
         <StyledContent
-            style={{ width: `calc(100% - ${iSidebarWidthPx}px)` }}>
+            style={{ width: `calc(100% - ${values.sidebarWidthPx}px)` }}>
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/signin" element={<SignIn />} />
+                <Route path="/signin" element={
+                    <SignInProvider>
+                        <SignIn />
+                    </SignInProvider>
+                } />
                 <Route path="/signup" element={
                     <SignUpProvider>
                         <SignUp />
                     </SignUpProvider>
                 } />
+                <Route path="/schools" element={<Schools />} />
             </Routes>
         </StyledContent>
     )

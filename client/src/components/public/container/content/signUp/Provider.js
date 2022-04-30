@@ -1,3 +1,6 @@
+import React from "react";
+import { Trans, useTranslation } from 'react-i18next';
+
 import { useSignUpContext } from "../../../../../context/SignUpProvider";
 
 import { progressNext } from "../../../../../helpers/container/content/SignUp";
@@ -9,6 +12,10 @@ export const Provider = () => {
     /** @desc Get context properties for handling signing up progress */
     const { progress, properties, onProgressNext } = useSignUpContext();
 
+    /** @desc Returns the translation function for reading from the locales files
+     *  @type {function} t */
+    const { t } = useTranslation();
+
     /** @private
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
     const _onClickStep2 = (oEvt) => {
@@ -18,8 +25,8 @@ export const Provider = () => {
 
     return (
         <fieldset className={progress.find(({ id }) => id === "provider").isActive ? "active" : String()}>
-            <h1>Wähle deinen Provider</h1>
-            <p>Durch das Erstellen eines Kontos erklärst du dich mit <br/>unseren <a href="/">Nutzungsbedingungen</a> einverstanden und <br/> bestätigst, dass du unsere <a href="/">Datenschutzerklärung</a> gelesen <br/>und verstanden hast.</p>
+            <h1>{t('Container.Content.SignUp.Provider.title')}</h1>
+            <p>{<Trans i18nKey="Container.Content.SignUp.Provider.description" t={t} components={[<a href="/" />, <a href="/" />]} />}</p>
             {properties["provider"].map((oButton) => (
                 <button
                     className="signup-provider"

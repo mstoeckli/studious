@@ -1,6 +1,7 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import { NavButtons } from "./NavButtons";
+import { NavButtons } from '../authenticate/NavButtons';
 
 import { FormInput } from '../../../../base/forms/Input';
 
@@ -16,6 +17,10 @@ import { useSignUpContext } from '../../../../../context/SignUpProvider';
 export const Password = () => {
     /** @desc Get context properties for handling signing up progress */
     const { values, progress, properties, onAddValue, onProgressBack, onProgressNext } = useSignUpContext();
+
+    /** @desc Returns the translation function for reading from the locales files
+     *  @type {function} t */
+    const { t } = useTranslation();
 
     /** @private
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
@@ -44,8 +49,8 @@ export const Password = () => {
 
     return (
         <fieldset className={progress.find(({ id }) => id === "password").isActive ? "active" : String()}>
-            <h1>Wähle dein Passwort</h1>
-            <p>Das Passwort sollte <strong>6-20 Zeichen</strong> lang sein und mindestens <strong>1 Buchstaben</strong>, <strong>1 Zahl</strong> und <strong>1 Sonderzeichen</strong> enthalten.</p>
+            <h1>{t('Container.Content.SignUp.Password.title')}</h1>
+            <p>{<Trans i18nKey="Container.Content.SignUp.Password.description" />}</p>
             {properties["password"].map((oInput) => (
                 <FormInput
                     {...oInput}
@@ -53,9 +58,11 @@ export const Password = () => {
                     fnChange={_onChange}/>
             ))}
             <NavButtons
-                isNextDisabled={_isPatternMatching()}
+                showPrev={true}
                 callbackPrev={_onClickStep2}
-                callbackNext={_onClickStep4} />
+                showNext={true}
+                callbackNext={_onClickStep4}
+                isNextDisabled={_isPatternMatching()}/>
         </fieldset>
     )
 };

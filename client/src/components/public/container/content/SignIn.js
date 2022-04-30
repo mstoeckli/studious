@@ -1,99 +1,106 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 
 import { StyledSignIn } from '../../../../styles/public/container/content/SignIn.styles';
 
-import { signIn } from "../../../../assets/api/Authentication";
-import { useAuth } from '../../../../context/AuthProvider';
-
-import { FormInput } from '../../../base/forms/Input';
-import { FormButton } from '../../../base/forms/Button';
+import { School } from './signIn/School';
+import { User } from './signIn/User';
 
 import { Copyright } from "../../../core/Copyright";
+import { MadeInSwitzerland } from "../../../core/MadeInSwitzerland";
 
-import { RegexExp } from '../../../../constants/RegexExp';
-import { PrefixId } from '../../../../constants/PrefixComponent';
+import { useAuth } from '../../../../context/AuthProvider';
+import { useSignInContext } from "../../../../context/SignInProvider";
 
+import { signIn } from '../../../../assets/api/Authentication';
 
-
-import img5 from '../../../../assets/pictures/img_13.png';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import * as FaDuotoneIcons from "@fortawesome/pro-duotone-svg-icons";
 
 /** @public
  *  @constructor
  *  @returns {JSX.Element} SignIn */
 export const SignIn = () => {
+    /** @desc Get signin provider context */
+    const { values, progress } = useSignInContext();
+
+    /** @desc Get signin function for signing in a user */
     const { onSignIn } = useAuth();
 
-    const [ values, setValues ] = useState({
-        email: String(),
-        password: String()
-    });
-
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Update error message after api call
+     *  @type {[error:string, setError:function]} */
     const [ error, setError ] = useState(String());
 
-    const [ loading, setLoading ] = useState(false);
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Show/Hide busy indicator/loader
+     *  @type {[showLoader:boolean, setShowLoader:function]} */
+    const [ showLoader, setShowLoader ] = useState(false);
 
-    const oNavigate = useNavigate();
+    /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
+    useEffect(() => setError(String()), [values]);
 
-    const onChange = (oEvt) => setValues({ ...values, [oEvt.target.name]: oEvt.target.value });
+    /** @private
+     *  @param {Event} oEvt */
+    const _onSignIn = (oEvt) => {
+        oEvt.preventDefault();
 
+        /** @desc Show busy indicator/loader */
+        setShowLoader(true);
 
+        /** @desc Call api for singing in a user */
+        signIn({
+            key: values.schoolKey,
+            username: values.username,
+            password: values.password
+        })
+            .then(({ success, message, data }) => {
+                if (!success) setError(message);
+                /** @desc Update context provider after successful api call */
+                else !data.success ? setError(data.message) : onSignIn({
+                    userId: data.userId,
+                    username: data.username,
+                    email: data.email
+                });
+
+                /** @desc Hide busy indicator/loader */
+                setShowLoader(false);
+            })
+            .catch((oErr) => setError(oErr.message));
+    }
+
+    /** @private
+     *  @param   {object} oProgress
+     *  @param   {string} oProgress.id
+     *  @param   {string} oProgress.icon
+     *  @param   {string} oProgress.title
+     *  @param   {boolean} oProgress.isActive
+     *  @param   {boolean} oProgress.isCompleted
+     *  @returns {JSX.Element}  */
+    const _addSignInProgressItem = (oProgress) => (
+        <li
+            className={progress.find(({ id }) => id === oProgress.id).isActive ? "active": String()}
+            id={oProgress.id}>
+            <FontAwesomeIcon
+                className={progress.find(({ id }) => id === oProgress.id).isCompleted ? "completed" : progress.find(({ id }) => id === oProgress.id).isActive ? "active" : String()}
+                icon={FaDuotoneIcons[oProgress.icon]} />
+            <h4>{oProgress.title}</h4>
+        </li>
+    );
 
     return (
         <StyledSignIn>
-
+            <div className="container">
+                <form>
+                    <ul>{progress.map((oProgress) => _addSignInProgressItem(oProgress))}</ul>
+                    <School />
+                    <User
+                        errorMessage={error}
+                        showLoader={showLoader}
+                        onSignIn={_onSignIn}/>
+                    <MadeInSwitzerland />
+                    <Copyright />
+                </form>
+            </div>
         </StyledSignIn>
-        // <StyledSignIn>
-        //     <div className="content">
-        //         <div className="content-auth">
-        //             <div className="content-auth-mail">
-        //                 <form onSubmit={(oEvt) => {
-        //
-        //                     oEvt.preventDefault();
-        //                     debugger
-        //                     signIn({
-        //                         email: values.email,
-        //                         password: values.password
-        //                     })
-        //                     .then(({ success, message, data }) => {
-        //                         if (!success) setError(message);
-        //                         else {
-        //                             onSignIn({
-        //                                 userId: data.userId,
-        //                                 email: data.email
-        //                             });
-        //                             oNavigate(-1);
-        //                         }
-        //                     })
-        //                     .catch((oErr) => {
-        //                         debugger
-        //                     })
-        //
-        //                 }}>
-        //                     {SignInProps["auth-mail"].map((oInput) => (
-        //                         <FormInput
-        //                             key={`${PrefixId("signin-email", oInput.id)}`}
-        //                             {...oInput}
-        //                             value={values[oInput.name]}
-        //                             pattern={RegexExp(oInput.name)}
-        //                             fnChange={onChange}/>
-        //                     ))}
-        //                     <FormButton
-        //                         text="Anmelden"
-        //                         disabled={loading}/>
-        //                 </form>
-        //             </div>
-        //         </div>
-        //         <span className={error === String() ? "auth-mail-error auth-mail-error-none" : "auth-mail-error auth-mail-error-block"}>
-        //             {error}
-        //         </span>
-        //         <div className="content-resetpw">
-        //
-        //         </div>
-        //         <div className="content-copyright">
-        //             <Copyright />
-        //         </div>
-        //     </div>
-        // </StyledSignIn>
     )
 }

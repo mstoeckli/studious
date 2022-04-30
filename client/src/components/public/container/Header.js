@@ -10,6 +10,8 @@ import { NavbarGroup } from '../../base/nav/NavbarGroup';
 import { NavbarItem } from '../../base/nav/NavbarItem';
 import { Dropdown } from '../../base/dropdown/Dropdown';
 
+import { useAuth } from '../../../context/AuthProvider'
+
 /** @public
  *  @constructor
  *  @param   {object} oProperties
@@ -28,6 +30,9 @@ export const Header = ({ onClick }) => {
      *        -> Used for changing the content after clicking element in the sidebar */
     const oNavigate = useNavigate();
 
+    /** @desc Get authority function for handling user actions */
+    const { onSignOut } = useAuth();
+
     /** @private
      *  @param {number} iKey
      *  @param {boolean} bIsActive */
@@ -40,6 +45,19 @@ export const Header = ({ onClick }) => {
             }));
         }
     };
+
+    /** @private */
+    const _onSignOut = async () => {
+        document.cookie = "accessToken" + "=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+        await onSignOut();
+    };
+
+    /** @private
+     *  @param {string} sURIKey */
+    const _getAppropriateFn = async (sURIKey) => ({
+        "signin": () => {},
+        "signup": await _onSignOut()
+    })[sURIKey]
 
     /** @private
      *  @param   {number} iKey
@@ -58,8 +76,10 @@ export const Header = ({ onClick }) => {
             modelObj="ContainerNavConfig"
             isActive={bIsActive}
             isClickedOutside={() => _onClickOutside(iKey, bIsActive)}
-            onListItemClick={async () => {
-
+            onListItemClick={async (oEvt) => {
+                /** @desc Get current url path for calling the appropriate function */
+                const aBaseURI = oEvt.currentTarget.baseURI.split("/");
+                await _getAppropriateFn(aBaseURI[aBaseURI.length - 1]);
             }} />
     )
 
@@ -72,7 +92,7 @@ export const Header = ({ onClick }) => {
                             <NavbarItem
                                 {...oNavbarItem}
                                 onClick={(oEvt) => {
-                                    onClick(oEvt);
+                                    onClick(oEvt, oNavbarItem.key);
                                     fnDispatch(setActivityClass(oNavbarItem.key))
                                 }}>
                                 {oNavbarItem.hasDropdown

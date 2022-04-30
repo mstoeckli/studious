@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+
+import { getUserById } from  '../assets/api/Authentication'
 
 /** @desc Create auth context for global usage */
 const AuthContext = createContext({});
@@ -13,15 +15,36 @@ export const AuthProvider = ({ children }) => {
      *  @type {[sidebarToggle:boolean, setSidebarToggle:function]} */
     const [ user, setUser ] = useState(null);
 
+    /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
+    useEffect(() => {
+        if (user && user.userId && !user.username) {
+            /** @desc Get user info after page refresh */
+            getUserById({
+                id: user.userId
+            })
+            .then(({ data }) => {
+                if (data.success) {
+                    setUser({
+                        userId: data.userId,
+                        username: data.username,
+                        email: data.email
+                    });
+                }
+            });
+        }
+    });
+
     /** @public
      *  @param {object} oUser
      *  @param {string} oUser.userId
+     *  @param {string} oUser.username
      *  @param {string} oUser.email */
     const onIsValid = (oUser) => setUser(oUser);
 
     /** @public
      *  @param {object} oUser
      *  @param {string} oUser.userId
+     *  @param {string} oUser.username
      *  @param {string} oUser.email */
     const onSignIn = (oUser) => setUser(oUser);
 

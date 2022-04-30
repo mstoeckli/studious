@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import { NavButtons } from "./NavButtons";
+import { NavButtons } from '../authenticate/NavButtons';
 
 import { FormInput } from '../../../../base/forms/Input';
 import { FormInputAddress } from '../../../../base/forms/InputAddress';
@@ -11,6 +12,8 @@ import { useSignUpContext } from '../../../../../context/SignUpProvider';
 
 import { progressPrev, progressNext} from "../../../../../helpers/container/content/SignUp";
 
+import { isValidKey } from '../../../../../assets/api/School';
+
 import { AddressParts } from '../../../../../models/base/forms/InputAddress';
 
 /** @public
@@ -19,6 +22,18 @@ import { AddressParts } from '../../../../../models/base/forms/InputAddress';
 export const School = () => {
     /** @desc Get context properties for handling signing up progress */
     const { values, progress, properties, onAddValue, onProgressBack, onProgressNext } = useSignUpContext();
+
+    /** @desc Returns the translation function for reading from the locales files
+     *  @type {function} t */
+    const { t } = useTranslation();
+
+    /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
+    useEffect(() => {
+        if (!values.schoolKey) {
+            /** @desc Set valid school key which will be used for signing in */
+            _setValidKey();
+        }
+    });
 
     /** @private
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
@@ -70,6 +85,17 @@ export const School = () => {
         onAddValue("longitude", iLongitude);
     }
 
+    /** @private */
+    const _setValidKey = () => {
+        /** @desc Check key validity */
+        isValidKey({
+            key: Math.floor(1000 + Math.random() * 9000)
+        }).then(({ data }) => {
+            if (data.success) values.schoolKey = data.key;
+            else _setValidKey();
+        }).catch((oErr) => console.log(oErr));
+    }
+
     /** @private
      *  @returns {boolean} */
     const _isPatternMatching = () => values.schoolPatternMatches.schoolName
@@ -79,8 +105,8 @@ export const School = () => {
 
     return (
         <fieldset className={progress.find(({ id }) => id === "school").isActive ? "active" : String()}>
-            <h1>Verwalte deine Schule</h1>
-            <p>Über die Informationen können Sie als Schule für mögliche <strong>Partnerprojekte</strong> in studious gefunden werden. Die Informationen dienen ebenfalls als <strong>Korrespondenz</strong> zwischen der Schule und studious</p>
+            <h1>{t('Container.Content.SignUp.School.title')}</h1>
+            <p>{<Trans i18nKey="Container.Content.SignUp.School.description" />}</p>
             {properties["school"].map((oInput) => {
                 return oInput.isAddress ? (
                     <FormInputAddress
@@ -91,14 +117,17 @@ export const School = () => {
                 ) : (
                     <FormInput
                         {...oInput}
+                        value={values[oInput.name]}
                         pattern={RegexExp(oInput.name)}
                         fnChange={_onChange}/>
                 )
             })}
             <NavButtons
-                isNextDisabled={_isPatternMatching()}
+                showPrev={true}
                 callbackPrev={_onClickStep3}
-                callbackNext={_onClickStep5} />
+                showNext={true}
+                callbackNext={_onClickStep5}
+                isNextDisabled={_isPatternMatching()}/>
         </fieldset>
     )
 };

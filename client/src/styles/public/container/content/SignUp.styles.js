@@ -9,7 +9,7 @@ export const StyledSignUp = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   margin: 8px;
-  
+
   & h1 {
     font-size: 1.25rem;
     font-weight: 700;
@@ -17,14 +17,14 @@ export const StyledSignUp = styled.div`
     text-align: center;
     color: var(--title-color);
   }
-  
+
   & p {
     font-size: 0.8rem;
     font-weight: 400;
     text-align: center;
     color: var(--description-color);
   }
-  
+
   & .made-in-switzerland {
     font-weight: 600;
     margin: 16px 0 8px 0 !important;
@@ -38,7 +38,7 @@ export const StyledSignUp = styled.div`
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      margin-top: 32px;
+      margin: 32px 0;
 
       & p {
         margin: 32px 0;
@@ -49,7 +49,7 @@ export const StyledSignUp = styled.div`
           text-decoration: none;
         }
       }
-      
+
       & ul {
         margin-bottom: 56px;
         overflow: hidden;
@@ -167,15 +167,15 @@ export const StyledSignUp = styled.div`
             max-width: 200px;
             transition: background-color 0.3s ease;
           }
-          
+
           & button.back:hover {
             background-color: #9b556a
           }
-          
+
           & button.next:hover {
             background-color: #559b79;
           }
-          
+
           & button.next-disabled:hover {
             background-color: #7f9b8d;
           }
@@ -185,6 +185,31 @@ export const StyledSignUp = styled.div`
       & fieldset.active {
         opacity: 1;
         display: block;
+      }
+
+      & .error {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--color-error);
+        text-align: center;
+        display: none;
+        margin: 1rem 0;
+        transition: display 0.5s ease-in;
+      }
+
+      & .error-none {
+        display: none;
+      }
+
+      & .error-block {
+        display: block;
+      }
+
+      & p {
+        font-size: 0.8rem;
+        font-weight: 400;
+        text-align: center;
+        color: var(--description-color);
       }
     }
   }
@@ -209,12 +234,12 @@ export const StyledSignUp = styled.div`
   screen and (max-width: 770px) {
     & form ul li {
       width: 65px !important;
-      
+
       & svg {
         width: 32px !important;
         height: 32px !important;
       }
-      
+
       & h4 {
         display: none;
       }
@@ -223,7 +248,7 @@ export const StyledSignUp = styled.div`
         display: none;
       }
     }
-    
+
     & form fieldset {
       width: 350px !important;
     }
@@ -234,6 +259,6 @@ export const StyledSignUp = styled.div`
   and (max-device-width: 667px) {
     & form ul {
       margin-bottom: 32px;
-    }
+    } 
   }
 `

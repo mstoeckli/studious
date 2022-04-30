@@ -3,5 +3,6 @@
   "unauthorized" : "Sie besitzen keine Berechtigung für diese Aktion",
   "invalidPassword" : "Fehlerhaftes Passwort",
   "emailNotFound" : "Die angegebene Email-Adresse konnte im System nicht eruiert werden",
-  "mongooseFailure" : "Ein unbekannter Verbindungsfehler ist aufgetreten. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut"
+  "mongooseFailure" : "Ein unbekannter Verbindungsfehler ist aufgetreten. Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut",
+  "userInSchoolNotFound": "Keine Konto-Informationen zu Benutzer mit Schul-Identifikation vorhanden"
 }
