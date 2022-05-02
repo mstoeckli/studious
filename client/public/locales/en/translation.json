@@ -5,6 +5,20 @@
     "entries": "Einträge",
     "Search": {
       "placeholder": "Suchen"
+    },
+    "Table": {
+      "counter": "Einträge",
+      "QuickOptions": {
+        "Group": {
+          "title": "Gruppieren"
+        },
+        "Sorter": {
+          "title": "Sortieren"
+        },
+        "New": {
+          "title": "Neuste"
+        }
+      }
     }
   },
   "Container": {

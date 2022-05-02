@@ -55,7 +55,6 @@ export const Header = ({ onClick }) => {
     /** @private
      *  @param {string} sURIKey */
     const _getAppropriateFn = async (sURIKey) => ({
-        "signin": () => {},
         "signup": await _onSignOut()
     })[sURIKey]
 

@@ -20,10 +20,10 @@ import * as FaDuotoneIcons from "@fortawesome/pro-duotone-svg-icons";
  *  @constructor
  *  @returns {JSX.Element} SignIn */
 export const SignIn = () => {
-    /** @desc Get signin provider context */
+    /** @desc Get sign in provider context */
     const { values, progress } = useSignInContext();
 
-    /** @desc Get signin function for signing in a user */
+    /** @desc Get sign in function for signing in a user */
     const { onSignIn } = useAuth();
 
     /** @desc Returns a stateful value, and a function to update it.
@@ -83,7 +83,7 @@ export const SignIn = () => {
             <FontAwesomeIcon
                 className={progress.find(({ id }) => id === oProgress.id).isCompleted ? "completed" : progress.find(({ id }) => id === oProgress.id).isActive ? "active" : String()}
                 icon={FaDuotoneIcons[oProgress.icon]} />
-            <h4>{oProgress.title}</h4>
+            <h4>{oProgress.title && oProgress.id === "school" ? values.schoolKey ? values.schoolKey : oProgress.title : oProgress.title}</h4>
         </li>
     );
 

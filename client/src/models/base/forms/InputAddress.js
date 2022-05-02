@@ -1,1 +1,1 @@
-export const AddressParts = ["route", "street_number", "postal_code", "locality", "country"];
+export const AddressParts = [ "route", "street_number", "postal_code", "locality", "country" ];
