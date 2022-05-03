@@ -13,6 +13,7 @@ export const StyledCardInfo = styled.div`
   justify-content: flex-start;
   padding-left: 1rem;
   cursor: default;
+  min-width: 125px;
   
   & svg {
     color: #fff;

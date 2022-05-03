@@ -1,11 +1,11 @@
 export const QuickOptions = {
     "Base": [{
-        id: "group",
+        id: "grouping",
         title: "Base.Table.QuickOptions.Group.title",
         icon: "faLayerGroup",
         jsxElement: "group"
     }, {
-        id: "sorter",
+        id: "sorting",
         title: "Base.Table.QuickOptions.Sorter.title",
         icon: "faSort",
         jsxElement: "sorter"

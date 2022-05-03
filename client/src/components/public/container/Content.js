@@ -10,6 +10,7 @@ import { Home } from './content/Home';
 import { SignIn } from "./content/SignIn";
 import { SignUp } from "./content/SignUp";
 import { Schools } from "./content/Schools";
+import { News } from "./content/News";
 
 import { useContentContext } from '../../../context/ContentProvider';
 import { SignUpProvider } from '../../../context/SignUpProvider';
@@ -58,6 +59,7 @@ export const Content = ({ contentKey, iSidebarWidthPx }) => {
                     </SignUpProvider>
                 } />
                 <Route path="/schools" element={<Schools />} />
+                <Route path="/news" element={<News />} />
             </Routes>
         </StyledContent>
     )

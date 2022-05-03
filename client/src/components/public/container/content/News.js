@@ -4,17 +4,17 @@ import { Table } from '../../../base/Table'
 
 /** @public
  *  @constructor
- *  @returns {JSX.Element} Schools */
-export const Schools = () => {
+ *  @returns {JSX.Element} News */
+export const News = () => {
     return (
         <Table
-            title="Schulen"
+            title="News"
             sorting={true}
-            searchable={true}
+            searchable={false}
             grouping={true}
             groupColumn="school"
             multiSelect={true}
             showNumberLine={true}
-            showContent={true} />
+            showContent={false} />
     )
 }
