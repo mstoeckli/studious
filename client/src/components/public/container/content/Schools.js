@@ -15,6 +15,6 @@ export const Schools = () => {
             groupColumn="school"
             multiSelect={true}
             showNumberLine={true}
-            showContent={true} />
+            showContent={false} />
     )
 }

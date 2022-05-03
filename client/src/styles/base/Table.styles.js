@@ -62,24 +62,34 @@ export const StyledTable = styled.div`
         & table {
           text-align: left;
           vertical-align: middle;
-          border-collapse: separate;
-          border-spacing: 8px;
+          border-collapse: collapse;
+          width:100%;
 
+          & th.align-center,
+          & td.align-center {
+            text-align: center;
+          }
+          
           & th, & td {
             padding: 8px;
             white-space: nowrap;
+          }
+
+          & th:first-child,
+          & td:first-child {
+            padding-left: 14px;
           }
           
           & thead {
             & tr {
               white-space: nowrap;
+              border-bottom: 1px solid lightgray;
               
               & th {
                 font-weight: 700;
                 font-size: 0.65rem;
                 color: #787878;
                 text-transform: uppercase;
-                border-bottom: 1px solid lightgray;
                 
                 & span {
                   padding-right: 0.25rem;
@@ -88,6 +98,13 @@ export const StyledTable = styled.div`
                 & svg {
                   cursor: pointer;
                 }
+              }
+              
+              & th.show-line-number,
+              & th.multi-select-checkbox,
+              & th.show-content-icon {
+                width: 40px;
+                min-width: 40px;
               }
             }
           }
@@ -98,10 +115,22 @@ export const StyledTable = styled.div`
                 font-size: 0.7rem;
                 font-weight: 500;
                 color: var(--description-color);
+                padding-top: 14px;
                 
                 & div {
-                  border-bottom: 1px solid lightgray;
+                  padding: 4px
                 }
+              }
+              
+              & td.show-line-number {
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: var(--title-color);
+              }
+              
+              & td.show-content-icon {
+                font-size: 0.85rem;
+                color: var(--title-color);
               }
             }
           }

@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next';
 
 import { StyledTable } from '../../styles/base/Table.styles';
 
-import { TableHeader } from "./table/Header";
+import { TableHeader } from './table/Header';
+import { Identifier } from './table/template/Identifier';
+import { Number } from './table/template/Number';
 
 import { Dropdown } from './dropdown/Dropdown';
 
@@ -12,8 +14,8 @@ import { PaginationBase } from './Pagination';
 import { FormCheckbox } from './forms/Checkbox';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
 import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
-
 
 /** @public
  *  @constructor
@@ -39,7 +41,6 @@ export const Table = (oProperties) => {
      *  @type {[_indexLast:number, _setIndexLast:function]} */
     const [ _indexFirst, _setIndexFirst ] = useState(0);
     const [ _indexLast, _setIndexLast ] = useState(0);
-
 
     /** @desc Initialize reference object for setting object pagination */
     const paginationRefreshRef = useRef(null);
@@ -98,11 +99,12 @@ export const Table = (oProperties) => {
     const _addColumns = (oProperties) => {
         return (
             <tr>
-                {oProperties?.showLineNumber && <th style={{ width: "45px" }} />}
-                {oProperties?.multiSelect && <th style={{ width: "35px" }}>
+                {oProperties?.showLineNumber && <th className="show-line-number"/>}
+                {oProperties?.multiSelect && <th className="align-center multi-select-checkbox">
                     <FormCheckbox />
                 </th>}
-                <th style={{ width: "auto" }}>
+                <th className="show-content-icon"/>
+                <th>
                     <span>Schule</span>
                     <FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />
                 </th>
@@ -126,9 +128,20 @@ export const Table = (oProperties) => {
     const _addRow = (oProperties) => {
         return (
             <tr>
-                {oProperties?.showLineNumber && <td style={{ textAlign: "center", fontWeight: "700" }}>1</td>}
-                {oProperties?.multiSelect && <td><FormCheckbox /></td>}
-                <td>Grundschule Fislisbach</td>
+                {oProperties?.showLineNumber && <td className="align-center show-line-number">
+                    <Number numberValue="2"/>
+                </td>}
+                {oProperties?.multiSelect && <td className="align-center">
+                    <FormCheckbox />
+                </td>}
+                <td className="show-content-icon align-center">
+                    <FontAwesomeIcon icon={FaSolidIcons["faChevronDown"]} />
+                </td>
+                <td>
+                    <Identifier
+                        title="Grundschule 123"
+                        description="Fislisbach" />
+                </td>
                 <td>asdf</td>
                 <td>Dorfstrasse 21, 5442 Fislisbach, Aargau Baden, Schweiz</td>
             </tr>
@@ -139,11 +152,10 @@ export const Table = (oProperties) => {
         return (
             <tr>
                 <td colSpan="5">
-                    <div id="my_box">
+                    <div>
                         <p>I'm text in a div inside a td tag.</p>
                     </div>
                 </td>
-
             </tr>
         )
     };

@@ -4,19 +4,18 @@ import styled from 'styled-components';
 export const StyledCheckbox = styled.input`
   position: relative;
   cursor: pointer;
-  width: 0;
 
   &:before, &:checked:before {
     display: block;
     position: absolute;
     top: 0;
     left: 0;
-    width: 15px;
-    height: 15px;
-    border-radius: 5px;
-    border: 1px solid #e9e9e9;
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--color-input-border);
     background-color: #fff;
     content: "";
+    margin-left: -0.125rem;
   }
 
   //&:checked:after {
@@ -35,13 +34,11 @@ export const StyledCheckbox = styled.input`
   &:checked:after {
     content: "";
     display: block;
-    width: 11px;
-    height: 11px;
-    border-radius: 3px;
-    background: var(--color-nav-menu-hover);
-    border-width: 0 2px 2px 0;
+    width: 10px;
+    height: 10px;
+    background: var(--title-color);
     position: absolute;
-    top: 0.175rem;
-    left: 0.175rem;
+    top: 3px;
+    left: 1px;
   }
 `
