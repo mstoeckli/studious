@@ -10,8 +10,7 @@ export const StyledCardInfo = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
-  padding-left: 1rem;
+  justify-content: center;
   cursor: default;
   min-width: 125px;
   
@@ -31,5 +30,22 @@ export const StyledCardInfo = styled.div`
     color: #fff;
     font-size: 1.25rem;
     font-weight: 600;
+  }
+
+  // iPhone SE
+  @media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 667px) {
+    height: 25px;
+    width: 80px;
+    min-width: 80px;
+    
+    & h4 {
+      display: none;
+    }
+    
+    & svg, & span {
+      font-size: 1rem;
+    }
   }
 `

@@ -6,9 +6,6 @@ export const StyledTable = styled.div`
   padding: 1.25rem 1.25rem 0 1.25rem;
   
   & .container {
-    overflow-x: auto;
-    overflow-y: auto;
-    
     & section {
       display: flex;
       flex-direction: column;
@@ -56,15 +53,17 @@ export const StyledTable = styled.div`
       }
       
       & article {
-        height: auto;
-        margin: 0 0 0.25rem 0;
+        height: 100%;
+        margin: 0.25rem;
+        overflow-x: auto;
+        overflow-y: auto;
         
         & table {
           text-align: left;
           vertical-align: middle;
           border-collapse: collapse;
           width:100%;
-
+          
           & th.align-center,
           & td.align-center {
             text-align: center;
@@ -72,9 +71,17 @@ export const StyledTable = styled.div`
           
           & th, & td {
             padding: 8px;
+            width: 1%;
             white-space: nowrap;
-          }
 
+            &:nth-child(1) {
+              position: sticky;
+              left: 0;
+              z-index: 1;
+              background-color: #fff;
+            }
+          }
+          
           & th:first-child,
           & td:first-child {
             padding-left: 14px;
@@ -86,6 +93,10 @@ export const StyledTable = styled.div`
               border-bottom: 1px solid lightgray;
               
               & th {
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                background-color: #fff;
                 font-weight: 700;
                 font-size: 0.65rem;
                 color: #787878;
@@ -97,6 +108,11 @@ export const StyledTable = styled.div`
                 
                 & svg {
                   cursor: pointer;
+                }
+
+                &:nth-child(1) {
+                  z-index: 2;
+                  background-color: #fff;
                 }
               }
               
@@ -111,11 +127,12 @@ export const StyledTable = styled.div`
 
           & tbody {
             & tr {
+              border-bottom: 1px solid #f9f9f9;
+              
               & td {
                 font-size: 0.7rem;
                 font-weight: 500;
                 color: var(--description-color);
-                padding-top: 14px;
                 
                 & div {
                   padding: 4px
@@ -135,20 +152,20 @@ export const StyledTable = styled.div`
             }
           }
         }
+
+        ::-webkit-scrollbar {
+          width: var(--webkit-scrollbar-width);
+          height: var(--webkit-scrollbar-width);
+          border-radius: var(--webkit-scrollbar-border-radius);
+          background: var(--webkit-scrollbar-background);
+        }
+
+        ::-webkit-scrollbar-thumb {
+          height: var(--webkit-scrollbar-thumb-height);
+          border-radius: var(--webkit-scrollbar-thumb-border-radius);
+          background-color: var(--webkit-scrollbar-thumb-background-color);
+        }
       }
-    }
-    
-    ::-webkit-scrollbar {
-      width: var(--webkit-scrollbar-width);
-      height: var(--webkit-scrollbar-width);
-      border-radius: var(--webkit-scrollbar-border-radius);
-      background: var(--webkit-scrollbar-background);
-    }
-    
-    ::-webkit-scrollbar-thumb {
-      height: var(--webkit-scrollbar-thumb-height);
-      border-radius: var(--webkit-scrollbar-thumb-border-radius);
-      background-color: var(--webkit-scrollbar-thumb-background-color);
     }
   }
 `

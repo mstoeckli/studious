@@ -16,6 +16,7 @@ export const StyledCheckbox = styled.input`
     background-color: #fff;
     content: "";
     margin-left: -0.125rem;
+    border-radius: 3px;
   }
 
   //&:checked:after {

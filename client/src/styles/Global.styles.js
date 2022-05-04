@@ -48,7 +48,6 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     font-family: "Montserrat", Helvetica, Arial, sans-serif;
-    cursor: default;
   }
 
   html, body, #root, #app {

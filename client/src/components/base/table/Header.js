@@ -14,13 +14,13 @@ import { QuickOptions } from '../../../models/base/table/QuickOptions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
 
-
 /** @public
  *  @constructor
  *  @param   {object} oProperties
  *  @param   {string} oProperties.title
  *  @param   {boolean=} oProperties.sorting
  *  @param   {boolean=} oProperties.searchable
+ *  @param   {boolean=} oProperties.favorite
  *  @param   {boolean=} oProperties.grouping
  *  @returns {JSX.Element} TableHeader */
 export const TableHeader = (oProperties) => {
@@ -58,14 +58,15 @@ export const TableHeader = (oProperties) => {
      *  @param   {boolean=} bGrouping
      *  @param   {boolean=} bSorting
      *  @returns {JSX.Element} */
-    const _addQuickOptions = (oQuickOptions, bGrouping = false, bSorting = true) => {
+    const _addQuickOptions = (oQuickOptions, bGrouping = false, bSorting = true, bFavorite = false) => {
         const _fnActiveBasisQuickOptions = (sId) => ({
             "grouping": bGrouping,
-            "sorting": bSorting
+            "sorting": bSorting,
+            "favorite": bFavorite
         })[sId];
 
         /** @desc Check if grouping or sorting is active */
-        if (oQuickOptions.id === "grouping" || oQuickOptions.id === "sorting") {
+        if (oQuickOptions.id === "grouping" || oQuickOptions.id === "sorting" || oQuickOptions.id === "favorite") {
             if (!_fnActiveBasisQuickOptions(oQuickOptions.id)) {
                 return ( <></> );
             }
@@ -113,22 +114,16 @@ export const TableHeader = (oProperties) => {
             {oProperties?.title && _addInfoContent(oProperties.title)}
             <header>
                 {oProperties.searchable && <Search />}
-                {QuickOptions["Base"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.grouping, oProperties.sorting))}
+                {QuickOptions["Base"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.grouping, oProperties.sorting, oProperties.favorite))}
             </header>
             <article className="option-wrapper">
                 {[{ icon: "faMapPin", value: "Fislisbach" }, { icon: "faGraduationCap", value: "Grundschule Fislisbach" }].map((oFilterValue) => _addFilterValue(oFilterValue))}
             </article>
             <article className="card-info">
                 <CardInfo
-                    icon="faEarthEurope"
-                    title="Länder"
-                    info="2"
-                    backgroundColor="#98c9d1"
-                    borderColor="#53b1c1" />
-                <CardInfo
                     icon="faGraduationCap"
                     title="Schulen"
-                    info="23"
+                    info="123"
                     backgroundColor="#98d1bf"
                     borderColor="#61cfac" />
                 <CardInfo

@@ -1,13 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useResizeHandler } from '../../hooks/ResizeHandler';
 
 import { StyledTable } from '../../styles/base/Table.styles';
 
 import { TableHeader } from './table/Header';
-import { Identifier } from './table/template/Identifier';
 import { Number } from './table/template/Number';
-import { Status } from './table/template/Status';
-import { Email } from './table/template/Email';
 
 import { Dropdown } from './dropdown/Dropdown';
 
@@ -26,11 +24,16 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @param   {string=} oProperties.title
  *  @param   {boolean=} oProperties.sorting
  *  @param   {boolean=} oProperties.searchable
+ *  @param   {boolean=} oProperties.favorite
  *  @param   {boolean=} oProperties.grouping
  *  @param   {string=} oProperties.groupColumn
  *  @param   {boolean=} oProperties.multiSelect
+ *  @param   {number=} oProperties.linesPerPage
+ *  @param   {string=} oProperties.paginationAlignment -> left/center/right
  *  @param   {boolean=} oProperties.showNumberLine
  *  @param   {boolean=} oProperties.showContent
+ *  @param   {{title:string, filterable: boolean, fixed: boolean, align: string}} oProperties.columns
+ *  @param   {{jsx:JSX.Element, align: string}} oProperties.rows
  *  @returns {JSX.Element} Table */
 export const Table = (oProperties) => {
     /** @desc Returns the translation function for reading from the locales files
@@ -44,149 +47,138 @@ export const Table = (oProperties) => {
     const [ _indexFirst, _setIndexFirst ] = useState(0);
     const [ _indexLast, _setIndexLast ] = useState(0);
 
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Update table height for displaying content and enable the correct scrolling inside
+     *  @type {[sectionHeaderHeight:number, setSectionHeaderHeight:function]} */
+    const [ tableHeaderHeight, setTableHeaderHeight ] = useState(0);
+
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Update content while fetching data from backend system
+     *  @type {[waitFetchContent:JSX.Element, setWaitFetchContent:function]} */
+    const [ waitFetchContent, setWaitFetchContent ] = useState(<div />)
+
     /** @desc Initialize reference object for setting object pagination */
     const paginationRefreshRef = useRef(null);
 
+    /** @desc Initialize reference object for updating the style "height" for displaying table content correctly */
+    const tableHeaderRef = useRef(null);
+
     /** @desc Entries per page */
-    const iPerPage = 15;
+    const iPerPage = oProperties?.linesPerPage ? oProperties.linesPerPage : 20;
+
+    /** @desc Cumulate fixed default columns */
+    let bFixedFalse = false;
+    let iFixedColumns = 0;
+    ["showLineNumber", "showContent", "multiSelect"].forEach((sKey) => {
+        if (oProperties[sKey]) {
+            iFixedColumns++;
+        }
+    });
+
+    /** @desc Defines the resize hook for changing the height of the table */
+    useResizeHandler(tableHeaderRef, (oResizeObj) => setTableHeaderHeight((tableHeaderHeight) => oResizeObj.target.firstChild.offsetHeight + (oProperties.rows.length < iPerPage ? 40 : 70)));
 
     const _addContainer = (oProperties) => {
-        return (
-            <section>
-                {oProperties?.grouping && oProperties?.groupColumn && _addTableGroupHeader(oProperties)}
-                {_addTableContent(oProperties)}
-            </section>
-        );
-    };
-
-    const _addTableGroupHeader = (oProperties) => {
-        return (
-            <header className="expanded">
-                <div>
-                    <FontAwesomeIcon icon={FaDuotoneIcons["faSquareChevronDown"]} />
-                    <span>Schweiz</span>
+        return oProperties?.grouping && oProperties?.groupColumn
+            ? (
+                <div style={{ height: "100%", overflow: "auto" }}>
+                    <section>
+                        {_addTableGroupHeader(oProperties)}
+                        {_addTableContent(oProperties)}
+                    </section>
+                    <section>
+                        {_addTableGroupHeader(oProperties)}
+                        {_addTableContent(oProperties)}
+                    </section>
                 </div>
-                <FontAwesomeIcon icon={FaDuotoneIcons["faEllipsisVertical"]} />
-            </header>
-        );
+            ) : (
+                <section style={{ height: "100%" }}>
+                    {_addTableContent(oProperties)}
+                </section>
+            );
     };
 
-    const _addTableContent = (oProperties) => {
-        return (
-            <article>
-                <table>
-                    <thead>
-                    {_addColumns({
-                        showLineNumber: oProperties.showNumberLine,
-                        multiSelect: oProperties.multiSelect
-                    })}
-                    </thead>
-                    <tbody>
-                        {_addRow({
-                            showLineNumber: oProperties.showNumberLine,
-                            multiSelect: oProperties.multiSelect
-                        })}
-                        {oProperties?.showContent && _addRowContent()}
-                    </tbody>
-                </table>
-            </article>
-        );
-    };
+    const _addTableGroupHeader = (oProperties) => (
+        <header className="expanded">
+            <div>
+                <FontAwesomeIcon icon={FaDuotoneIcons["faSquareChevronDown"]} />
+                <span>Schweiz</span>
+            </div>
+            <FontAwesomeIcon icon={FaDuotoneIcons["faEllipsisVertical"]} />
+        </header>
+    );
 
-    /** @private
-     *  @param   {object} oProperties
-     *  @param   {boolean=} oProperties.showLineNumber
-     *  @param   {boolean=} oProperties.showContent
-     *  @param   {boolean=} oProperties.multiSelect
-     *  @returns {JSX.Element} */
-    const _addColumns = (oProperties) => {
-        return (
-            <tr>
-                {oProperties?.showLineNumber && <th className="show-line-number"/>}
-                {oProperties?.multiSelect && <th className="align-center multi-select-checkbox">
-                    <FormCheckbox />
-                </th>}
-                {oProperties.showContent && <th className="show-content-icon"/>}
-                <th>
-                    <span>Schule</span>
-                    <FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />
-                </th>
-                <th>
-                    <span>Administrator</span>
-                    <FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />
-                </th>
-                <th>
-                    <span>Beitrittsdatum</span>
-                    <FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />
-                </th>
-                <th className="align-center">
-                    <span>Klassen-Lehrer</span>
-                    {/*<FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />*/}
-                </th>
-                <th className="align-center">
-                    <span>Fach-Lehrer</span>
-                    {/*<FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />*/}
-                </th>
-                <th className="align-center">
-                    <span>Schüler</span>
-                    {/*<FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />*/}
-                </th>
-                <th>
-                    <span>Abonnement</span>
-                    <FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />
-                </th>
-            </tr>
-        )
-    };
+    const _addTableContent = (oProperties) => (
+        <article>
+            <table>
+                <thead>
+                    {_addColumns(oProperties)}
+                </thead>
+                <tbody>
+                    {oProperties.rows.length > 0
+                        ? oProperties.rows.slice(_indexFirst, _indexLast).map((aRow, iIdx) => (
+                            <>
+                                {_addRow(oProperties.showLineNumber, oProperties.showContent, oProperties.multiSelect, iIdx + 1, aRow)}
+                                {oProperties?.showContent && _addRowContent()}
+                            </>
+                        )) : waitFetchContent
+                    }
+                </tbody>
+            </table>
+        </article>
+    );
 
     /** @private
      *  @param   {object} oProperties
      *  @param   {boolean=} oProperties.showLineNumber
      *  @param   {boolean=} oProperties.showContent
      *  @param   {boolean=} oProperties.multiSelect
+     *  @param   {{}} oProperties.columns
      *  @returns {JSX.Element} */
-    const _addRow = (oProperties) => {
-        return (
-            <tr>
-                {oProperties?.showLineNumber && <td className="align-center show-line-number">
-                    <Number numberValue="2"/>
-                </td>}
-                {oProperties?.multiSelect && <td className="align-center">
-                    <FormCheckbox />
-                </td>}
-                {oProperties.showContent && <td className="show-content-icon align-center">
-                    <FontAwesomeIcon icon={FaSolidIcons["faChevronDown"]} />
-                </td>}
-                <td>
-                    <Identifier
-                        title="Grundschule Fislisbach"
-                        description="Feldstrasse 31g, 5442 Fislisbach, Switzerland" />
-                </td>
-                <td>
-                    <Email address="hanspeter.mueller@schule.ch" />
-                </td>
-                <td>
-                    31.12.2021
-                </td>
-                <td className="align-center">
-                    <Number numberValue="10"/>
-                </td>
-                <td className="align-center">
-                    <Number numberValue="6"/>
-                </td>
-                <td className="align-center">
-                    <Number numberValue="67"/>
-                </td>
-                <td>
-                    <Status
-                        title="Free"
-                        icon="faSackDollar"
-                        borderColor="#d3366e"
-                        backgroundColor="#d885a3" />
-                </td>
-            </tr>
-        )
-    };
+    const _addColumns = (oProperties) => (
+        <tr>
+            {oProperties?.showLineNumber && <th className="show-line-number"/>}
+            {oProperties?.showContent && <th className="show-content-icon"/>}
+            {oProperties?.multiSelect && <th className="align-center multi-select-checkbox"><FormCheckbox /></th>}
+            {oProperties.columns.map((oColumn) => {
+                /** @desc Cumulate fixed columns until first which is not fixed. It is actually not possible to
+                 *        fix columns in the middle or the end of a table */
+                if (oColumn.fixed && !bFixedFalse) iFixedColumns++;
+                else bFixedFalse = true
+
+                return (
+                    <th className={oColumn?.align ? `align-${oColumn.align}` : String()}>
+                        <span>{oColumn.title}</span>
+                        {oColumn.filterable && <FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />}
+                    </th>
+                )
+            })}
+        </tr>
+    );
+
+    /** @private
+     *  @param   {boolean} bShowLineNumber
+     *  @param   {boolean} bShowContent
+     *  @param   {boolean} bMultiSelect
+     *  @param   {number} iIdx
+     *  @param   {[]} aRow
+     *  @returns {JSX.Element} */
+    const _addRow = (bShowLineNumber, bShowContent, bMultiSelect, iIdx, aRow) => (
+        <tr>
+            {bShowLineNumber && <td className="align-center show-line-number">
+                <Number numberValue={iIdx} />
+            </td>}
+            {bShowContent && <td className="show-content-icon align-center">
+                <FontAwesomeIcon icon={FaSolidIcons["faChevronDown"]} />
+            </td>}
+            {bMultiSelect && <td className="align-center">
+                <FormCheckbox />
+            </td>}
+            {aRow.map((oRow) => (
+                <td className={oRow?.align ? `align-${oRow.align}` : String()}>{oRow.jsx}</td>
+            ))}
+        </tr>
+    );
 
     const _addRowContent = () => {
         return (
@@ -213,10 +205,11 @@ export const Table = (oProperties) => {
 
     /** @private
      *  @returns {JSX.Element} */
-    const _addPagination = () => (
+    const _addPagination = (aRows, sJustifyContent = "center") => (
         <PaginationBase
             ref={paginationRefreshRef}
-            customStyle={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+            data={aRows}
+            customStyle={{ display: "flex", justifyContent: sJustifyContent, alignItems: "center" }}
             perPage={iPerPage}
             onIndexCalculated={(iIndexLast, iIndexFirst) => {
                 _setIndexFirst((_indexFirst) => iIndexFirst);
@@ -225,16 +218,19 @@ export const Table = (oProperties) => {
     );
 
     return (
-        <StyledTable>
+        <StyledTable ref={tableHeaderRef}>
             <TableHeader
                 title={oProperties.title}
                 sorting={oProperties?.sorting}
-                searchable={oProperties.searchable}
+                searchable={oProperties?.searchable}
+                favorite={oProperties?.favorite}
                 grouping={oProperties?.grouping} />
-            <div className="container">
+            <div
+                style={{ height: `calc(100% - ${tableHeaderHeight}px)` }}
+                className="container">
                 {_addContainer(oProperties)}
             </div>
-            {_addPagination()}
+            {_addPagination(oProperties.rows, oProperties.paginationAlignment)}
         </StyledTable>
     )
 }

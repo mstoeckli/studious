@@ -17,6 +17,9 @@
         },
         "New": {
           "title": "Neuste"
+        },
+        "Favorite": {
+          "title": "Favoriten"
         }
       }
     }

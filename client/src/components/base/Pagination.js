@@ -51,7 +51,7 @@ export const PaginationBase = forwardRef((oProperties, ref) => {
     return (
         <StyledPagination
             style={oProperties?.customStyle ? oProperties.customStyle : String()}>
-            <Pagination
+            {oProperties.data.length > oProperties.perPage && <Pagination
                 prevPageText={<FontAwesomeIcon icon={FaDuotoneIcons["faAngleLeft"]} />}
                 nextPageText={<FontAwesomeIcon icon={FaDuotoneIcons["faAngleRight"]} />}
                 firstPageText={<FontAwesomeIcon icon={FaDuotoneIcons["faAngleDoubleLeft"]} />}
@@ -64,7 +64,7 @@ export const PaginationBase = forwardRef((oProperties, ref) => {
                 onChange={(selectedPage) => setPagination((oPagination) => ({
                     ...oPagination,
                     page: selectedPage
-                }))}/>
+                }))}/>}
         </StyledPagination>
     )
 })
