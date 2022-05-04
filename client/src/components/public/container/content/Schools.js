@@ -11,10 +11,16 @@ export const Schools = () => {
             title="Schulen"
             sorting={true}
             searchable={true}
-            grouping={true}
+            grouping={false}
             groupColumn="school"
-            multiSelect={true}
+            multiSelect={false}
             showNumberLine={true}
-            showContent={false} />
-    )
+            showContent={false}
+            columns={{
+
+            }}
+            rows={{
+
+            }}/>
+    );
 }

@@ -6,6 +6,8 @@ import { StyledTable } from '../../styles/base/Table.styles';
 import { TableHeader } from './table/Header';
 import { Identifier } from './table/template/Identifier';
 import { Number } from './table/template/Number';
+import { Status } from './table/template/Status';
+import { Email } from './table/template/Email';
 
 import { Dropdown } from './dropdown/Dropdown';
 
@@ -94,6 +96,7 @@ export const Table = (oProperties) => {
     /** @private
      *  @param   {object} oProperties
      *  @param   {boolean=} oProperties.showLineNumber
+     *  @param   {boolean=} oProperties.showContent
      *  @param   {boolean=} oProperties.multiSelect
      *  @returns {JSX.Element} */
     const _addColumns = (oProperties) => {
@@ -103,17 +106,33 @@ export const Table = (oProperties) => {
                 {oProperties?.multiSelect && <th className="align-center multi-select-checkbox">
                     <FormCheckbox />
                 </th>}
-                <th className="show-content-icon"/>
+                {oProperties.showContent && <th className="show-content-icon"/>}
                 <th>
                     <span>Schule</span>
                     <FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />
                 </th>
                 <th>
-                    <span>Adresse</span>
+                    <span>Administrator</span>
                     <FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />
                 </th>
                 <th>
-                    <span>Administrator</span>
+                    <span>Beitrittsdatum</span>
+                    <FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />
+                </th>
+                <th className="align-center">
+                    <span>Klassen-Lehrer</span>
+                    {/*<FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />*/}
+                </th>
+                <th className="align-center">
+                    <span>Fach-Lehrer</span>
+                    {/*<FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />*/}
+                </th>
+                <th className="align-center">
+                    <span>Schüler</span>
+                    {/*<FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />*/}
+                </th>
+                <th>
+                    <span>Abonnement</span>
                     <FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />
                 </th>
             </tr>
@@ -123,6 +142,7 @@ export const Table = (oProperties) => {
     /** @private
      *  @param   {object} oProperties
      *  @param   {boolean=} oProperties.showLineNumber
+     *  @param   {boolean=} oProperties.showContent
      *  @param   {boolean=} oProperties.multiSelect
      *  @returns {JSX.Element} */
     const _addRow = (oProperties) => {
@@ -134,16 +154,36 @@ export const Table = (oProperties) => {
                 {oProperties?.multiSelect && <td className="align-center">
                     <FormCheckbox />
                 </td>}
-                <td className="show-content-icon align-center">
+                {oProperties.showContent && <td className="show-content-icon align-center">
                     <FontAwesomeIcon icon={FaSolidIcons["faChevronDown"]} />
-                </td>
+                </td>}
                 <td>
                     <Identifier
-                        title="Grundschule 123"
-                        description="Fislisbach" />
+                        title="Grundschule Fislisbach"
+                        description="Feldstrasse 31g, 5442 Fislisbach, Switzerland" />
                 </td>
-                <td>asdf</td>
-                <td>Dorfstrasse 21, 5442 Fislisbach, Aargau Baden, Schweiz</td>
+                <td>
+                    <Email address="hanspeter.mueller@schule.ch" />
+                </td>
+                <td>
+                    31.12.2021
+                </td>
+                <td className="align-center">
+                    <Number numberValue="10"/>
+                </td>
+                <td className="align-center">
+                    <Number numberValue="6"/>
+                </td>
+                <td className="align-center">
+                    <Number numberValue="67"/>
+                </td>
+                <td>
+                    <Status
+                        title="Free"
+                        icon="faSackDollar"
+                        borderColor="#d3366e"
+                        backgroundColor="#d885a3" />
+                </td>
             </tr>
         )
     };
