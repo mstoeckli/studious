@@ -16,6 +16,7 @@ export const StyledTable = styled.div`
       padding: 0 0 4px 0;
       margin-bottom: 0.5rem;
       margin-right: 0.25rem;
+      transition: all 0.3s ease-in-out;
       
       & header {
         display: flex;
@@ -57,6 +58,7 @@ export const StyledTable = styled.div`
         margin: 0.25rem;
         overflow-x: auto;
         overflow-y: auto;
+        transition: all 0.3s ease-in-out;
         
         & table {
           text-align: left;
@@ -165,6 +167,22 @@ export const StyledTable = styled.div`
           border-radius: var(--webkit-scrollbar-thumb-border-radius);
           background-color: var(--webkit-scrollbar-thumb-background-color);
         }
+      }
+    }
+    
+    & section.group-close {
+      padding: 0;
+      
+      & header {
+        background: #fff;
+        border-bottom: none;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+      }
+      
+      & article {
+        display: none;
+        margin: 0;
       }
     }
   }

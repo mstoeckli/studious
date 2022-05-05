@@ -1,27 +1,55 @@
-import React from 'react';
-
-import { Identifier } from "../../../base/table/template/Identifier";
-import { Number } from "../../../base/table/template/Number";
-import { Button } from "../../../base/table/template/Button";
-import { Email } from "../../../base/table/template/Email";
-import { Status } from "../../../base/table/template/Status";
+import React, { useEffect } from 'react';
 
 import { Table } from '../../../base/Table'
+import { Identifier } from '../../../base/table/template/Identifier';
+import { Number } from '../../../base/table/template/Number';
+import { Button } from '../../../base/table/template/Button';
+import { Email } from '../../../base/table/template/Email';
+import { Status } from '../../../base/table/template/Status';
 
 /** @public
  *  @constructor
  *  @returns {JSX.Element} Schools */
 export const Schools = () => {
+    /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
+    useEffect(() => _fetchProjects(), []);
+
+    /** @private */
+    const _fetchProjects = () => {
+        // /** @desc Add skeleton component for displaying the user something happens.. */
+        // setWaitFetchContent(_addSkeleton());
+
+        // /** @private
+        //  *  @desc    Call reducer function for fetching the projects
+        //  *  @returns {Promise<*>} */
+        // const _fetch = async () => await fnDispatch(await getProjects({
+        //     filter: _getFilter(),
+        //     sort: _getSorter()
+        // }));
+
+        // /** @param {object} oFetchedObj
+        //  *  @param {object} oFetchedObj.meta
+        //  *  @param {object} oFetchedObj.payload
+        //  *  @param {string} oFetchedObj.type */
+        // _fetch().then((oFetchedObj) => {
+        //     // /** @desc Call refresh function inside child component "Pagination.js" for updating data */
+        //     // if (paginationRefreshRef.current) paginationRefreshRef.current.refresh(oFetchedObj?.payload?.data ? oFetchedObj.payload.data : []);
+        //     //
+        //     // /** @desc Check if data was found, if not show component for no projects found */
+        //     // if (!oFetchedObj?.payload || oFetchedObj.payload.data.length <= 0) setWaitFetchContent(<ProjectsNotFound />);
+        // }).catch((oErr) => setWaitFetchContent(<ProjectsNotFound />));
+    };
+
     return (
         <Table
             title="Schulen"
             sorting={true}
             searchable={true}
             favorite={false}
-            grouping={false}
+            grouping={true}
             groupColumn="school"
             // multiSelect={true}
-            // linesPerPage={1}
+            linesPerPage={1}
             // paginationAlignment="right"
             showLineNumber={true}
             showContent={false}
@@ -143,366 +171,6 @@ export const Schools = () => {
                         icon="faSackDollar"
                         borderColor="#d3366e"
                         backgroundColor="#d885a3" />
-                }
-            ], [
-                {
-                    jsx: <Identifier
-                        icon="faMapPin"
-                        title="Grundschule Oberrohrdorf"
-                        description="Zur Gasse 4, 5443 Oberrohrdorf, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="3854"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />,
-                    align: "center"
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="7"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="2"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="33"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Paid"
-                        icon="faSackDollar"
-                        borderColor="#5296db"
-                        backgroundColor="#85aed8" />
-                }
-            ], [
-                {
-                    jsx: <Identifier
-                        icon="faMapPin"
-                        title="Grundschule Oberrohrdorf"
-                        description="Zur Gasse 4, 5443 Oberrohrdorf, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="3854"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />,
-                    align: "center"
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="7"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="2"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="33"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Paid"
-                        icon="faSackDollar"
-                        borderColor="#5296db"
-                        backgroundColor="#85aed8" />
-                }
-            ], [
-                {
-                    jsx: <Identifier
-                        icon="faMapPin"
-                        title="Grundschule Oberrohrdorf"
-                        description="Zur Gasse 4, 5443 Oberrohrdorf, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="3854"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />,
-                    align: "center"
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="7"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="2"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="33"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Paid"
-                        icon="faSackDollar"
-                        borderColor="#5296db"
-                        backgroundColor="#85aed8" />
-                }
-            ], [
-                {
-                    jsx: <Identifier
-                        icon="faMapPin"
-                        title="Grundschule Oberrohrdorf"
-                        description="Zur Gasse 4, 5443 Oberrohrdorf, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="3854"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />,
-                    align: "center"
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="7"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="2"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="33"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Paid"
-                        icon="faSackDollar"
-                        borderColor="#5296db"
-                        backgroundColor="#85aed8" />
-                }
-            ], [
-                {
-                    jsx: <Identifier
-                        icon="faMapPin"
-                        title="Grundschule Oberrohrdorf"
-                        description="Zur Gasse 4, 5443 Oberrohrdorf, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="3854"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />,
-                    align: "center"
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="7"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="2"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="33"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Paid"
-                        icon="faSackDollar"
-                        borderColor="#5296db"
-                        backgroundColor="#85aed8" />
-                }
-            ], [
-                {
-                    jsx: <Identifier
-                        icon="faMapPin"
-                        title="Grundschule Oberrohrdorf"
-                        description="Zur Gasse 4, 5443 Oberrohrdorf, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="3854"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />,
-                    align: "center"
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="7"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="2"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="33"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Paid"
-                        icon="faSackDollar"
-                        borderColor="#5296db"
-                        backgroundColor="#85aed8" />
-                }
-            ], [
-                {
-                    jsx: <Identifier
-                        icon="faMapPin"
-                        title="Grundschule Oberrohrdorf"
-                        description="Zur Gasse 4, 5443 Oberrohrdorf, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="3854"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />,
-                    align: "center"
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="7"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="2"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="33"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Paid"
-                        icon="faSackDollar"
-                        borderColor="#5296db"
-                        backgroundColor="#85aed8" />
-                }
-            ], [
-                {
-                    jsx: <Identifier
-                        icon="faMapPin"
-                        title="Grundschule Oberrohrdorf"
-                        description="Zur Gasse 4, 5443 Oberrohrdorf, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="3854"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />,
-                    align: "center"
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="7"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="2"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="33"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Paid"
-                        icon="faSackDollar"
-                        borderColor="#5296db"
-                        backgroundColor="#85aed8" />
-                }
-            ], [
-                {
-                    jsx: <Identifier
-                        icon="faMapPin"
-                        title="Grundschule Oberrohrdorf"
-                        description="Zur Gasse 4, 5443 Oberrohrdorf, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="3854"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />,
-                    align: "center"
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="7"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="2"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="33"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Paid"
-                        icon="faSackDollar"
-                        borderColor="#5296db"
-                        backgroundColor="#85aed8" />
                 }
             ], [
                 {

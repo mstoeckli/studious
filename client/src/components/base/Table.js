@@ -55,7 +55,7 @@ export const Table = (oProperties) => {
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Update content while fetching data from backend system
      *  @type {[waitFetchContent:JSX.Element, setWaitFetchContent:function]} */
-    const [ waitFetchContent, setWaitFetchContent ] = useState(<div />)
+    const [ waitFetchContent, setWaitFetchContent ] = useState(<div />);
 
     /** @desc Initialize reference object for setting object pagination */
     const paginationRefreshRef = useRef(null);
@@ -78,10 +78,20 @@ export const Table = (oProperties) => {
     /** @desc Defines the resize hook for changing the height of the table */
     useResizeHandler(tableHeaderRef, (oResizeObj) => setTableHeaderHeight((tableHeaderHeight) => oResizeObj.target.firstChild.offsetHeight + (oProperties.rows.length < iPerPage ? 40 : 70)));
 
+    /** @private
+     *  @param {Event} oEvt */
+    const _onGroupHeaderClick = (oEvt) => {
+        oEvt.target.parentElement.parentElement.parentElement.parentElement.parentElement.classList.toggle("group-close")
+    };
+
     const _addContainer = (oProperties) => {
         return oProperties?.grouping && oProperties?.groupColumn
             ? (
                 <div style={{ height: "100%", overflow: "auto" }}>
+                    <section>
+                        {_addTableGroupHeader(oProperties)}
+                        {_addTableContent(oProperties)}
+                    </section>
                     <section>
                         {_addTableGroupHeader(oProperties)}
                         {_addTableContent(oProperties)}
@@ -101,7 +111,9 @@ export const Table = (oProperties) => {
     const _addTableGroupHeader = (oProperties) => (
         <header className="expanded">
             <div>
-                <FontAwesomeIcon icon={FaDuotoneIcons["faSquareChevronDown"]} />
+                <FontAwesomeIcon
+                    icon={FaDuotoneIcons["faSquareChevronDown"]}
+                    onClick={_onGroupHeaderClick}/>
                 <span>Schweiz</span>
             </div>
             <FontAwesomeIcon icon={FaDuotoneIcons["faEllipsisVertical"]} />
@@ -230,7 +242,7 @@ export const Table = (oProperties) => {
                 className="container">
                 {_addContainer(oProperties)}
             </div>
-            {_addPagination(oProperties.rows, oProperties.paginationAlignment)}
+            {!oProperties?.grouping && _addPagination(oProperties.rows, oProperties.paginationAlignment)}
         </StyledTable>
     )
 }
