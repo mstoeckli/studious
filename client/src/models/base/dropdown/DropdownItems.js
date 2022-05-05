@@ -34,16 +34,19 @@ export const DropdownItems = {
         "isPublic": false,
         "isPrivate": true
     }],
-    "ProductCardConfig": [{
-        "icon": "faStar",
-        "iconColor": "#ffca28",
-        "title": "Container.Content.Projects.ProductDropdown.Favorite.title",
-        "isPublic": false,
+    "TableCellConfig": [{
+        "icon": "faArrowUp",
+        "title": "Base.Table.CellConfig.Ascending.title",
+        "isPublic": true,
         "isPrivate": true
-    }],
-    "ProjectsConfig": [{
-        "icon": "faList",
-        "title": "Container.Content.Projects.ProjectConfig.View.title",
+    }, {
+        "icon": "faArrowDown",
+        "title": "Base.Table.CellConfig.Descending.title",
+        "isPublic": true,
+        "isPrivate": true
+    }, {}, {
+        "icon": "faEyeSlash",
+        "title": "Base.Table.CellConfig.HideColumn.title",
         "isPublic": true,
         "isPrivate": true
     }]

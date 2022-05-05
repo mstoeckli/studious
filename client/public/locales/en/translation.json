@@ -8,12 +8,23 @@
     },
     "Table": {
       "counter": "Einträge",
+      "CellConfig": {
+        "Ascending": {
+          "title": "Aufsteigend"
+        },
+        "Descending": {
+          "title": "Aufsteigend"
+        },
+        "HideColumn": {
+          "title": "Spalte ausblenden"
+        }
+      },
       "QuickOptions": {
-        "Group": {
+        "Grouping": {
           "title": "Gruppieren"
         },
-        "Sorter": {
-          "title": "Sortieren"
+        "Filter": {
+          "title": "Filter"
         },
         "New": {
           "title": "Neuste"

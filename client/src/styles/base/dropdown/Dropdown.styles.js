@@ -5,6 +5,7 @@ export const StyledDropdown = styled.div`
   position: relative;
   
   & .active  {
+    display: block !important;
     opacity: 1 !important;
     transform: translateY(0);
   }
@@ -18,6 +19,7 @@ export const StyledDropdown = styled.div`
   }
   
   & .dropdown-menu-container {
+    display: none;
     position: absolute;
     top: calc(100% + 10px);
     border-radius: 5px;
@@ -34,6 +36,11 @@ export const StyledDropdown = styled.div`
     & ul {
       width: auto;
       height: auto;
+      
+      & li a,
+      & li span {
+        text-transform: none;
+      }
     }
   }
 

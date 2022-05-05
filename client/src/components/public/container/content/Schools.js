@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Table } from '../../../base/Table'
 import { Identifier } from '../../../base/table/template/Identifier';
@@ -11,6 +12,10 @@ import { Status } from '../../../base/table/template/Status';
  *  @constructor
  *  @returns {JSX.Element} Schools */
 export const Schools = () => {
+    /** @desc Returns global state value by redux toolkit
+     *  @type {array} oColumns */
+    const oColumns = useSelector((state) => state.tableColumns.value);
+
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
     useEffect(() => _fetchProjects(), []);
 
@@ -42,58 +47,17 @@ export const Schools = () => {
 
     return (
         <Table
-            title="Schulen"
-            sorting={true}
-            searchable={true}
             favorite={false}
-            grouping={true}
+            searchable={true}
+            filterable={true}
+            groupable={false}
             groupColumn="school"
             // multiSelect={true}
-            linesPerPage={1}
+            // linesPerPage={1}
             // paginationAlignment="right"
             showLineNumber={true}
-            showContent={false}
-            columns={[{
-                title: "Schule",
-                filterable: true,
-                fixed: true
-            }, {
-                title: "Schul-Identifikation",
-                filterable: true,
-                fixed: true
-            }, {
-                title: "Partner-Projekt(e)",
-                filterable: false,
-                fixed: false,
-                align: "center"
-            }, {
-                title: "Administrator",
-                filterable: true,
-                fixed: false
-            }, {
-                title: "Beitrittsdatum",
-                filterable: true,
-                fixed: false
-            }, {
-                title: "Klassen-Lehrer",
-                filterable: false,
-                fixed: false,
-                align: "center"
-            }, {
-                title: "Fach-Lehrer",
-                filterable: false,
-                fixed: false,
-                align: "center"
-            }, {
-                title: "Schüler",
-                filterable: false,
-                fixed: false,
-                align: "center"
-            }, {
-                title: "Abonnement",
-                filterable: true,
-                fixed: false
-            }]}
+            // showContent={true}
+            columns={oColumns["Schools"]}
             rows={[[{
                 jsx: <Identifier
                     icon="faMapPin"
@@ -107,8 +71,7 @@ export const Schools = () => {
                         icon="faDiagramSubtask"/>,
                     align: "center"
                 }, {
-                    jsx: <Email address="hanspeter.mueller@schule.ch" />,
-                    align: "center"
+                    jsx: <Email address="hanspeter.mueller@schule.ch" />
                 }, {
                     jsx: "31.12.2022"
                 }, {
@@ -146,8 +109,7 @@ export const Schools = () => {
                         icon="faDiagramSubtask"/>,
                     align: "center"
                 }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />,
-                    align: "center"
+                    jsx: <Email address="fritz.muster@schule.ch" />
                 }, {
                     jsx: "31.12.2022"
                 }, {
@@ -186,8 +148,7 @@ export const Schools = () => {
                         icon="faDiagramSubtask"/>,
                     align: "center"
                 }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />,
-                    align: "center"
+                    jsx: <Email address="fritz.muster@schule.ch" />
                 }, {
                     jsx: "31.12.2022"
                 }, {

@@ -2,11 +2,13 @@ import styled from 'styled-components';
 
 /**  @return {React.RefAttributes<HTMLLIElement>} StyledDropdownItem */
 export const StyledDropdownItem = styled.li`
-  height: 32px;
+  height: ${props => props.height || "32px"};
   display: flex;
   align-items: center;
-  border-radius: 5px;
-  padding: 4px 8px;
+  margin-bottom: ${props => props.marginBottom || "0"};
+  border-bottom: ${props => props.borderBottom || "none"};
+  border-radius: ${props => props.borderRadius || "5px"};
+  padding: ${props => props.padding || "4px 8px"};
   cursor: pointer;
   
   & svg {

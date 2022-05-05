@@ -18,10 +18,10 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @constructor
  *  @param   {object} oProperties
  *  @param   {string} oProperties.title
- *  @param   {boolean=} oProperties.sorting
  *  @param   {boolean=} oProperties.searchable
+ *  @param   {boolean=} oProperties.filterable
+ *  @param   {boolean=} oProperties.groupable
  *  @param   {boolean=} oProperties.favorite
- *  @param   {boolean=} oProperties.grouping
  *  @returns {JSX.Element} TableHeader */
 export const TableHeader = (oProperties) => {
     /** @desc Returns the translation function for reading from the locales files
@@ -55,18 +55,19 @@ export const TableHeader = (oProperties) => {
      *  @param   {string} oQuickOptions.icon
      *  @param   {string} oQuickOptions.iconColor
      *  @param   {string=} oQuickOptions.jsxElement
-     *  @param   {boolean=} bGrouping
-     *  @param   {boolean=} bSorting
+     *  @param   {boolean=} bGroupable
+     *  @param   {boolean=} bFilterable
+     *  @param   {boolean=} bFavorite
      *  @returns {JSX.Element} */
-    const _addQuickOptions = (oQuickOptions, bGrouping = false, bSorting = true, bFavorite = false) => {
+    const _addQuickOptions = (oQuickOptions, bGroupable = false, bFilterable = true, bFavorite = false) => {
         const _fnActiveBasisQuickOptions = (sId) => ({
-            "grouping": bGrouping,
-            "sorting": bSorting,
+            "groupable": bGroupable,
+            "filterable": bFilterable,
             "favorite": bFavorite
         })[sId];
 
         /** @desc Check if grouping or sorting is active */
-        if (oQuickOptions.id === "grouping" || oQuickOptions.id === "sorting" || oQuickOptions.id === "favorite") {
+        if (oQuickOptions.id === "groupable" || oQuickOptions.id === "filterable" || oQuickOptions.id === "favorite") {
             if (!_fnActiveBasisQuickOptions(oQuickOptions.id)) {
                 return ( <></> );
             }
@@ -114,7 +115,7 @@ export const TableHeader = (oProperties) => {
             {oProperties?.title && _addInfoContent(oProperties.title)}
             <header>
                 {oProperties.searchable && <Search />}
-                {QuickOptions["Base"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.grouping, oProperties.sorting, oProperties.favorite))}
+                {QuickOptions["Base"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.groupable, oProperties.filterable, oProperties.favorite))}
             </header>
             <article className="option-wrapper">
                 {[{ icon: "faMapPin", value: "Fislisbach" }, { icon: "faGraduationCap", value: "Grundschule Fislisbach" }].map((oFilterValue) => _addFilterValue(oFilterValue))}

@@ -80,6 +80,10 @@ export const Dropdown = (oProperties) => {
             onClick={oProperties.onListItemClick}/>
     );
 
+    const _addSeparator = () => (
+        <DropdownItem isSeparator="true"/>
+    )
+
     return (
         <StyledDropdown>
             {oProperties.showIcon && <FontAwesomeIcon
@@ -93,8 +97,11 @@ export const Dropdown = (oProperties) => {
                 {oProperties.hasOwnProperty("jsxElement")
                     ? oProperties.jsxElement
                     : <ul>{DropdownItems[oProperties.modelObj].map((oConfigItem) => {
-                        if (user) return oConfigItem.isPrivate ? _addDropdownItem(oConfigItem) : false;
-                        else return oConfigItem.isPublic ? _addDropdownItem(oConfigItem) : false;
+                        if (Object.keys(oConfigItem).length === 0 && oConfigItem.constructor === Object) return _addSeparator();
+                        else {
+                            if (user) return oConfigItem.isPrivate ? _addDropdownItem(oConfigItem) : false;
+                            else return oConfigItem.isPublic ? _addDropdownItem(oConfigItem) : false;
+                        }
                     })}</ul>}
             </div>
         </StyledDropdown>

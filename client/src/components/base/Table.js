@@ -1,13 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useResizeHandler } from '../../hooks/ResizeHandler';
 
 import { StyledTable } from '../../styles/base/Table.styles';
 
 import { TableHeader } from './table/Header';
+import { TableColumn } from './table/Column';
 import { Number } from './table/template/Number';
-
-import { Dropdown } from './dropdown/Dropdown';
 
 import { PaginationBase } from './Pagination';
 
@@ -22,24 +20,20 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @param   {object} oProperties
  *  @param   {string} oProperties.modelKey
  *  @param   {string=} oProperties.title
- *  @param   {boolean=} oProperties.sorting
- *  @param   {boolean=} oProperties.searchable
  *  @param   {boolean=} oProperties.favorite
- *  @param   {boolean=} oProperties.grouping
+ *  @param   {boolean=} oProperties.searchable
+ *  @param   {boolean=} oProperties.filterable
+ *  @param   {boolean=} oProperties.groupable
  *  @param   {string=} oProperties.groupColumn
  *  @param   {boolean=} oProperties.multiSelect
  *  @param   {number=} oProperties.linesPerPage
  *  @param   {string=} oProperties.paginationAlignment -> left/center/right
  *  @param   {boolean=} oProperties.showNumberLine
  *  @param   {boolean=} oProperties.showContent
- *  @param   {{title:string, filterable: boolean, fixed: boolean, align: string}} oProperties.columns
+ *  @param   {[{title:string, filterable: boolean, fixed: boolean, align: string}]} oProperties.columns
  *  @param   {{jsx:JSX.Element, align: string}} oProperties.rows
  *  @returns {JSX.Element} Table */
 export const Table = (oProperties) => {
-    /** @desc Returns the translation function for reading from the locales files
-     *  @type {function} t */
-    const { t } = useTranslation();
-
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Store pagination indexes
      *  @type {[_indexFirst:number, _setIndexFirst:function]}
@@ -52,10 +46,14 @@ export const Table = (oProperties) => {
      *  @type {[sectionHeaderHeight:number, setSectionHeaderHeight:function]} */
     const [ tableHeaderHeight, setTableHeaderHeight ] = useState(0);
 
+
+
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Update content while fetching data from backend system
      *  @type {[waitFetchContent:JSX.Element, setWaitFetchContent:function]} */
     const [ waitFetchContent, setWaitFetchContent ] = useState(<div />);
+
+
 
     /** @desc Initialize reference object for setting object pagination */
     const paginationRefreshRef = useRef(null);
@@ -67,7 +65,6 @@ export const Table = (oProperties) => {
     const iPerPage = oProperties?.linesPerPage ? oProperties.linesPerPage : 20;
 
     /** @desc Cumulate fixed default columns */
-    let bFixedFalse = false;
     let iFixedColumns = 0;
     ["showLineNumber", "showContent", "multiSelect"].forEach((sKey) => {
         if (oProperties[sKey]) {
@@ -88,14 +85,6 @@ export const Table = (oProperties) => {
         return oProperties?.grouping && oProperties?.groupColumn
             ? (
                 <div style={{ height: "100%", overflow: "auto" }}>
-                    <section>
-                        {_addTableGroupHeader(oProperties)}
-                        {_addTableContent(oProperties)}
-                    </section>
-                    <section>
-                        {_addTableGroupHeader(oProperties)}
-                        {_addTableContent(oProperties)}
-                    </section>
                     <section>
                         {_addTableGroupHeader(oProperties)}
                         {_addTableContent(oProperties)}
@@ -124,7 +113,7 @@ export const Table = (oProperties) => {
         <article>
             <table>
                 <thead>
-                    {_addColumns(oProperties)}
+                {_addColumns(oProperties)}
                 </thead>
                 <tbody>
                     {oProperties.rows.length > 0
@@ -145,26 +134,20 @@ export const Table = (oProperties) => {
      *  @param   {boolean=} oProperties.showLineNumber
      *  @param   {boolean=} oProperties.showContent
      *  @param   {boolean=} oProperties.multiSelect
-     *  @param   {{}} oProperties.columns
+     *  @param   {[]} oProperties.columns
      *  @returns {JSX.Element} */
     const _addColumns = (oProperties) => (
         <tr>
-            {oProperties?.showLineNumber && <th className="show-line-number"/>}
-            {oProperties?.showContent && <th className="show-content-icon"/>}
-            {oProperties?.multiSelect && <th className="align-center multi-select-checkbox"><FormCheckbox /></th>}
-            {oProperties.columns.map((oColumn) => {
-                /** @desc Cumulate fixed columns until first which is not fixed. It is actually not possible to
-                 *        fix columns in the middle or the end of a table */
-                if (oColumn.fixed && !bFixedFalse) iFixedColumns++;
-                else bFixedFalse = true
-
-                return (
-                    <th className={oColumn?.align ? `align-${oColumn.align}` : String()}>
-                        <span>{oColumn.title}</span>
-                        {oColumn.filterable && <FontAwesomeIcon icon={FaDuotoneIcons["faFilters"]} />}
-                    </th>
-                )
-            })}
+            {oProperties?.showLineNumber && <TableColumn customStyle={_getStyleDefaultColumns()}/>}
+            {oProperties?.showContent && <TableColumn customStyle={_getStyleDefaultColumns()}/>}
+            {oProperties?.multiSelect && <TableColumn
+                align="center"
+                customStyle={_getStyleDefaultColumns()}>
+                <FormCheckbox />
+            </TableColumn>}
+            {oProperties.columns.map((oColumn) => <TableColumn
+                column={oColumn}
+                defaultColumnsFixed={iFixedColumns}/>)}
         </tr>
     );
 
@@ -205,17 +188,6 @@ export const Table = (oProperties) => {
     };
 
     /** @private
-     *  @param   {number} iKey
-     *  @param   {boolean} bIsActive
-     *  @returns {JSX.Element}*/
-    const _addDropdownElement = (iKey, bIsActive) => (
-        <Dropdown
-            modelObj="ContainerNavConfig"
-            showIcon={true}
-            float="left" />
-    );
-
-    /** @private
      *  @returns {JSX.Element} */
     const _addPagination = (aRows, sJustifyContent = "center") => (
         <PaginationBase
@@ -229,14 +201,21 @@ export const Table = (oProperties) => {
             }} />
     );
 
+    /** @private
+     *  @returns {{width: string, minWidth: string}} */
+    const _getStyleDefaultColumns = () => ({
+        width: "40px",
+        minWidth: "40px"
+    });
+
     return (
         <StyledTable ref={tableHeaderRef}>
             <TableHeader
                 title={oProperties.title}
-                sorting={oProperties?.sorting}
-                searchable={oProperties?.searchable}
                 favorite={oProperties?.favorite}
-                grouping={oProperties?.grouping} />
+                searchable={oProperties?.searchable}
+                filterable={oProperties?.filterable}
+                groupable={oProperties?.groupable} />
             <div
                 style={{ height: `calc(100% - ${tableHeaderHeight}px)` }}
                 className="container">
@@ -246,4 +225,3 @@ export const Table = (oProperties) => {
         </StyledTable>
     )
 }
-

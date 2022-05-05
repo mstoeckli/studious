@@ -1,13 +1,13 @@
 export const QuickOptions = {
     "Base": [{
-        id: "grouping",
-        title: "Base.Table.QuickOptions.Group.title",
+        id: "groupable",
+        title: "Base.Table.QuickOptions.Grouping.title",
         icon: "faLayerGroup",
         jsxElement: "group"
     }, {
-        id: "sorting",
-        title: "Base.Table.QuickOptions.Sorter.title",
-        icon: "faSort",
+        id: "filterable",
+        title: "Base.Table.QuickOptions.Filter.title",
+        icon: "faFilters",
         jsxElement: "sorter"
     }, {
         id: "new",

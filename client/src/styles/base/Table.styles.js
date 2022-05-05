@@ -4,6 +4,10 @@ import styled from 'styled-components';
 export const StyledTable = styled.div`
   height: 100%;
   padding: 1.25rem 1.25rem 0 1.25rem;
+
+  & .dropdown-menu-container {
+    top: calc(100% + 25px);
+  }
   
   & .container {
     & section {
@@ -65,13 +69,12 @@ export const StyledTable = styled.div`
           vertical-align: middle;
           border-collapse: collapse;
           width:100%;
-          
-          & th.align-center,
+
           & td.align-center {
             text-align: center;
           }
-          
-          & th, & td {
+
+          & td {
             padding: 8px;
             width: 1%;
             white-space: nowrap;
@@ -83,47 +86,69 @@ export const StyledTable = styled.div`
               background-color: #fff;
             }
           }
-          
-          & th:first-child,
+
           & td:first-child {
             padding-left: 14px;
           }
+          
+          //& th.align-center,
+          //& td.align-center {
+          //  text-align: center;
+          //}
+          //
+          //& th, & td {
+          //  padding: 8px;
+          //  width: 1%;
+          //  white-space: nowrap;
+          //
+          //  &:nth-child(1) {
+          //    position: sticky;
+          //    left: 0;
+          //    z-index: 1;
+          //    background-color: #fff;
+          //  }
+          //}
+          //
+          //& th:first-child,
+          //& td:first-child {
+          //  padding-left: 14px;
+          //}
           
           & thead {
             & tr {
               white-space: nowrap;
               border-bottom: 1px solid lightgray;
               
-              & th {
-                position: sticky;
-                top: 0;
-                z-index: 1;
-                background-color: #fff;
-                font-weight: 700;
-                font-size: 0.65rem;
-                color: #787878;
-                text-transform: uppercase;
-                
-                & span {
-                  padding-right: 0.25rem;
-                }
-                
-                & svg {
-                  cursor: pointer;
-                }
-
-                &:nth-child(1) {
-                  z-index: 2;
-                  background-color: #fff;
-                }
-              }
+              //& th {
+              //  position: sticky;
+              //  top: 0;
+              //  z-index: 1;
+              //  background-color: #fff;
+              //  font-weight: 700;
+              //  font-size: 0.65rem;
+              //  color: #787878;
+              //  text-transform: uppercase;
+              //  
+              //  & span {
+              //    padding-right: 0.5rem;
+              //  }
+              //  
+              //  & svg {
+              //    cursor: pointer;
+              //  }
+              //
+              //  &:nth-child(1) {
+              //    z-index: 2;
+              //    background-color: #fff;
+              //  }
+              //}
               
-              & th.show-line-number,
-              & th.multi-select-checkbox,
-              & th.show-content-icon {
-                width: 40px;
-                min-width: 40px;
-              }
+              //& th.show-line-number,
+              //& th.multi-select-checkbox,
+              //& th.show-content-icon {
+              //  width: 40px;
+              //  min-width: 40px;
+              //}
             }
           }
 
@@ -181,7 +206,8 @@ export const StyledTable = styled.div`
       }
       
       & article {
-        display: none;
+        height: 0;
+        opacity: 0;
         margin: 0;
       }
     }
