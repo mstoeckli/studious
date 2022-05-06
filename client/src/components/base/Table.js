@@ -5,6 +5,7 @@ import { StyledTable } from '../../styles/base/Table.styles';
 
 import { TableHeader } from './table/Header';
 import { TableColumn } from './table/Column';
+import { TableRow } from './table/Row';
 import { Number } from './table/template/Number';
 
 import { PaginationBase } from './Pagination';
@@ -18,7 +19,7 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
 /** @public
  *  @constructor
  *  @param   {object} oProperties
- *  @param   {string} oProperties.modelKey
+ *  @param   {string} oProperties.tableKey
  *  @param   {string=} oProperties.title
  *  @param   {boolean=} oProperties.favorite
  *  @param   {boolean=} oProperties.searchable
@@ -34,6 +35,9 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @param   {{jsx:JSX.Element, align: string}} oProperties.rows
  *  @returns {JSX.Element} Table */
 export const Table = (oProperties) => {
+    /** @desc Throw console message when key property is missing */
+    if (!oProperties.tableKey) throw "missing property tableKey"
+
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Store pagination indexes
      *  @type {[_indexFirst:number, _setIndexFirst:function]}
@@ -64,7 +68,7 @@ export const Table = (oProperties) => {
     /** @desc Entries per page */
     const iPerPage = oProperties?.linesPerPage ? oProperties.linesPerPage : 20;
 
-    /** @desc Cumulate fixed default columns */
+    /** @desc Cumulate fixed default columns by checking if property is supplied and value equals true or not supplied */
     let iFixedColumns = 0;
     ["showLineNumber", "showContent", "multiSelect"].forEach((sKey) => {
         if (oProperties[sKey]) {
@@ -75,11 +79,15 @@ export const Table = (oProperties) => {
     /** @desc Defines the resize hook for changing the height of the table */
     useResizeHandler(tableHeaderRef, (oResizeObj) => setTableHeaderHeight((tableHeaderHeight) => oResizeObj.target.firstChild.offsetHeight + (oProperties.rows.length < iPerPage ? 40 : 70)));
 
+
+
+
     /** @private
      *  @param {Event} oEvt */
     const _onGroupHeaderClick = (oEvt) => {
         oEvt.target.parentElement.parentElement.parentElement.parentElement.parentElement.classList.toggle("group-close")
     };
+
 
     const _addContainer = (oProperties) => {
         return oProperties?.grouping && oProperties?.groupColumn
@@ -97,6 +105,10 @@ export const Table = (oProperties) => {
             );
     };
 
+
+
+
+
     const _addTableGroupHeader = (oProperties) => (
         <header className="expanded">
             <div>
@@ -113,13 +125,13 @@ export const Table = (oProperties) => {
         <article>
             <table>
                 <thead>
-                {_addColumns(oProperties)}
+                    {_addColumns(oProperties)}
                 </thead>
                 <tbody>
                     {oProperties.rows.length > 0
                         ? oProperties.rows.slice(_indexFirst, _indexLast).map((aRow, iIdx) => (
                             <>
-                                {_addRow(oProperties.showLineNumber, oProperties.showContent, oProperties.multiSelect, iIdx + 1, aRow)}
+                                {_addRow(oProperties, aRow, iIdx + 1 )}
                                 {oProperties?.showContent && _addRowContent()}
                             </>
                         )) : waitFetchContent
@@ -131,10 +143,11 @@ export const Table = (oProperties) => {
 
     /** @private
      *  @param   {object} oProperties
+     *  @param   {string} oProperties.tableKey
      *  @param   {boolean=} oProperties.showLineNumber
      *  @param   {boolean=} oProperties.showContent
      *  @param   {boolean=} oProperties.multiSelect
-     *  @param   {[]} oProperties.columns
+     *  @param   {[{}]} oProperties.columns
      *  @returns {JSX.Element} */
     const _addColumns = (oProperties) => (
         <tr>
@@ -146,31 +159,33 @@ export const Table = (oProperties) => {
                 <FormCheckbox />
             </TableColumn>}
             {oProperties.columns.map((oColumn) => <TableColumn
+                tableKey={oProperties.tableKey}
                 column={oColumn}
                 defaultColumnsFixed={iFixedColumns}/>)}
         </tr>
     );
 
     /** @private
-     *  @param   {boolean} bShowLineNumber
-     *  @param   {boolean} bShowContent
-     *  @param   {boolean} bMultiSelect
+     *  @param   {object} oProperties
+     *  @param   {string} oProperties.tableKey
+     *  @param   {boolean=} oProperties.showLineNumber
+     *  @param   {boolean=} oProperties.showContent
+     *  @param   {boolean=} oProperties.multiSelect
+     *  @param   {[{key:string}]} oProperties.columns
+     *  @param   {[{}]} aRow
      *  @param   {number} iIdx
-     *  @param   {[]} aRow
      *  @returns {JSX.Element} */
-    const _addRow = (bShowLineNumber, bShowContent, bMultiSelect, iIdx, aRow) => (
+    const _addRow = (oProperties, aRow, iIdx) => (
         <tr>
-            {bShowLineNumber && <td className="align-center show-line-number">
-                <Number numberValue={iIdx} />
-            </td>}
-            {bShowContent && <td className="show-content-icon align-center">
-                <FontAwesomeIcon icon={FaSolidIcons["faChevronDown"]} />
-            </td>}
-            {bMultiSelect && <td className="align-center">
-                <FormCheckbox />
-            </td>}
-            {aRow.map((oRow) => (
-                <td className={oRow?.align ? `align-${oRow.align}` : String()}>{oRow.jsx}</td>
+            {oProperties.showLineNumber && <td className="align-center show-line-number"><Number numberValue={iIdx} /></td>}
+            {oProperties.showContent && <td className="show-content-icon align-center"><FontAwesomeIcon icon={FaSolidIcons["faChevronDown"]} /></td>}
+            {oProperties.multiSelect && <td className="align-center"><FormCheckbox /></td>}
+            {aRow.map((oRow, iCellIdx) => (
+                <TableRow
+                    tableKey={oProperties.tableKey}
+                    attrColumnKey={oProperties.columns[iCellIdx].key}
+                    align={oProperties.columns[iCellIdx]?.align}
+                    row={oRow} />
             ))}
         </tr>
     );
@@ -192,9 +207,9 @@ export const Table = (oProperties) => {
     const _addPagination = (aRows, sJustifyContent = "center") => (
         <PaginationBase
             ref={paginationRefreshRef}
+            perPage={iPerPage}
             data={aRows}
             customStyle={{ display: "flex", justifyContent: sJustifyContent, alignItems: "center" }}
-            perPage={iPerPage}
             onIndexCalculated={(iIndexLast, iIndexFirst) => {
                 _setIndexFirst((_indexFirst) => iIndexFirst);
                 _setIndexLast((_indexLast) => iIndexLast);
@@ -221,7 +236,7 @@ export const Table = (oProperties) => {
                 className="container">
                 {_addContainer(oProperties)}
             </div>
-            {!oProperties?.grouping && _addPagination(oProperties.rows, oProperties.paginationAlignment)}
+            {!oProperties?.groupable && _addPagination(oProperties.rows, oProperties.paginationAlignment)}
         </StyledTable>
     )
 }

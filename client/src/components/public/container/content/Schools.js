@@ -47,6 +47,7 @@ export const Schools = () => {
 
     return (
         <Table
+            tableKey="Schools"
             favorite={false}
             searchable={true}
             filterable={true}
@@ -55,124 +56,409 @@ export const Schools = () => {
             // multiSelect={true}
             // linesPerPage={1}
             // paginationAlignment="right"
-            showLineNumber={true}
+            // showLineNumber={true}
             // showContent={true}
             columns={oColumns["Schools"]}
             rows={[[{
-                jsx: <Identifier
-                    icon="faMapPin"
-                    title="Grundschule Fislisbach"
-                    description="Feldstrasse 31g, 5442 Fislisbach, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="5230"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="hanspeter.mueller@schule.ch" />
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="10"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="6"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="85"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Free"
-                        icon="faSackDollar"
-                        borderColor="#d3366e"
-                        backgroundColor="#d885a3" />
-            }], [
-                {
-                    jsx: <Identifier
-                        icon="faMapPin"
-                        title="Grundschule Niederrohrdorf"
-                        description="Musterallee 14, 5442 Niederrohrdorf, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="6940"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="7"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="2"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="33"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Free"
-                        icon="faSackDollar"
-                        borderColor="#d3366e"
-                        backgroundColor="#d885a3" />
+                type: "Identifier",
+                iconSrc: "faMapPin",
+                title: "Grundschule Fislisbach",
+                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
+            }, {
+                type: "Number",
+                value: "5230"
+            }, {
+                type: "Button",
+                value: "Anfrage",
+                iconSrc: "faDiagramSubtask",
+                onClick: (oEvt) => {}
+            }, {
+                type: "Email",
+                value: "hanspeter.mueller@schule.ch"
+            }, {
+                type: "Text",
+                value: "31.12.2022",
+                iconSrc: "faCalendarDay"
+            }, {
+                type: "Number",
+                value: 10,
+                iconSrc: "faChalkboardUser"
+            }, {
+                type: "Number",
+                value: 5,
+                iconSrc: "faRectangleHistoryCircleUser",
+            }, {
+                type: "Number",
+                value: 87,
+                iconSrc: "faScreenUsers"
+            }, {
+                type: "Status",
+                value: "Free",
+                borderColor: "#d3366e",
+                backgroundColor: "#d885a3",
+                onClick: (oEvt) => {
+                    debugger
                 }
-            ], [
-                {
-                    jsx: <Identifier
-                        icon="faMapPin"
-                        title="Grundschule Oberrohrdorf"
-                        description="Zur Gasse 4, 5443 Oberrohrdorf, Switzerland" />,
-                }, {
-                    jsx: <Number numberValue="3854"/>,
-                }, {
-                    jsx: <Button
-                        text="Anfrage"
-                        icon="faDiagramSubtask"/>,
-                    align: "center"
-                }, {
-                    jsx: <Email address="fritz.muster@schule.ch" />
-                }, {
-                    jsx: "31.12.2022"
-                }, {
-                    jsx: <Number
-                        icon="faChalkboardUser"
-                        numberValue="7"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faRectangleHistoryCircleUser"
-                        numberValue="2"/>,
-                    align: "center"
-                }, {
-                    jsx: <Number
-                        icon="faScreenUsers"
-                        numberValue="33"/>,
-                    align: "center"
-                }, {
-                    jsx: <Status
-                        title="Paid"
-                        icon="faSackDollar"
-                        borderColor="#5296db"
-                        backgroundColor="#85aed8" />
+            }], [{
+                type: "Identifier",
+                iconSrc: "faMapPin",
+                title: "Grundschule Fislisbach",
+                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
+            }, {
+                type: "Number",
+                value: "5230"
+            }, {
+                type: "Button",
+                value: "Anfrage",
+                iconSrc: "faDiagramSubtask",
+                onClick: (oEvt) => {}
+            }, {
+                type: "Email",
+                value: "hanspeter.mueller@schule.ch"
+            }, {
+                type: "Text",
+                value: "31.12.2022",
+                iconSrc: "faCalendarDay"
+            }, {
+                type: "Number",
+                value: 10,
+                iconSrc: "faChalkboardUser"
+            }, {
+                type: "Number",
+                value: 5,
+                iconSrc: "faRectangleHistoryCircleUser",
+            }, {
+                type: "Number",
+                value: 87,
+                iconSrc: "faScreenUsers"
+            }, {
+                type: "Status",
+                value: "Free",
+                borderColor: "#d3366e",
+                backgroundColor: "#d885a3",
+                onClick: (oEvt) => {
+                    debugger
                 }
-            ]]}/>
+            }], [{
+                type: "Identifier",
+                iconSrc: "faMapPin",
+                title: "Grundschule Fislisbach",
+                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
+            }, {
+                type: "Number",
+                value: "5230"
+            }, {
+                type: "Button",
+                value: "Anfrage",
+                iconSrc: "faDiagramSubtask",
+                onClick: (oEvt) => {}
+            }, {
+                type: "Email",
+                value: "hanspeter.mueller@schule.ch"
+            }, {
+                type: "Text",
+                value: "31.12.2022",
+                iconSrc: "faCalendarDay"
+            }, {
+                type: "Number",
+                value: 10,
+                iconSrc: "faChalkboardUser"
+            }, {
+                type: "Number",
+                value: 5,
+                iconSrc: "faRectangleHistoryCircleUser",
+            }, {
+                type: "Number",
+                value: 87,
+                iconSrc: "faScreenUsers"
+            }, {
+                type: "Status",
+                value: "Free",
+                borderColor: "#d3366e",
+                backgroundColor: "#d885a3",
+                onClick: (oEvt) => {
+                    debugger
+                }
+            }], [{
+                type: "Identifier",
+                iconSrc: "faMapPin",
+                title: "Grundschule Fislisbach",
+                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
+            }, {
+                type: "Number",
+                value: "5230"
+            }, {
+                type: "Button",
+                value: "Anfrage",
+                iconSrc: "faDiagramSubtask",
+                onClick: (oEvt) => {}
+            }, {
+                type: "Email",
+                value: "hanspeter.mueller@schule.ch"
+            }, {
+                type: "Text",
+                value: "31.12.2022",
+                iconSrc: "faCalendarDay"
+            }, {
+                type: "Number",
+                value: 10,
+                iconSrc: "faChalkboardUser"
+            }, {
+                type: "Number",
+                value: 5,
+                iconSrc: "faRectangleHistoryCircleUser",
+            }, {
+                type: "Number",
+                value: 87,
+                iconSrc: "faScreenUsers"
+            }, {
+                type: "Status",
+                value: "Free",
+                borderColor: "#d3366e",
+                backgroundColor: "#d885a3",
+                onClick: (oEvt) => {
+                    debugger
+                }
+            }], [{
+                type: "Identifier",
+                iconSrc: "faMapPin",
+                title: "Grundschule Fislisbach",
+                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
+            }, {
+                type: "Number",
+                value: "5230"
+            }, {
+                type: "Button",
+                value: "Anfrage",
+                iconSrc: "faDiagramSubtask",
+                onClick: (oEvt) => {}
+            }, {
+                type: "Email",
+                value: "hanspeter.mueller@schule.ch"
+            }, {
+                type: "Text",
+                value: "31.12.2022",
+                iconSrc: "faCalendarDay"
+            }, {
+                type: "Number",
+                value: 10,
+                iconSrc: "faChalkboardUser"
+            }, {
+                type: "Number",
+                value: 5,
+                iconSrc: "faRectangleHistoryCircleUser",
+            }, {
+                type: "Number",
+                value: 87,
+                iconSrc: "faScreenUsers"
+            }, {
+                type: "Status",
+                value: "Free",
+                borderColor: "#d3366e",
+                backgroundColor: "#d885a3",
+                onClick: (oEvt) => {
+                    debugger
+                }
+            }], [{
+                type: "Identifier",
+                iconSrc: "faMapPin",
+                title: "Grundschule Fislisbach",
+                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
+            }, {
+                type: "Number",
+                value: "5230"
+            }, {
+                type: "Button",
+                value: "Anfrage",
+                iconSrc: "faDiagramSubtask",
+                onClick: (oEvt) => {}
+            }, {
+                type: "Email",
+                value: "hanspeter.mueller@schule.ch"
+            }, {
+                type: "Text",
+                value: "31.12.2022",
+                iconSrc: "faCalendarDay"
+            }, {
+                type: "Number",
+                value: 10,
+                iconSrc: "faChalkboardUser"
+            }, {
+                type: "Number",
+                value: 5,
+                iconSrc: "faRectangleHistoryCircleUser",
+            }, {
+                type: "Number",
+                value: 87,
+                iconSrc: "faScreenUsers"
+            }, {
+                type: "Status",
+                value: "Free",
+                borderColor: "#d3366e",
+                backgroundColor: "#d885a3",
+                onClick: (oEvt) => {
+                    debugger
+                }
+            }], [{
+                type: "Identifier",
+                iconSrc: "faMapPin",
+                title: "Grundschule Fislisbach",
+                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
+            }, {
+                type: "Number",
+                value: "5230"
+            }, {
+                type: "Button",
+                value: "Anfrage",
+                iconSrc: "faDiagramSubtask",
+                onClick: (oEvt) => {}
+            }, {
+                type: "Email",
+                value: "hanspeter.mueller@schule.ch"
+            }, {
+                type: "Text",
+                value: "31.12.2022",
+                iconSrc: "faCalendarDay"
+            }, {
+                type: "Number",
+                value: 10,
+                iconSrc: "faChalkboardUser"
+            }, {
+                type: "Number",
+                value: 5,
+                iconSrc: "faRectangleHistoryCircleUser",
+            }, {
+                type: "Number",
+                value: 87,
+                iconSrc: "faScreenUsers"
+            }, {
+                type: "Status",
+                value: "Free",
+                borderColor: "#d3366e",
+                backgroundColor: "#d885a3",
+                onClick: (oEvt) => {
+                    debugger
+                }
+            }], [{
+                type: "Identifier",
+                iconSrc: "faMapPin",
+                title: "Grundschule Fislisbach",
+                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
+            }, {
+                type: "Number",
+                value: "5230"
+            }, {
+                type: "Button",
+                value: "Anfrage",
+                iconSrc: "faDiagramSubtask",
+                onClick: (oEvt) => {}
+            }, {
+                type: "Email",
+                value: "hanspeter.mueller@schule.ch"
+            }, {
+                type: "Text",
+                value: "31.12.2022",
+                iconSrc: "faCalendarDay"
+            }, {
+                type: "Number",
+                value: 10,
+                iconSrc: "faChalkboardUser"
+            }, {
+                type: "Number",
+                value: 5,
+                iconSrc: "faRectangleHistoryCircleUser",
+            }, {
+                type: "Number",
+                value: 87,
+                iconSrc: "faScreenUsers"
+            }, {
+                type: "Status",
+                value: "Free",
+                borderColor: "#d3366e",
+                backgroundColor: "#d885a3",
+                onClick: (oEvt) => {
+                    debugger
+                }
+            }], [{
+                type: "Identifier",
+                iconSrc: "faMapPin",
+                title: "Grundschule Fislisbach",
+                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
+            }, {
+                type: "Number",
+                value: "5230"
+            }, {
+                type: "Button",
+                value: "Anfrage",
+                iconSrc: "faDiagramSubtask",
+                onClick: (oEvt) => {}
+            }, {
+                type: "Email",
+                value: "hanspeter.mueller@schule.ch"
+            }, {
+                type: "Text",
+                value: "31.12.2022",
+                iconSrc: "faCalendarDay"
+            }, {
+                type: "Number",
+                value: 10,
+                iconSrc: "faChalkboardUser"
+            }, {
+                type: "Number",
+                value: 5,
+                iconSrc: "faRectangleHistoryCircleUser",
+            }, {
+                type: "Number",
+                value: 87,
+                iconSrc: "faScreenUsers"
+            }, {
+                type: "Status",
+                value: "Free",
+                borderColor: "#d3366e",
+                backgroundColor: "#d885a3",
+                onClick: (oEvt) => {
+                    debugger
+                }
+            }], [{
+                type: "Identifier",
+                iconSrc: "faMapPin",
+                title: "Grundschule Fislisbach",
+                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
+            }, {
+                type: "Number",
+                value: "5230"
+            }, {
+                type: "Button",
+                value: "Anfrage",
+                iconSrc: "faDiagramSubtask",
+                onClick: (oEvt) => {}
+            }, {
+                type: "Email",
+                value: "hanspeter.mueller@schule.ch"
+            }, {
+                type: "Text",
+                value: "31.12.2022",
+                iconSrc: "faCalendarDay"
+            }, {
+                type: "Number",
+                value: 10,
+                iconSrc: "faChalkboardUser"
+            }, {
+                type: "Number",
+                value: 5,
+                iconSrc: "faRectangleHistoryCircleUser",
+            }, {
+                type: "Number",
+                value: 87,
+                iconSrc: "faScreenUsers"
+            }, {
+                type: "Status",
+                value: "Free",
+                borderColor: "#d3366e",
+                backgroundColor: "#d885a3",
+                onClick: (oEvt) => {
+                    debugger
+                }
+            }]]}/>
     );
 }

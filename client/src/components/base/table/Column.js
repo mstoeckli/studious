@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import { StyledTableColumn } from '../../../styles/base/table/Column.styles';
+
+import { setDropdownActive, isClickedOutside } from '../../../reducers/base/table/Columns';
 
 import { Dropdown } from '../dropdown/Dropdown';
 
@@ -10,33 +13,78 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
 /** @public
  *  @constructor
  *  @param   {object} oProperties
+ *  @param   {string} oProperties.tableKey
  *  @param   {{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean}=} oProperties.column
  *  @param   {number=} oProperties.defaultColumnsFixed
  *  @param   {string=} oProperties.align
  *  @param   {string=} oProperties.customStyle
  *  @returns {JSX.Element} TableColumn */
 export const TableColumn = (oProperties) => {
+    /** @desc Returns dispatcher function to call the actions inside the reducer
+     *  @type {React.Dispatch} fnDispatch */
+    const fnDispatch = useDispatch();
+
     /** @private
+     *  @param {string} sTableKey
+     *  @param {string} sColumnKey
+     *  @param {boolean} bIsActive */
+    const _onClickOutside = (sTableKey, sColumnKey, bIsActive) => {
+        if (bIsActive) {
+            /** @desc Calls dispatcher function which handles the show/hide property of a dropdown when clicked outside */
+            fnDispatch(isClickedOutside({
+                tableKey: sTableKey,
+                columnKey: sColumnKey,
+                isActive: !bIsActive
+            }));
+        }
+    };
+
+    /** @private
+     *  @param {string} sTableKey
+     *  @param {string} sColumnKey
+     *  @param {boolean} bIsActive */
+    const _onDropdownClicked = (sTableKey, sColumnKey, bIsActive) => {
+        /** @desc Calls dispatcher function which handles the show/hide property of a dropdown when clicked */
+        fnDispatch(setDropdownActive({
+            tableKey: sTableKey,
+            columnKey: sColumnKey,
+            isActive: !bIsActive
+        }));
+    };
+
+    const _onHideColumn = () => {
+
+    }
+
+    /** @private
+     *  @param   {string} sTableKey
+     *  @param   {string} sColumnKey
+     *  @param   {boolean} bIsActive
      *  @returns {JSX.Element} */
-    const _addDropdown = (bIsActive = true) => (
+    const _addDropdown = (sTableKey, sColumnKey, bIsActive) => (
         <Dropdown
             modelObj="TableCellConfig"
             float="left"
             isActive={bIsActive}
-            onListItemClick={() => {
-
-            }} />
+            isClickedOutside={() => _onClickOutside(sTableKey, sColumnKey, bIsActive)}
+            onListItemClick={(oEvt) => {
+                debugger
+                _onHideColumn();
+            }}/>
     );
 
     return (
         <StyledTableColumn
             align={oProperties?.column?.align ? oProperties.column.align : oProperties.align}
-            style={oProperties?.customStyle ? oProperties.customStyle : {}}>
+            style={oProperties?.customStyle ? oProperties.customStyle : {}}
+            data-columnkey={oProperties?.column?.key}>
             <span>{oProperties?.column?.title}</span>
             {oProperties?.column?.sortable &&
                 <>
-                    <FontAwesomeIcon icon={FaDuotoneIcons["faSort"]} />
-                    {_addDropdown(oProperties.column.isDropdownActive)}
+                    <FontAwesomeIcon
+                        icon={FaDuotoneIcons["faSort"]}
+                        onClick={() => _onDropdownClicked(oProperties.tableKey, oProperties.column.key, oProperties.column.isDropdownActive)} />
+                    {_addDropdown(oProperties.tableKey, oProperties.column.key, oProperties.column.isDropdownActive)}
                 </>}
         </StyledTableColumn>
     )

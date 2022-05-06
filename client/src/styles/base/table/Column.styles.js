@@ -12,23 +12,7 @@ export const StyledTableColumn = styled.th`
   font-size: 0.65rem;
   color: #787878;
   text-align: ${props => props.align || "left"};
-
-  &:nth-child(1) {
-    position: sticky;
-    left: 0;
-    z-index: 1;
-    background-color: #fff;
-  }
-
-  //&:nth-child(1) {
-  //  z-index: 2;
-  //  background-color: #fff;
-  //}
   
-  &:first-child {
-    padding-left: 14px;
-  }
-
   & span {
     text-transform: uppercase;
     padding-right: 0.5rem;

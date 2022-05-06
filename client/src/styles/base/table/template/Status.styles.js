@@ -5,6 +5,7 @@ export const StyledStatus = styled.div`
   border-radius: 5px;
   padding: 2px 4px;
   width: fit-content;
+  cursor: pointer;
   
   & > svg {
     color: #fff;

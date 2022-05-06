@@ -9,11 +9,11 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @constructor
  *  @param   {object} oProperties
  *  @param   {number} oProperties.numberValue
- *  @param   {number} oProperties.icon
+ *  @param   {number} oProperties.iconSrc
  *  @returns {JSX.Element} Number */
 export const Number = (oProperties) => (
     <StyledNumber>
-        {oProperties?.icon && <FontAwesomeIcon icon={FaDuotoneIcons[`${oProperties.icon}`]} />}
+        {oProperties?.iconSrc && <FontAwesomeIcon icon={FaDuotoneIcons[`${oProperties.iconSrc}`]} />}
         <span>{oProperties.numberValue}</span>
     </StyledNumber>
 );

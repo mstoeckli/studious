@@ -70,85 +70,20 @@ export const StyledTable = styled.div`
           border-collapse: collapse;
           width:100%;
 
-          & td.align-center {
-            text-align: center;
-          }
-
-          & td {
-            padding: 8px;
-            width: 1%;
-            white-space: nowrap;
-
-            &:nth-child(1) {
-              position: sticky;
-              left: 0;
-              z-index: 1;
-              background-color: #fff;
-            }
-          }
-
-          & td:first-child {
-            padding-left: 14px;
-          }
-          
-          //& th.align-center,
           //& td.align-center {
           //  text-align: center;
           //}
           //
-          //& th, & td {
+          //& td {
           //  padding: 8px;
           //  width: 1%;
           //  white-space: nowrap;
-          //
-          //  &:nth-child(1) {
-          //    position: sticky;
-          //    left: 0;
-          //    z-index: 1;
-          //    background-color: #fff;
-          //  }
-          //}
-          //
-          //& th:first-child,
-          //& td:first-child {
-          //  padding-left: 14px;
           //}
           
           & thead {
             & tr {
               white-space: nowrap;
               border-bottom: 1px solid lightgray;
-              
-              //& th {
-              //  position: sticky;
-              //  top: 0;
-              //  z-index: 1;
-              //  background-color: #fff;
-              //  font-weight: 700;
-              //  font-size: 0.65rem;
-              //  color: #787878;
-              //  text-transform: uppercase;
-              //  
-              //  & span {
-              //    padding-right: 0.5rem;
-              //  }
-              //  
-              //  & svg {
-              //    cursor: pointer;
-              //  }
-              //
-              //  &:nth-child(1) {
-              //    z-index: 2;
-              //    background-color: #fff;
-              //  }
-              //}
-              
-              //& th.show-line-number,
-              //& th.multi-select-checkbox,
-              //& th.show-content-icon {
-              //  width: 40px;
-              //  min-width: 40px;
-              //}
             }
           }
 
@@ -156,26 +91,26 @@ export const StyledTable = styled.div`
             & tr {
               border-bottom: 1px solid #f9f9f9;
               
-              & td {
-                font-size: 0.7rem;
-                font-weight: 500;
-                color: var(--description-color);
-                
-                & div {
-                  padding: 4px
-                }
-              }
-              
-              & td.show-line-number {
-                font-size: 0.75rem;
-                font-weight: 600;
-                color: var(--title-color);
-              }
-              
-              & td.show-content-icon {
-                font-size: 0.85rem;
-                color: var(--title-color);
-              }
+              //& td {
+              //  font-size: 0.7rem;
+              //  font-weight: 500;
+              //  color: var(--description-color);
+              //  
+              //  & div {
+              //    padding: 4px
+              //  }
+              //}
+              //
+              //& td.show-line-number {
+              //  font-size: 0.75rem;
+              //  font-weight: 600;
+              //  color: var(--title-color);
+              //}
+              //
+              //& td.show-content-icon {
+              //  font-size: 0.85rem;
+              //  color: var(--title-color);
+              //}
             }
           }
         }

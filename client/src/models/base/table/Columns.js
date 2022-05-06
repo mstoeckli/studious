@@ -6,7 +6,7 @@ export const Columns = {
         ascending: false,
         fixed: true,
         isHidden: false,
-        isDropdownActive: true
+        isDropdownActive: false
     }, {
         key: "schoolKey",
         title: "Schul-Identifikation",

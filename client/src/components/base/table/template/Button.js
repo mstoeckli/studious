@@ -9,11 +9,13 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @constructor
  *  @param   {object} oProperties
  *  @param   {string} oProperties.text
- *  @param   {string=} oProperties.icon
+ *  @param   {string=} oProperties.iconSrc
+ *  @param   {function} oProperties.onClick
  *  @returns {JSX.Element} Button */
 export const Button = (oProperties) => (
-    <StyledButton>
-        {oProperties?.icon && <FontAwesomeIcon icon={FaDuotoneIcons[`${oProperties.icon}`]} />}
+    <StyledButton
+        onClick={oProperties.onClick}>
+        {oProperties?.iconSrc && <FontAwesomeIcon icon={FaDuotoneIcons[`${oProperties.iconSrc}`]} />}
         <span>{oProperties.text}</span>
     </StyledButton>
 );

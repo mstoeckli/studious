@@ -25,7 +25,7 @@ export const ContainerNavSlice = createSlice({
          *  @param {Proxy} state
          *  @param {array} state.value
          *  @param {object} action
-         *  @param {string} action.type -> containerNav/setActivityClass
+         *  @param {string} action.type -> containerNav/isClickedOutside
          *  @param {objects} action.payload
          *  @param {number} action.payload.key
          *  @param {boolean} action.payload.isActive  */
