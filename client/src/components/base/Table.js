@@ -6,15 +6,8 @@ import { StyledTable } from '../../styles/base/Table.styles';
 import { TableHeader } from './table/Header';
 import { TableColumn } from './table/Column';
 import { TableRow } from './table/Row';
-import { Number } from './table/template/Number';
 
 import { PaginationBase } from './Pagination';
-
-import { FormCheckbox } from './forms/Checkbox';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
-import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
 
 /** @public
  *  @constructor
@@ -24,19 +17,24 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @param   {boolean=} oProperties.favorite
  *  @param   {boolean=} oProperties.searchable
  *  @param   {boolean=} oProperties.filterable
- *  @param   {boolean=} oProperties.groupable
+ *  @param   {boolean=} oProperties.groupable -> not supported at the moment!
  *  @param   {string=} oProperties.groupColumn
  *  @param   {boolean=} oProperties.multiSelect
  *  @param   {number=} oProperties.linesPerPage
  *  @param   {string=} oProperties.paginationAlignment -> left/center/right
  *  @param   {boolean=} oProperties.showNumberLine
  *  @param   {boolean=} oProperties.showContent
- *  @param   {[{title:string, filterable: boolean, fixed: boolean, align: string}]} oProperties.columns
- *  @param   {{jsx:JSX.Element, align: string}} oProperties.rows
+ *  @param   {JSX.Element=} oProperties.content
+ *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
+ *  @param   {[[{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]]} oProperties.rows
+ *  @param   {function=} oProperties.onCheckboxClicked
  *  @returns {JSX.Element} Table */
 export const Table = (oProperties) => {
     /** @desc Throw console message when key property is missing */
-    if (!oProperties.tableKey) throw "missing property tableKey"
+    if (!oProperties.tableKey) throw "missing property tableKey";
+    if (oProperties.groupable) throw "is not supported in the current version!";
+    if (!oProperties.columns || !Array.isArray(oProperties.columns)) throw "missing property columns";
+    if (!oProperties.rows || !Array.isArray(oProperties.rows)) throw "missing property rows";
 
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Store pagination indexes
@@ -67,101 +65,91 @@ export const Table = (oProperties) => {
 
     /** @desc Entries per page */
     const iPerPage = oProperties?.linesPerPage ? oProperties.linesPerPage : 20;
-
-    /** @desc Cumulate fixed default columns by checking if property is supplied and value equals true or not supplied */
-    let iFixedColumns = 0;
-    ["showLineNumber", "showContent", "multiSelect"].forEach((sKey) => {
-        if (oProperties[sKey]) {
-            iFixedColumns++;
-        }
-    });
+    let iLineIdx = 0;
 
     /** @desc Defines the resize hook for changing the height of the table */
     useResizeHandler(tableHeaderRef, (oResizeObj) => setTableHeaderHeight((tableHeaderHeight) => oResizeObj.target.firstChild.offsetHeight + (oProperties.rows.length < iPerPage ? 40 : 70)));
 
-
-
+    /** @private
+     *  @returns {{width:string, minWidth:string}} */
+    const _getStyleDefaultColumns = () => ({
+        width: "40px",
+        minWidth: "40px"
+    });
 
     /** @private
-     *  @param {Event} oEvt */
-    const _onGroupHeaderClick = (oEvt) => {
-        oEvt.target.parentElement.parentElement.parentElement.parentElement.parentElement.classList.toggle("group-close")
-    };
-
-
+     *  @param   {object} oProperties
+     *  @returns {JSX.Element} */
     const _addContainer = (oProperties) => {
-        return oProperties?.grouping && oProperties?.groupColumn
-            ? (
-                <div style={{ height: "100%", overflow: "auto" }}>
-                    <section>
-                        {_addTableGroupHeader(oProperties)}
-                        {_addTableContent(oProperties)}
-                    </section>
-                </div>
-            ) : (
-                <section style={{ height: "100%" }}>
-                    {_addTableContent(oProperties)}
-                </section>
-            );
+        return (
+            <section style={{ height: "100%" }}>
+                {_addTableContent(oProperties)}
+            </section>
+        );
     };
 
-
-
-
-
-    const _addTableGroupHeader = (oProperties) => (
-        <header className="expanded">
-            <div>
-                <FontAwesomeIcon
-                    icon={FaDuotoneIcons["faSquareChevronDown"]}
-                    onClick={_onGroupHeaderClick}/>
-                <span>Schweiz</span>
-            </div>
-            <FontAwesomeIcon icon={FaDuotoneIcons["faEllipsisVertical"]} />
-        </header>
-    );
-
+    /** @private
+     *  @param   {object} oProperties
+     *  @returns {JSX.Element} */
     const _addTableContent = (oProperties) => (
         <article>
             <table>
-                <thead>
-                    {_addColumns(oProperties)}
-                </thead>
-                <tbody>
-                    {oProperties.rows.length > 0
-                        ? oProperties.rows.slice(_indexFirst, _indexLast).map((aRow, iIdx) => (
-                            <>
-                                {_addRow(oProperties, aRow, iIdx + 1 )}
-                                {oProperties?.showContent && _addRowContent()}
-                            </>
-                        )) : waitFetchContent
-                    }
-                </tbody>
+                {_addTableHeader(oProperties)}
+                {_addTableBody(oProperties)}
             </table>
         </article>
     );
 
     /** @private
      *  @param   {object} oProperties
+     *  @returns {JSX.Element} */
+    const _addTableHeader = (oProperties) => (
+        <thead>
+            {_addColumns(oProperties)}
+        </thead>
+    );
+
+    /** @private
+     *  @param   {object} oProperties
+     *  @param   {JSX.Element=} oProperties.content
+     *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
+     *  @param   {[[{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]]} oProperties.rows
+     *  @returns {JSX.Element} */
+    const _addTableBody = (oProperties) => (
+        <tbody>
+            {oProperties.rows.length > 0
+                ? oProperties.rows.slice(_indexFirst, _indexLast).map((aRow) => (
+                    <>
+                        {_addRow(oProperties, aRow)}
+                        {oProperties?.content && oProperties.content && _addContent(oProperties.content, oProperties.columns.length)}
+                    </>
+                )) : waitFetchContent}
+        </tbody>
+    );
+
+    /** @private
+     *  @param   {object} oProperties
      *  @param   {string} oProperties.tableKey
      *  @param   {boolean=} oProperties.showLineNumber
-     *  @param   {boolean=} oProperties.showContent
      *  @param   {boolean=} oProperties.multiSelect
-     *  @param   {[{}]} oProperties.columns
+     *  @param   {JSX.Element=} oProperties.content
+     *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
      *  @returns {JSX.Element} */
     const _addColumns = (oProperties) => (
         <tr>
             {oProperties?.showLineNumber && <TableColumn customStyle={_getStyleDefaultColumns()}/>}
-            {oProperties?.showContent && <TableColumn customStyle={_getStyleDefaultColumns()}/>}
+            {oProperties?.content && oProperties.content && <TableColumn customStyle={_getStyleDefaultColumns()}/>}
             {oProperties?.multiSelect && <TableColumn
                 align="center"
-                customStyle={_getStyleDefaultColumns()}>
-                <FormCheckbox />
-            </TableColumn>}
+                customStyle={_getStyleDefaultColumns()}
+                isCheckboxColumn={true}
+                onCheckboxClicked={(oEvt) => {
+                    debugger
+                }}/>}
             {oProperties.columns.map((oColumn) => <TableColumn
                 tableKey={oProperties.tableKey}
                 column={oColumn}
-                defaultColumnsFixed={iFixedColumns}/>)}
+                isCheckboxColumn={oColumn.isCheckboxColumn} />)}
         </tr>
     );
 
@@ -169,17 +157,17 @@ export const Table = (oProperties) => {
      *  @param   {object} oProperties
      *  @param   {string} oProperties.tableKey
      *  @param   {boolean=} oProperties.showLineNumber
-     *  @param   {boolean=} oProperties.showContent
      *  @param   {boolean=} oProperties.multiSelect
-     *  @param   {[{key:string}]} oProperties.columns
-     *  @param   {[{}]} aRow
-     *  @param   {number} iIdx
+     *  @param   {JSX.Element=} oProperties.content
+     *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
+     *  @param   {function=} oProperties.onCheckboxClicked
+     *  @param   {[{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]} aRow
      *  @returns {JSX.Element} */
-    const _addRow = (oProperties, aRow, iIdx) => (
+    const _addRow = (oProperties, aRow) => (
         <tr>
-            {oProperties.showLineNumber && <td className="align-center show-line-number"><Number numberValue={iIdx} /></td>}
-            {oProperties.showContent && <td className="show-content-icon align-center"><FontAwesomeIcon icon={FaSolidIcons["faChevronDown"]} /></td>}
-            {oProperties.multiSelect && <td className="align-center"><FormCheckbox /></td>}
+            {oProperties?.showLineNumber && _addRowShowLineNumber()}
+            {oProperties?.content && oProperties.content && _addRowContent()}
+            {oProperties?.multiSelect && _addRowMultiSelect(oProperties?.onCheckboxClicked)}
             {aRow.map((oRow, iCellIdx) => (
                 <TableRow
                     tableKey={oProperties.tableKey}
@@ -190,17 +178,58 @@ export const Table = (oProperties) => {
         </tr>
     );
 
-    const _addRowContent = () => {
-        return (
-            <tr>
-                <td colSpan="5">
-                    <div>
-                        <p>I'm text in a div inside a td tag.</p>
-                    </div>
-                </td>
-            </tr>
-        )
-    };
+    /** @private
+     *  @param   {JSX.Element} content
+     *  @param   {number} iColSpan
+     *  @returns {JSX.Element} */
+    const _addContent = (content, iColSpan) => (
+        <tr className="row-content">
+            <td colSpan={iColSpan}>
+                {content}
+            </td>
+        </tr>
+    );
+
+    /** @private
+     *  @returns {JSX.Element} */
+    const _addRowShowLineNumber = () => (
+        <TableRow
+            align="center"
+            row={{
+                type: "Number",
+                value: iLineIdx++
+        }} />
+    );
+
+    /** @private
+     *  @returns {JSX.Element} */
+    const _addRowContent = () => (
+        <TableRow
+            align="center"
+            row={{
+                type: "Icon",
+                iconSrc: "faChevronDown",
+                onClick: (oEvt) => {
+                    oEvt.target.parentElement.parentElement.parentElement.nextSibling.classList.toggle("row-content");
+                    oEvt.target.parentElement.parentElement.parentElement.nextSibling.classList.toggle("row-content-hide");
+                }
+        }} />
+    );
+
+    /** @private
+     *  @param   {function} fnCheckboxClicked
+     *  @returns {JSX.Element} */
+    const _addRowMultiSelect = (fnCheckboxClicked = () => {}) => (
+        <TableRow
+            align="center"
+            row={{
+                type: "Checkbox",
+                iconSrc: "faChevronDown",
+                onClick: (oEvt) => {
+                    fnCheckboxClicked(oEvt);
+                }
+        }} />
+    );
 
     /** @private
      *  @returns {JSX.Element} */
@@ -215,13 +244,6 @@ export const Table = (oProperties) => {
                 _setIndexLast((_indexLast) => iIndexLast);
             }} />
     );
-
-    /** @private
-     *  @returns {{width: string, minWidth: string}} */
-    const _getStyleDefaultColumns = () => ({
-        width: "40px",
-        minWidth: "40px"
-    });
 
     return (
         <StyledTable ref={tableHeaderRef}>
@@ -240,3 +262,35 @@ export const Table = (oProperties) => {
         </StyledTable>
     )
 }
+
+// /** @private
+//  *  @param {Event} oEvt */
+// const _onGroupHeaderClick = (oEvt) => {
+//     oEvt.target.parentElement.parentElement.parentElement.parentElement.parentElement.classList.toggle("group-close")
+// };
+
+// const _addTableGroupHeader = (oProperties) => (
+//     <header className="expanded">
+//         <div>
+//             <FontAwesomeIcon
+//                 icon={FaDuotoneIcons["faSquareChevronDown"]}
+//                 onClick={_onGroupHeaderClick}/>
+//             <span>Schweiz</span>
+//         </div>
+//         <FontAwesomeIcon icon={FaDuotoneIcons["faEllipsisVertical"]} />
+//     </header>
+// );
+
+// return oProperties?.grouping && oProperties?.groupColumn
+//     ? (
+//         <div style={{ height: "100%", overflow: "auto" }}>
+//             <section>
+//                 {_addTableGroupHeader(oProperties)}
+//                 {_addTableContent(oProperties)}
+//             </section>
+//         </div>
+//     ) : (
+//         <section style={{ height: "100%" }}>
+//             {_addTableContent(oProperties)}
+//         </section>
+//     );

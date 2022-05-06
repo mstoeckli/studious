@@ -9,13 +9,14 @@ import { Email } from './template/Email';
 import { Status } from './template/Status';
 import { Text } from './template/Text';
 import { Icon } from './template/Icon';
+import { Checkbox } from './template/Checkbox';
 
 /** @public
  *  @constructor
  *  @param   {object} oProperties
  *  @param   {string=} oProperties.tableKey
  *  @param   {string=} oProperties.attrColumnKey
- *  @param   {string=} oProperties.type -> Identifier/Text/Number/Button/Email/Status/Icon
+ *  @param   {object=} oProperties.customStyle
  *  @param   {string=} oProperties.align -> left/center/right
  *  @param   {{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}} oProperties.row
  *  @returns {JSX.Element} TableRow */
@@ -46,13 +47,21 @@ export const TableRow = (oProperties) => {
 
     /** @private
      *  @param   {object} args
-     *  @param   {number} args.value
+     *  @param   {string} args.value
      *  @param   {string=} args.iconSrc
      *  @returns {JSX.Element} */
     const _getTemplateText = ({ value, iconSrc }) => (
         <Text
-            iconSrc={iconSrc}
-            text={value} />
+            text={value}
+            iconSrc={iconSrc} />
+    );
+
+    /** @private
+     *  @param   {object} args
+     *  @param   {function} args.onClick
+     *  @returns {JSX.Element} */
+    const _getTemplateCheckbox = ({ onClick }) => (
+        <Checkbox onClick={onClick} />
     );
 
     /** @private
@@ -101,7 +110,7 @@ export const TableRow = (oProperties) => {
     const _getTemplateIcon = ({ iconSrc, onClick }) => (
         <Icon
             iconSrc={iconSrc}
-            onClick={onClick}/>
+            onClick={onClick} />
     );
 
     /** @private
@@ -111,6 +120,7 @@ export const TableRow = (oProperties) => {
         Identifier: _getTemplateIdentifier(oRow),
         Text: _getTemplateText(oRow),
         Number: _getTemplateNumber(oRow),
+        Checkbox: _getTemplateCheckbox(oRow),
         Button: _getTemplateButton(oRow),
         Email: _getTemplateEmail(oRow),
         Status: _getTemplateStatus(oRow),
@@ -119,9 +129,10 @@ export const TableRow = (oProperties) => {
 
     return (
         <StyledTableRow
+            style={oProperties?.customStyle ? oProperties.customStyle : {}}
             align={oProperties?.align ? oProperties.align : "left"}
             data-columnkey={oProperties.attrColumnKey}>
-            {_getTemplate(oProperties?.type ? oProperties.type : oProperties.row.type, oProperties.row)}
+            {_getTemplate(oProperties.row.type, oProperties.row)}
         </StyledTableRow>
     );
 }

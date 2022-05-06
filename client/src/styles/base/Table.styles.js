@@ -69,17 +69,7 @@ export const StyledTable = styled.div`
           vertical-align: middle;
           border-collapse: collapse;
           width:100%;
-
-          //& td.align-center {
-          //  text-align: center;
-          //}
-          //
-          //& td {
-          //  padding: 8px;
-          //  width: 1%;
-          //  white-space: nowrap;
-          //}
-          
+                    
           & thead {
             & tr {
               white-space: nowrap;
@@ -89,28 +79,29 @@ export const StyledTable = styled.div`
 
           & tbody {
             & tr {
-              border-bottom: 1px solid #f9f9f9;
+              & + tr.row-content {
+                border-bottom: 1px solid #f9f9f9;
+                opacity: 1;
+                transition: opacity 0.5s ease;
+
+                & > td {
+                  display: table-cell;
+                  font-size: 0.85rem;
+                  font-weight: 500;
+                  color: var(--description-color);
+                  padding: 1rem;
+                  transition: all 0.5s ease;
+                }
+              }
               
-              //& td {
-              //  font-size: 0.7rem;
-              //  font-weight: 500;
-              //  color: var(--description-color);
-              //  
-              //  & div {
-              //    padding: 4px
-              //  }
-              //}
-              //
-              //& td.show-line-number {
-              //  font-size: 0.75rem;
-              //  font-weight: 600;
-              //  color: var(--title-color);
-              //}
-              //
-              //& td.show-content-icon {
-              //  font-size: 0.85rem;
-              //  color: var(--title-color);
-              //}
+              & + tr.row-content-hide {
+                border-top: 1px solid #f9f9f9;
+                opacity: 0;
+
+                & > td {
+                  display: none;
+                }
+              }
             }
           }
         }

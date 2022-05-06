@@ -29,10 +29,10 @@ export const TableHeader = (oProperties) => {
     const { t } = useTranslation();
 
     /** @desc Returns a stateful value, and a function to update it.
-     *        -> Handle showing and hiding of dropdown component for filtering projects
-     *  @type {[{filter:boolean, sorter:boolean}, setIsActive:function]} */
+     *        -> Handle showing and hiding of dropdown component for filtering content
+     *  @type {[{filter:boolean}, setIsActive:function]} */
     const [ isActive, setIsActive ] = useState({
-        sorter: false
+        filter: false
     });
 
     /** @private

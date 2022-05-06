@@ -6,7 +6,8 @@ export const Columns = {
         ascending: false,
         fixed: true,
         isHidden: false,
-        isDropdownActive: false
+        isDropdownActive: false,
+        isCheckboxColumn: false
     }, {
         key: "schoolKey",
         title: "Schul-Identifikation",
@@ -14,14 +15,16 @@ export const Columns = {
         ascending: false,
         fixed: true,
         isHidden: false,
-        isDropdownActive: false
+        isDropdownActive: false,
+        isCheckboxColumn: false
     }, {
         key: "partnerProjects",
         title: "Partner-Projekt(e)",
         sortable: false,
         fixed: false,
         align: "center",
-        isHidden: false
+        isHidden: false,
+        isCheckboxColumn: false
     }, {
         key: "administrator",
         title: "Administrator",
@@ -29,7 +32,8 @@ export const Columns = {
         ascending: false,
         fixed: false,
         isHidden: false,
-        isDropdownActive: false
+        isDropdownActive: false,
+        isCheckboxColumn: false
     }, {
         key: "joiningDate",
         title: "Beitrittsdatum",
@@ -37,28 +41,32 @@ export const Columns = {
         ascending: false,
         fixed: false,
         isHidden: false,
-        isDropdownActive: false
+        isDropdownActive: false,
+        isCheckboxColumn: false
     }, {
         key: "classTeacher",
         title: "Klassen-Lehrer",
         sortable: false,
         fixed: false,
         align: "center",
-        isHidden: false
+        isHidden: false,
+        isCheckboxColumn: false
     }, {
         key: "subjectTeacher",
         title: "Fach-Lehrer",
         sortable: false,
         fixed: false,
         align: "center",
-        isHidden: false
+        isHidden: false,
+        isCheckboxColumn: false
     }, {
         key: "students",
         title: "Schüler",
         sortable: false,
         fixed: false,
         align: "center",
-        isHidden: false
+        isHidden: false,
+        isCheckboxColumn: false
     }, {
         key: "subscription",
         title: "Abonnement",
@@ -66,6 +74,7 @@ export const Columns = {
         ascending: false,
         fixed: false,
         isHidden: false,
-        isDropdownActive: false
+        isDropdownActive: false,
+        isCheckboxColumn: false
     }]
 }

@@ -5,6 +5,8 @@ import { StyledTableColumn } from '../../../styles/base/table/Column.styles';
 
 import { setDropdownActive, isClickedOutside } from '../../../reducers/base/table/Columns';
 
+import { Checkbox } from './template/Checkbox';
+
 import { Dropdown } from '../dropdown/Dropdown';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,10 +16,12 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @constructor
  *  @param   {object} oProperties
  *  @param   {string} oProperties.tableKey
- *  @param   {{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean}=} oProperties.column
+ *  @param   {{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}=} oProperties.column
  *  @param   {number=} oProperties.defaultColumnsFixed
  *  @param   {string=} oProperties.align
  *  @param   {string=} oProperties.customStyle
+ *  @param   {boolean=} oProperties.isCheckboxColumn
+ *  @param   {function=} oProperties.onCheckboxClicked
  *  @returns {JSX.Element} TableColumn */
 export const TableColumn = (oProperties) => {
     /** @desc Returns dispatcher function to call the actions inside the reducer
@@ -54,7 +58,23 @@ export const TableColumn = (oProperties) => {
 
     const _onHideColumn = () => {
 
-    }
+    };
+
+    /** @private
+     *  @param   {object} oProperties
+     *  @param   {string} oProperties.tableKey
+     *  @param   {object} oProperties.column
+     *  @param   {string} oProperties.column.key
+     *  @param   {boolean} oProperties.column.isDropdownActive
+     *  @returns {JSX.Element} */
+    const _addSortableColumnHdr = (oProperties) => (
+        <>
+            <FontAwesomeIcon
+                icon={FaDuotoneIcons["faSort"]}
+                onClick={() => _onDropdownClicked(oProperties.tableKey, oProperties.column.key, oProperties.column.isDropdownActive)} />
+            {_addDropdown(oProperties.tableKey, oProperties.column.key, oProperties.column.isDropdownActive)}
+        </>
+    );
 
     /** @private
      *  @param   {string} sTableKey
@@ -78,13 +98,11 @@ export const TableColumn = (oProperties) => {
             align={oProperties?.column?.align ? oProperties.column.align : oProperties.align}
             style={oProperties?.customStyle ? oProperties.customStyle : {}}
             data-columnkey={oProperties?.column?.key}>
-            <span>{oProperties?.column?.title}</span>
-            {oProperties?.column?.sortable &&
-                <>
-                    <FontAwesomeIcon
-                        icon={FaDuotoneIcons["faSort"]}
-                        onClick={() => _onDropdownClicked(oProperties.tableKey, oProperties.column.key, oProperties.column.isDropdownActive)} />
-                    {_addDropdown(oProperties.tableKey, oProperties.column.key, oProperties.column.isDropdownActive)}
+            {oProperties?.isCheckboxColumn
+                ? <Checkbox onClick={oProperties.onCheckboxClicked}/>
+                : <>
+                    <span>{oProperties?.column?.title}</span>
+                    {oProperties?.column?.sortable && _addSortableColumnHdr(oProperties)}
                 </>}
         </StyledTableColumn>
     )
