@@ -1,12 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Table } from '../../../base/Table'
-import { Identifier } from '../../../base/table/template/Identifier';
-import { Number } from '../../../base/table/template/Number';
-import { Button } from '../../../base/table/template/Button';
-import { Email } from '../../../base/table/template/Email';
-import { Status } from '../../../base/table/template/Status';
+import { Table } from '../../../base/Table';
+
+import { find } from '../../../../assets/api/School';
 
 /** @public
  *  @constructor
@@ -16,13 +13,70 @@ export const Schools = () => {
      *  @type {array} oColumns */
     const oColumns = useSelector((state) => state.tableColumns.value);
 
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Used for displaying schools as table rows
+     *  @type {[rows:array, setRows:function]} */
+    const [ rows, setRows ] = useState([]);
+
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Show/Hide busy indicator/loader
+     *  @type {[showLoader:boolean, setShowLoader:function]} */
+    const [ showLoader, setShowLoader ] = useState(false);
+
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Used for displaying dashboard information about active schools/teachers and students
+     *  @type {[counterInfo:{schools:number, teachers:number, students:number}, setCounterInfo:function]} */
+    const [ counterInfo, setCounterInfo ] = useState({
+        schools: 0,
+        teachers: 0,
+        students: 0
+    });
+
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
     useEffect(() => _fetchProjects(), []);
 
     /** @private */
     const _fetchProjects = () => {
-        // /** @desc Add skeleton component for displaying the user something happens.. */
-        // setWaitFetchContent(_addSkeleton());
+        /** @desc Show busy indicator/loader */
+        setShowLoader(true);
+
+        /** @desc Resetting counter information before re-selecting */
+        _resetCounterInfo();
+
+        /** @private
+         *  @returns {Promise<*>} */
+        const _fetch = async () => await find();
+
+        /** @param {object} oFetchedObj
+         *  @param {boolean} oFetchedObj.success
+         *  @param {array} oFetchedObj.schools */
+        _fetch().then(({ success, data, message }) => {
+            if (success) {
+                if (data.success) {
+                    const aRows = [];
+                    for (const oSchool of data.schools) {
+                        /** @desc Determine administrator email */
+                        const { email } = oSchool.users.find(({ _id }) => _id === oSchool.admin);
+
+                        /** @desc Update dashboard card information active schools/teachers and students */
+                        _updateCounterInfo(oSchool);
+
+                        /** @desc Add school information */
+                        aRows.push(_addRow(oSchool, email));
+                    }
+
+                    setRows(aRows);
+
+                    /** @desc Hide busy indicator/loader */
+                    setShowLoader(false);
+                }
+            } else {
+
+            }
+        })
+        // .catch((oErr) => setError(oErr.message));
+
+
 
         // /** @private
         //  *  @desc    Call reducer function for fetching the projects
@@ -45,103 +99,119 @@ export const Schools = () => {
         // }).catch((oErr) => setWaitFetchContent(<ProjectsNotFound />));
     };
 
+    /** @private
+     *  @returns {array} */
+    const _getHeaderCards = () => ([{
+        icon: "faGraduationCap",
+        title: "Schulen",
+        info: counterInfo.schools,
+        backgroundColor: "#98d1bf",
+        borderColor: "#61cfac"
+    }, {
+        icon: "faChalkboardUser",
+        title: "Lehrer",
+        info: counterInfo.teachers,
+        backgroundColor: "#98b9d1",
+        borderColor: "#5d9ecd"
+    }, {
+        icon: "faUserGraduate",
+        title: "Schüler",
+        info: counterInfo.students,
+        backgroundColor: "#d198a5",
+        borderColor: "#cf5d77"
+    }]);
+
+    /** @private
+     *  @param   {object} oSchool
+     *  @param   {string} oSchool.name
+     *  @param   {string} oSchool.address
+     *  @param   {number} oSchool.key
+     *  @param   {number} oSchool.classTeacher
+     *  @param   {number} oSchool.subjectTeacher
+     *  @param   {number} oSchool.students
+     *  @param   {string} sEmail
+     *  @returns {array} */
+    const _addRow = (oSchool, sEmail) => ([{
+        type: "Identifier",
+        iconSrc: "faMapPin",
+        title: oSchool.name,
+        description: oSchool.address
+    }, {
+        type: "Number",
+        value: oSchool.key
+    }, {
+        type: "Button",
+        value: "Anfrage",
+        iconSrc: "faDiagramSubtask",
+        onClick: (oEvt) => {}
+    }, {
+        type: "Email",
+        value: sEmail
+    }, {
+        type: "Text",
+        value: "31.12.2022",
+        iconSrc: "faCalendarDay"
+    }, {
+        type: "Number",
+        value: oSchool.classTeacher,
+        iconSrc: "faChalkboardUser"
+    }, {
+        type: "Number",
+        value: oSchool.subjectTeacher,
+        iconSrc: "faRectangleHistoryCircleUser",
+    }, {
+        type: "Number",
+        value: oSchool.students,
+        iconSrc: "faScreenUsers"
+    }, {
+        type: "Status",
+        value: "Free",
+        borderColor: "#d3366e",
+        backgroundColor: "#d885a3",
+        onClick: (oEvt) => {}
+    }]);
+
+    /** @private
+     *  @param {object} oSchool
+     *  @param {number} oSchool.classTeacher
+     *  @param {number} oSchool.subjectTeacher
+     *  @param {number} oSchool.students */
+    const _updateCounterInfo = ({ classTeacher, subjectTeacher, students }) => {
+        setCounterInfo((oCounterInfo) => {
+            return {
+                ...oCounterInfo,
+                schools: oCounterInfo.schools + 1,
+                teachers: oCounterInfo.teachers + (classTeacher + subjectTeacher),
+                students: oCounterInfo.students + students
+            }
+        });
+    };
+
+    /** @private */
+    const _resetCounterInfo = () => {
+        setCounterInfo((oCounterInfo) => {
+            return {
+                ...oCounterInfo,
+                schools: 0,
+                teachers: 0,
+                students: 0
+            }
+        });
+    };
+
     return (
         <Table
             tableKey="Schools"
-            favorite={false}
             searchable={true}
             filterable={true}
-            groupable={false}
-            groupColumn="school"
-            // multiSelect={true}
-            linesPerPage={2}
-            paginationAlignment="right"
-            // showLineNumber={true}
-            onCheckboxClicked={() => {
-                debugger
-            }}
-            content={<div>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</div>}
+            pagination={true}
+            showLineNumber={true}
+            showLoader={showLoader}
+            // linesPerPage={2}
+            content={<div>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed d ipsum dolor sit amet.</div>}
+            contentInitialVisibility={false}
+            headerCards={_getHeaderCards()}
             columns={oColumns["Schools"]}
-            rows={[[{
-                type: "Identifier",
-                iconSrc: "faMapPin",
-                title: "Grundschule Fislisbach",
-                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
-            }, {
-                type: "Number",
-                value: "5230"
-            }, {
-                type: "Button",
-                value: "Anfrage",
-                iconSrc: "faDiagramSubtask",
-                onClick: (oEvt) => {}
-            }, {
-                type: "Email",
-                value: "hanspeter.mueller@schule.ch"
-            }, {
-                type: "Text",
-                value: "31.12.2022",
-                iconSrc: "faCalendarDay"
-            }, {
-                type: "Number",
-                value: 10,
-                iconSrc: "faChalkboardUser"
-            }, {
-                type: "Number",
-                value: 5,
-                iconSrc: "faRectangleHistoryCircleUser",
-            }, {
-                type: "Number",
-                value: 87,
-                iconSrc: "faScreenUsers"
-            }, {
-                type: "Status",
-                value: "Free",
-                borderColor: "#d3366e",
-                backgroundColor: "#d885a3",
-                onClick: (oEvt) => {
-                    debugger
-                }
-            }], [{
-                type: "Identifier",
-                iconSrc: "faMapPin",
-                title: "Grundschule Fislisbach",
-                description: "Feldstrasse 31g, 5442 Fislisbach, Switzerland"
-            }, {
-                type: "Number",
-                value: "5230"
-            }, {
-                type: "Button",
-                value: "Anfrage",
-                iconSrc: "faDiagramSubtask",
-                onClick: (oEvt) => {}
-            }, {
-                type: "Email",
-                value: "hanspeter.mueller@schule.ch"
-            }, {
-                type: "Text",
-                value: "31.12.2022",
-                iconSrc: "faCalendarDay"
-            }, {
-                type: "Number",
-                value: 10,
-                iconSrc: "faChalkboardUser"
-            }, {
-                type: "Number",
-                value: 5,
-                iconSrc: "faRectangleHistoryCircleUser",
-            }, {
-                type: "Number",
-                value: 87,
-                iconSrc: "faScreenUsers"
-            }, {
-                type: "Status",
-                value: "Free",
-                borderColor: "#d3366e",
-                backgroundColor: "#d885a3",
-                onClick: (oEvt) => {
-                    debugger
-                }
-            }]]}/>
+            rows={rows}/>
     );
 }

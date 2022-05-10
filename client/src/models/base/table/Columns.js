@@ -37,7 +37,7 @@ export const Columns = {
     }, {
         key: "joiningDate",
         title: "Beitrittsdatum",
-        sortable: true,
+        sortable: false,
         ascending: false,
         fixed: false,
         isHidden: false,

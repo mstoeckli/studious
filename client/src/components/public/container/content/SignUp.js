@@ -15,7 +15,7 @@ import { MadeInSwitzerland } from "../../../core/MadeInSwitzerland";
 import { useSignUpContext } from "../../../../context/SignUpProvider";
 
 import { signUp } from '../../../../assets/api/Authentication';
-import { createSchool } from '../../../../assets/api/School';
+import { create } from '../../../../assets/api/School';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
@@ -65,7 +65,7 @@ export const SignUp = () => {
     /** @private
      *  @param   {number} iUserId
      *  @returns {Promise<*>} */
-    const _createSchool = (iUserId) => createSchool({
+    const _createSchool = (iUserId) => create({
         key: values.schoolKey,
         name: values.schoolName,
         address: values.address,

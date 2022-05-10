@@ -37,6 +37,7 @@ export const PaginationBase = forwardRef((oProperties, ref) => {
         oProperties.onIndexCalculated(iIndexLast, iIndexFirst);
     }, [ref, iIndexLast, iIndexFirst]);
 
+    /** @public */
     useImperativeHandle(ref, () => ({
         refresh(aData) {
             /** @desc Update the pagination state after reading the projects */
@@ -57,7 +58,8 @@ export const PaginationBase = forwardRef((oProperties, ref) => {
                 firstPageText={<FontAwesomeIcon icon={FaDuotoneIcons["faAngleDoubleLeft"]} />}
                 lastPageText={<FontAwesomeIcon icon={FaDuotoneIcons["faAngleDoubleRight"]} />}
                 itemsCountPerPage={pagination.perPage}
-                totalItemsCount={pagination.data.length}
+                // totalItemsCount={pagination.data.length}
+                totalItemsCount={oProperties.data.length}
                 pageRangeDisplayed={oProperties.pageRangeDisplayed ? oProperties.pageRangeDisplayed : 8}
                 hideDisabled={oProperties.hideDisabled ? oProperties.hideDisabled : true}
                 activePage={pagination.page}

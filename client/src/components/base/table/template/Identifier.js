@@ -11,9 +11,11 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @param   {string} oProperties.title
  *  @param   {string} oProperties.description
  *  @param   {string=} oProperties.iconSrc
+ *  @param   {string=} oProperties.flexDirection
  *  @returns {JSX.Element} Identifier */
 export const Identifier = (oProperties) => (
-    <StyledIdentifier>
+    <StyledIdentifier
+        flexDirection={oProperties.flexDirection}>
         {oProperties?.iconSrc && <FontAwesomeIcon icon={FaDuotoneIcons[oProperties.iconSrc]} />}
         <div>
             <h4>{oProperties.title}</h4>

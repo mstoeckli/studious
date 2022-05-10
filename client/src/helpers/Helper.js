@@ -11,3 +11,12 @@ export const debounce = (fnCallback, iTimeout = 500) => {
         }, iTimeout);
     };
 }
+
+/** @public
+ *  @param   {HTMLElement} oParentElem
+ *  @param   {*} oInstanceOf
+ *  @returns {HTMLElement} */
+export const getParentByInstance = (oParentElem, oInstanceOf) => {
+    if (oParentElem instanceof oInstanceOf) return oParentElem;
+    else return getParentByInstance(oParentElem.parentElement, oInstanceOf);
+}

@@ -80,6 +80,8 @@ export const Dropdown = (oProperties) => {
             onClick={oProperties.onListItemClick}/>
     );
 
+    /** @private
+     *  @returns {JSX.Element} */
     const _addSeparator = () => (
         <DropdownItem isSeparator="true"/>
     )

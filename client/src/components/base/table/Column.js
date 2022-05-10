@@ -95,8 +95,8 @@ export const TableColumn = (oProperties) => {
 
     return (
         <StyledTableColumn
-            align={oProperties?.column?.align ? oProperties.column.align : oProperties.align}
             style={oProperties?.customStyle ? oProperties.customStyle : {}}
+            align={oProperties?.column?.align ? oProperties.column.align : oProperties.align}
             data-columnkey={oProperties?.column?.key}>
             {oProperties?.isCheckboxColumn
                 ? <Checkbox onClick={oProperties.onCheckboxClicked}/>

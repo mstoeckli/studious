@@ -18,7 +18,8 @@ import { Checkbox } from './template/Checkbox';
  *  @param   {string=} oProperties.attrColumnKey
  *  @param   {object=} oProperties.customStyle
  *  @param   {string=} oProperties.align -> left/center/right
- *  @param   {{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}} oProperties.row
+ *  @param   {number=} oProperties.colSpan
+ *  @param   {{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string, flexDirection:string}} oProperties.row
  *  @returns {JSX.Element} TableRow */
 export const TableRow = (oProperties) => {
     /** @private
@@ -26,12 +27,14 @@ export const TableRow = (oProperties) => {
      *  @param   {string} args.title
      *  @param   {string} args.description
      *  @param   {string=} args.iconSrc
+     *  @param   {string=} args.flexDirection -> row/column
      *  @returns {JSX.Element} */
-    const _getTemplateIdentifier = ({ title, description, iconSrc }) => (
+    const _getTemplateIdentifier = ({ title, description, iconSrc, flexDirection = "row" }) => (
         <Identifier
             iconSrc={iconSrc}
             title={title}
-            description={description} />
+            description={description}
+            flexDirection={flexDirection} />
     );
 
     /** @private
@@ -131,7 +134,8 @@ export const TableRow = (oProperties) => {
         <StyledTableRow
             style={oProperties?.customStyle ? oProperties.customStyle : {}}
             align={oProperties?.align ? oProperties.align : "left"}
-            data-columnkey={oProperties.attrColumnKey}>
+            data-columnkey={oProperties.attrColumnKey}
+            colSpan={oProperties?.colSpan ? oProperties.colSpan : 0}>
             {_getTemplate(oProperties.row.type, oProperties.row)}
         </StyledTableRow>
     );

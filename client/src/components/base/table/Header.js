@@ -22,6 +22,7 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
  *  @param   {boolean=} oProperties.filterable
  *  @param   {boolean=} oProperties.groupable
  *  @param   {boolean=} oProperties.favorite
+ *  @param   {array=} oProperties.cards
  *  @returns {JSX.Element} TableHeader */
 export const TableHeader = (oProperties) => {
     /** @desc Returns the translation function for reading from the locales files
@@ -90,7 +91,7 @@ export const TableHeader = (oProperties) => {
                         ...isActive,
                         [oQuickOptions.id]: false
                     }))}
-                    jsxElement={() => {}}  />}
+                    jsxElement={<div>jsxelement</div>}  />}
             </div>
         );
     }
@@ -117,28 +118,18 @@ export const TableHeader = (oProperties) => {
                 {oProperties.searchable && <Search />}
                 {QuickOptions["Base"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.groupable, oProperties.filterable, oProperties.favorite))}
             </header>
-            <article className="option-wrapper">
-                {[{ icon: "faMapPin", value: "Fislisbach" }, { icon: "faGraduationCap", value: "Grundschule Fislisbach" }].map((oFilterValue) => _addFilterValue(oFilterValue))}
-            </article>
+            {/*<article className="option-wrapper">*/}
+            {/*    {[{ icon: "faMapPin", value: "Fislisbach" }, { icon: "faGraduationCap", value: "Grundschule Fislisbach" }].map((oFilterValue) => _addFilterValue(oFilterValue))}*/}
+            {/*</article>*/}
             <article className="card-info">
-                <CardInfo
-                    icon="faGraduationCap"
-                    title="Schulen"
-                    info="123"
-                    backgroundColor="#98d1bf"
-                    borderColor="#61cfac" />
-                <CardInfo
-                    icon="faChalkboardUser"
-                    title="Lehrer"
-                    info="52"
-                    backgroundColor="#98b9d1"
-                    borderColor="#5d9ecd" />
-                <CardInfo
-                    icon="faUserGraduate"
-                    title="Schüler"
-                    info="276"
-                    backgroundColor="#d198a5"
-                    borderColor="#cf5d77" />
+                {oProperties.cards.map((oCard) => (
+                    <CardInfo
+                        icon={oCard.icon}
+                        title={oCard.title}
+                        info={oCard.info}
+                        backgroundColor={oCard.backgroundColor}
+                        borderColor={oCard.borderColor} />
+                ))}
             </article>
         </StyledTableHeader>
     )

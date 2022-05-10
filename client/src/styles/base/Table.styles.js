@@ -82,15 +82,14 @@ export const StyledTable = styled.div`
               & + tr.row-content {
                 border-bottom: 1px solid #f9f9f9;
                 opacity: 1;
-                transition: opacity 0.5s ease;
+                transition: opacity 0.3s ease-in;
 
                 & > td {
                   display: table-cell;
-                  font-size: 0.85rem;
+                  font-size: 0.75rem;
                   font-weight: 500;
                   color: var(--description-color);
                   padding: 1rem;
-                  transition: all 0.5s ease;
                 }
               }
               

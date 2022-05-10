@@ -9,7 +9,7 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
 /** @public
  *  @constructor
  *  @param   {object} oProperties
- *  @param   {string} oProperties.icon
+ *  @param   {string=} oProperties.icon -> Separator has no icon!
  *  @param   {string=} oProperties.iconColor
  *  @param   {string} oProperties.title
  *  @param   {string=} oProperties.routerLink
@@ -24,7 +24,7 @@ export const DropdownItem = (oProperties) => (
         borderRadius={oProperties.isSeparator ? "0" : "5px"}
         borderBottom={oProperties.isSeparator ? "1px solid var(--color-input-border)" : "none"}
         onClick={oProperties?.onClick}>
-        {<FontAwesomeIcon
+        {oProperties.icon && <FontAwesomeIcon
             style={oProperties.hasOwnProperty("iconColor") ? { color: `${oProperties.iconColor}` } : {}}
             icon={FaDuotoneIcons[oProperties.icon]} />}
         {oProperties.routerLink ? <Link to={`/${oProperties.routerLink}`}>{oProperties.title}</Link> : <span>{oProperties.title}</span>}

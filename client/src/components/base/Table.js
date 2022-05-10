@@ -1,11 +1,14 @@
-import React, { useState, useRef } from 'react';
-import { useResizeHandler } from '../../hooks/ResizeHandler';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { StyledTable } from '../../styles/base/Table.styles';
 
 import { TableHeader } from './table/Header';
 import { TableColumn } from './table/Column';
 import { TableRow } from './table/Row';
+
+import { Loader } from "../core/Loader";
+
+import { getParentByInstance } from '../../helpers/Helper';
 
 import { PaginationBase } from './Pagination';
 
@@ -17,14 +20,19 @@ import { PaginationBase } from './Pagination';
  *  @param   {boolean=} oProperties.favorite
  *  @param   {boolean=} oProperties.searchable
  *  @param   {boolean=} oProperties.filterable
+ *  @param   {boolean=} oProperties.pagination
  *  @param   {boolean=} oProperties.groupable -> not supported at the moment!
  *  @param   {string=} oProperties.groupColumn
  *  @param   {boolean=} oProperties.multiSelect
  *  @param   {number=} oProperties.linesPerPage
  *  @param   {string=} oProperties.paginationAlignment -> left/center/right
- *  @param   {boolean=} oProperties.showNumberLine
- *  @param   {boolean=} oProperties.showContent
+ *  @param   {boolean=} oProperties.showLineNumber
+ *  @param   {boolean=} oProperties.showLoader
+ *  @param   {string=} oProperties.noDataTextTitle
+ *  @param   {string=} oProperties.noDataTextDescription
+ *  @param   {string=} oProperties.noDataTextIcon
  *  @param   {JSX.Element=} oProperties.content
+ *  @param   {array=} oProperties.headerCards
  *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
  *  @param   {[[{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]]} oProperties.rows
  *  @param   {function=} oProperties.onCheckboxClicked
@@ -48,15 +56,6 @@ export const Table = (oProperties) => {
      *  @type {[sectionHeaderHeight:number, setSectionHeaderHeight:function]} */
     const [ tableHeaderHeight, setTableHeaderHeight ] = useState(0);
 
-
-
-    /** @desc Returns a stateful value, and a function to update it.
-     *        -> Update content while fetching data from backend system
-     *  @type {[waitFetchContent:JSX.Element, setWaitFetchContent:function]} */
-    const [ waitFetchContent, setWaitFetchContent ] = useState(<div />);
-
-
-
     /** @desc Initialize reference object for setting object pagination */
     const paginationRefreshRef = useRef(null);
 
@@ -65,17 +64,23 @@ export const Table = (oProperties) => {
 
     /** @desc Entries per page */
     const iPerPage = oProperties?.linesPerPage ? oProperties.linesPerPage : 20;
-    let iLineIdx = 0;
+    let iLineIdx = 1;
 
-    /** @desc Defines the resize hook for changing the height of the table */
-    useResizeHandler(tableHeaderRef, (oResizeObj) => setTableHeaderHeight((tableHeaderHeight) => oResizeObj.target.firstChild.offsetHeight + (oProperties.rows.length < iPerPage ? 40 : 70)));
+    /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
+    useEffect(() => {
+        /** @desc Dispatch it once mounted */
+        if (tableHeaderRef && oProperties.rows.length > 0) {
+            /** @desc Call resize event manually */
+            tableHeaderRef.current.dispatchEvent(new Event("resize"));
+        }
+    }, [oProperties.rows.length]);
 
-    /** @private
-     *  @returns {{width:string, minWidth:string}} */
-    const _getStyleDefaultColumns = () => ({
-        width: "40px",
-        minWidth: "40px"
-    });
+    if (tableHeaderRef?.current) {
+        /** @desc Defines the resize hook for changing the height of the table */
+        tableHeaderRef.current.addEventListener("resize", (oEvt) => {
+            setTableHeaderHeight((tableHeaderHeight) => oEvt.target.firstChild.offsetHeight + (oProperties.pagination && oProperties.rows.length > iPerPage ? 70 : 40));
+        });
+    }
 
     /** @private
      *  @param   {object} oProperties
@@ -96,6 +101,7 @@ export const Table = (oProperties) => {
             <table>
                 {_addTableHeader(oProperties)}
                 {_addTableBody(oProperties)}
+                {oProperties.showLoader && <Loader/>}
             </table>
         </article>
     );
@@ -111,21 +117,33 @@ export const Table = (oProperties) => {
 
     /** @private
      *  @param   {object} oProperties
+     *  @param   {boolean=} oProperties.showLoader
+     *  @param   {boolean=} oProperties.showLineNumber
+     *  @param   {boolean=} oProperties.multiSelect
      *  @param   {JSX.Element=} oProperties.content
+     *  @param   {boolean=} oProperties.contentInitialVisibility
+     *  @param   {string=} oProperties.noDataTextTitle
+     *  @param   {string=} oProperties.noDataTextDescription
+     *  @param   {string=} oProperties.noDataTextIcon
      *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
      *  @param   {[[{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]]} oProperties.rows
      *  @returns {JSX.Element} */
-    const _addTableBody = (oProperties) => (
-        <tbody>
-            {oProperties.rows.length > 0
-                ? oProperties.rows.slice(_indexFirst, _indexLast).map((aRow) => (
-                    <>
-                        {_addRow(oProperties, aRow)}
-                        {oProperties?.content && oProperties.content && _addContent(oProperties.content, oProperties.columns.length)}
-                    </>
-                )) : waitFetchContent}
-        </tbody>
-    );
+    const _addTableBody = (oProperties) => {
+        /** @desc Calculate col span columns for displaying sub content */
+        const iColSpan = oProperties.columns.length + (oProperties.showLineNumber ? 1 : 0) + (oProperties.multiSelect ? 1 : 0) + (oProperties.content ? 1 : 0);
+
+        return (
+            <tbody>
+                {oProperties.rows.length > 0
+                    ? oProperties.rows.slice(_indexFirst, _indexLast).map((aRow) => (
+                        <>
+                            {_addRow(oProperties, aRow)}
+                            {oProperties?.content && oProperties.content && _addContent(oProperties.content, oProperties.contentInitialVisibility, iColSpan)}
+                        </>
+                    )) : _addRowNoDataFound(iColSpan, oProperties.noDataTextTitle, oProperties.noDataTextDescription, oProperties.noDataTextIcon)}
+            </tbody>
+        );
+    }
 
     /** @private
      *  @param   {object} oProperties
@@ -137,11 +155,10 @@ export const Table = (oProperties) => {
      *  @returns {JSX.Element} */
     const _addColumns = (oProperties) => (
         <tr>
-            {oProperties?.showLineNumber && <TableColumn customStyle={_getStyleDefaultColumns()}/>}
-            {oProperties?.content && oProperties.content && <TableColumn customStyle={_getStyleDefaultColumns()}/>}
+            {oProperties?.showLineNumber && <TableColumn />}
+            {oProperties?.content && oProperties.content && <TableColumn />}
             {oProperties?.multiSelect && <TableColumn
                 align="center"
-                customStyle={_getStyleDefaultColumns()}
                 isCheckboxColumn={true}
                 onCheckboxClicked={(oEvt) => {
                     debugger
@@ -179,11 +196,33 @@ export const Table = (oProperties) => {
     );
 
     /** @private
+     *  @param   {number} iColSpan
+     *  @param   {string=} sNoDataTextTitle
+     *  @param   {string=} sNoDataTextDescription
+     *  @param   {string=} sNoDataTextIconSrc
+     *  @returns {JSX.Element} */
+    const _addRowNoDataFound = (iColSpan, sNoDataTextTitle = "Oops. It looks like the database fall asleep or ... ", sNoDataTextDescription = "... you got lost while filtering the data", sNoDataTextIconSrc = "faServer") => (
+        <tr>
+            <TableRow
+                colSpan={iColSpan}
+                align="center"
+                row={{
+                    type: "Identifier",
+                    iconSrc: sNoDataTextIconSrc,
+                    title: sNoDataTextTitle,
+                    description: sNoDataTextDescription,
+                    flexDirection: "column"
+                }}/>
+        </tr>
+    );
+
+    /** @private
      *  @param   {JSX.Element} content
+     *  @param   {boolean} bContentInitialVisibility
      *  @param   {number} iColSpan
      *  @returns {JSX.Element} */
-    const _addContent = (content, iColSpan) => (
-        <tr className="row-content">
+    const _addContent = (content, bContentInitialVisibility = false, iColSpan) => (
+        <tr className={bContentInitialVisibility ? "row-content" : "row-content-hide"}>
             <td colSpan={iColSpan}>
                 {content}
             </td>
@@ -208,10 +247,12 @@ export const Table = (oProperties) => {
             align="center"
             row={{
                 type: "Icon",
-                iconSrc: "faChevronDown",
+                iconSrc: "faArrowsFromDottedLine",
                 onClick: (oEvt) => {
-                    oEvt.target.parentElement.parentElement.parentElement.nextSibling.classList.toggle("row-content");
-                    oEvt.target.parentElement.parentElement.parentElement.nextSibling.classList.toggle("row-content-hide");
+                    /** @desc Get parent element by selector for showing/hiding row content */
+                    const oParentElement = getParentByInstance(oEvt.target.parentElement, HTMLTableRowElement);
+                    oParentElement.nextElementSibling.classList.toggle("row-content");
+                    oParentElement.nextElementSibling.classList.toggle("row-content-hide");
                 }
         }} />
     );
@@ -232,6 +273,8 @@ export const Table = (oProperties) => {
     );
 
     /** @private
+     *  @param   {array} aRows
+     *  @param   {string=} sJustifyContent
      *  @returns {JSX.Element} */
     const _addPagination = (aRows, sJustifyContent = "center") => (
         <PaginationBase
@@ -252,13 +295,14 @@ export const Table = (oProperties) => {
                 favorite={oProperties?.favorite}
                 searchable={oProperties?.searchable}
                 filterable={oProperties?.filterable}
-                groupable={oProperties?.groupable} />
+                groupable={oProperties?.groupable}
+                cards={oProperties.headerCards}/>
             <div
                 style={{ height: `calc(100% - ${tableHeaderHeight}px)` }}
                 className="container">
                 {_addContainer(oProperties)}
             </div>
-            {!oProperties?.groupable && _addPagination(oProperties.rows, oProperties.paginationAlignment)}
+            {oProperties.pagination && _addPagination(oProperties.rows, oProperties.paginationAlignment)}
         </StyledTable>
     )
 }
