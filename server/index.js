@@ -24,7 +24,6 @@ api.use(express.urlencoded({ extended : true }));
 api.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 api.use(bodyParser.json({ limit: "30mb", extended: true }));
 
-
 /** @desc Cross-Origin Resource Sharing is a system, consisting of transmitting HTTP headers */
 api.use(cors({
     origin: process.env.CLIENT_URL_TEST,
@@ -42,6 +41,8 @@ passport.strategies();
 api.get("/", (req, res) => res.send("API available!"));
 api.use("/authenticate", authenticateRoute);
 api.use("/school", schoolRoute);
+
+// api.use((err, req, res, next) => res.status(500).send('An unknown error occurred.'));
 
 /** @desc Start express server */
 api.listen(getPort(), () => console.log(`Server started successfully on port ${getPort()}`));

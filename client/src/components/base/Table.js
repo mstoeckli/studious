@@ -31,10 +31,10 @@ import { PaginationBase } from './Pagination';
  *  @param   {string=} oProperties.noDataTextTitle
  *  @param   {string=} oProperties.noDataTextDescription
  *  @param   {string=} oProperties.noDataTextIcon
- *  @param   {JSX.Element=} oProperties.content
  *  @param   {array=} oProperties.headerCards
  *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
  *  @param   {[[{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]]} oProperties.rows
+ *  @param   {[JSX.Element=]} oProperties.content
  *  @param   {function=} oProperties.onCheckboxClicked
  *  @returns {JSX.Element} Table */
 export const Table = (oProperties) => {
@@ -69,11 +69,11 @@ export const Table = (oProperties) => {
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
     useEffect(() => {
         /** @desc Dispatch it once mounted */
-        if (tableHeaderRef && oProperties.rows.length > 0) {
+        if (tableHeaderRef) {
             /** @desc Call resize event manually */
             tableHeaderRef.current.dispatchEvent(new Event("resize"));
         }
-    }, [oProperties.rows.length]);
+    }, [tableHeaderRef?.current]);
 
     if (tableHeaderRef?.current) {
         /** @desc Defines the resize hook for changing the height of the table */
@@ -101,7 +101,6 @@ export const Table = (oProperties) => {
             <table>
                 {_addTableHeader(oProperties)}
                 {_addTableBody(oProperties)}
-                {oProperties.showLoader && <Loader/>}
             </table>
         </article>
     );
@@ -120,7 +119,7 @@ export const Table = (oProperties) => {
      *  @param   {boolean=} oProperties.showLoader
      *  @param   {boolean=} oProperties.showLineNumber
      *  @param   {boolean=} oProperties.multiSelect
-     *  @param   {JSX.Element=} oProperties.content
+     *  @param   {[JSX.Element=]} oProperties.content
      *  @param   {boolean=} oProperties.contentInitialVisibility
      *  @param   {string=} oProperties.noDataTextTitle
      *  @param   {string=} oProperties.noDataTextDescription
@@ -135,12 +134,17 @@ export const Table = (oProperties) => {
         return (
             <tbody>
                 {oProperties.rows.length > 0
-                    ? oProperties.rows.slice(_indexFirst, _indexLast).map((aRow) => (
-                        <>
-                            {_addRow(oProperties, aRow)}
-                            {oProperties?.content && oProperties.content && _addContent(oProperties.content, oProperties.contentInitialVisibility, iColSpan)}
-                        </>
-                    )) : _addRowNoDataFound(iColSpan, oProperties.noDataTextTitle, oProperties.noDataTextDescription, oProperties.noDataTextIcon)}
+                    ? oProperties.rows.slice(_indexFirst, _indexLast).map((aRow, iIdx) => {
+                        /** @desc Determine the JSX for displaying additional row content */
+                        const content = oProperties.content[iIdx] ? oProperties.content[iIdx] : <span>Leider stehen Ihnen hierzu keine Daten zur Verfügung</span>
+
+                        return (
+                            <>
+                                {_addRow(oProperties, aRow)}
+                                {Array.isArray(oProperties?.content) && oProperties.content.length > 0 && _addContent(content, oProperties.contentInitialVisibility, iColSpan)}
+                            </>
+                        )
+                    }) : _addRowNoDataFound(iColSpan, oProperties.noDataTextTitle, oProperties.noDataTextDescription, oProperties.noDataTextIcon)}
             </tbody>
         );
     }
@@ -150,13 +154,13 @@ export const Table = (oProperties) => {
      *  @param   {string} oProperties.tableKey
      *  @param   {boolean=} oProperties.showLineNumber
      *  @param   {boolean=} oProperties.multiSelect
-     *  @param   {JSX.Element=} oProperties.content
+     *  @param   {[JSX.Element=]} oProperties.content
      *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
      *  @returns {JSX.Element} */
     const _addColumns = (oProperties) => (
         <tr>
             {oProperties?.showLineNumber && <TableColumn />}
-            {oProperties?.content && oProperties.content && <TableColumn />}
+            {Array.isArray(oProperties?.content) && oProperties.content.length > 0 && <TableColumn />}
             {oProperties?.multiSelect && <TableColumn
                 align="center"
                 isCheckboxColumn={true}
@@ -175,7 +179,7 @@ export const Table = (oProperties) => {
      *  @param   {string} oProperties.tableKey
      *  @param   {boolean=} oProperties.showLineNumber
      *  @param   {boolean=} oProperties.multiSelect
-     *  @param   {JSX.Element=} oProperties.content
+     *  @param   {[JSX.Element=]} oProperties.content
      *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
      *  @param   {function=} oProperties.onCheckboxClicked
      *  @param   {[{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]} aRow
@@ -183,7 +187,7 @@ export const Table = (oProperties) => {
     const _addRow = (oProperties, aRow) => (
         <tr>
             {oProperties?.showLineNumber && _addRowShowLineNumber()}
-            {oProperties?.content && oProperties.content && _addRowContent()}
+            {Array.isArray(oProperties?.content) && oProperties.content.length > 0 && _addRowContent()}
             {oProperties?.multiSelect && _addRowMultiSelect(oProperties?.onCheckboxClicked)}
             {aRow.map((oRow, iCellIdx) => (
                 <TableRow
@@ -302,6 +306,7 @@ export const Table = (oProperties) => {
                 className="container">
                 {_addContainer(oProperties)}
             </div>
+            {oProperties.showLoader && <Loader/>}
             {oProperties.pagination && _addPagination(oProperties.rows, oProperties.paginationAlignment)}
         </StyledTable>
     )

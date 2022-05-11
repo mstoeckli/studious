@@ -35,6 +35,7 @@ export const authRequest = (oProperties) => {
     }))
     .catch((oErr) => ({
         success: false,
+        url: oErr.config.url,
         message: oErr.message
     }));
 }

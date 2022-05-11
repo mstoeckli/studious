@@ -121,7 +121,7 @@ export const TableHeader = (oProperties) => {
             {/*<article className="option-wrapper">*/}
             {/*    {[{ icon: "faMapPin", value: "Fislisbach" }, { icon: "faGraduationCap", value: "Grundschule Fislisbach" }].map((oFilterValue) => _addFilterValue(oFilterValue))}*/}
             {/*</article>*/}
-            <article className="card-info">
+            {Array.isArray(oProperties.cards) && oProperties.cards.length > 0 && <article className="card-info">
                 {oProperties.cards.map((oCard) => (
                     <CardInfo
                         icon={oCard.icon}
@@ -130,7 +130,7 @@ export const TableHeader = (oProperties) => {
                         backgroundColor={oCard.backgroundColor}
                         borderColor={oCard.borderColor} />
                 ))}
-            </article>
+            </article>}
         </StyledTableHeader>
     )
 }

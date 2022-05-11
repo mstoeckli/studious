@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Table } from '../../../base/Table';
+import { Dialog } from "../../../base/messages/Dialog";
+
+import { delay } from '../../../../helpers/Helper';
+
+import { Codes } from '../../../../models/core/messages/Codes';
 
 import { find } from '../../../../assets/api/School';
 
@@ -32,6 +37,11 @@ export const Schools = () => {
         students: 0
     });
 
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Used for displaying error dialog while fetching data from database
+     *  @type {[error:{title:string, description:string}, setError:function]} */
+    const [ error, setError ] = useState({});
+
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
     useEffect(() => _fetchProjects(), []);
 
@@ -50,7 +60,11 @@ export const Schools = () => {
         /** @param {object} oFetchedObj
          *  @param {boolean} oFetchedObj.success
          *  @param {array} oFetchedObj.schools */
-        _fetch().then(({ success, data, message }) => {
+        _fetch()
+        .then(async ({ success, data, url, message }) => {
+            /** @desc Custom delay call to slow down for a smoother user handling */
+            await delay(1000);
+
             if (success) {
                 if (data.success) {
                     const aRows = [];
@@ -63,41 +77,30 @@ export const Schools = () => {
 
                         /** @desc Add school information */
                         aRows.push(_addRow(oSchool, email));
-                    }
+                    } setRows(aRows);
+                } else _setError({ message: `${data.message} - ${url}` });
+            } else _setError({ message: `${message} - ${url}` });
 
-                    setRows(aRows);
-
-                    /** @desc Hide busy indicator/loader */
-                    setShowLoader(false);
-                }
-            } else {
-
-            }
+            /** @desc Hide busy indicator/loader */
+            setShowLoader(false);
         })
-        // .catch((oErr) => setError(oErr.message));
-
-
-
-        // /** @private
-        //  *  @desc    Call reducer function for fetching the projects
-        //  *  @returns {Promise<*>} */
-        // const _fetch = async () => await fnDispatch(await getProjects({
-        //     filter: _getFilter(),
-        //     sort: _getSorter()
-        // }));
-
-        // /** @param {object} oFetchedObj
-        //  *  @param {object} oFetchedObj.meta
-        //  *  @param {object} oFetchedObj.payload
-        //  *  @param {string} oFetchedObj.type */
-        // _fetch().then((oFetchedObj) => {
-        //     // /** @desc Call refresh function inside child component "Pagination.js" for updating data */
-        //     // if (paginationRefreshRef.current) paginationRefreshRef.current.refresh(oFetchedObj?.payload?.data ? oFetchedObj.payload.data : []);
-        //     //
-        //     // /** @desc Check if data was found, if not show component for no projects found */
-        //     // if (!oFetchedObj?.payload || oFetchedObj.payload.data.length <= 0) setWaitFetchContent(<ProjectsNotFound />);
-        // }).catch((oErr) => setWaitFetchContent(<ProjectsNotFound />));
+        .catch((oErr) => _setError(oErr));
     };
+
+    /** @private
+     *  @param {object} oErr
+     *  @param {string} oErr.message */
+    const _setError = ({ message }) => {
+        /** @desc Hide busy indicator/loader */
+        setShowLoader(false);
+        setError((oError) => {
+            return {
+                ...oError,
+                title: `${Codes["database-access"].key} - ${Codes["database-access"].text}`,
+                description: message
+            }
+        });
+    }
 
     /** @private
      *  @returns {array} */
@@ -200,18 +203,24 @@ export const Schools = () => {
     };
 
     return (
-        <Table
-            tableKey="Schools"
-            searchable={true}
-            filterable={true}
-            pagination={true}
-            showLineNumber={true}
-            showLoader={showLoader}
-            // linesPerPage={2}
-            content={<div>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed d ipsum dolor sit amet.</div>}
-            contentInitialVisibility={false}
-            headerCards={_getHeaderCards()}
-            columns={oColumns["Schools"]}
-            rows={rows}/>
+        <>
+            <Table
+                tableKey="Schools"
+                searchable={true}
+                filterable={true}
+                pagination={true}
+                showLineNumber={true}
+                showLoader={showLoader}
+                contentInitialVisibility={false}
+                headerCards={_getHeaderCards()}
+                columns={oColumns["Schools"]}
+                rows={rows}
+                content={[<div>Test 123</div>, <div>Test 456</div>]}/>
+            {Object.keys(error).length !== 0 && error.constructor === Object && <Dialog
+                title={error.title}
+                description={error.description}
+                messageType="E"
+                showSupport={true} />}
+        </>
     );
 }

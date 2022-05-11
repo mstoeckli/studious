@@ -22,6 +22,7 @@ export const GlobalStyle = createGlobalStyle`
     --background-color-completed: #e0ffe0;
     --color-completed: #35ad0d;    
     --color-error: #d83f3f;
+    --color-warning: #edc32c;
     --color-icon-default: #455a64;
     --color-input-border: #e9e9e9;
     --color-icon-sack-dollar: var(--color-icon-default);
@@ -39,6 +40,7 @@ export const GlobalStyle = createGlobalStyle`
     --webkit-scrollbar-thumb-border-radius: var(--webkit-scrollbar-border-radius);
     --webkit-scrollbar-thumb-background-color: rgb(44 62 80 / 43%);
     --z-index-loader: 10;
+    --z-index-dialog: 5;
     --z-index-dropdown-active: 2;
     --z-index-dropdown-inactive: -1;
   }
