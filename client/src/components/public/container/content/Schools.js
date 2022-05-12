@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { Table } from '../../../base/Table';
 import { Dialog } from "../../../base/messages/Dialog";
 
 import { delay } from '../../../../helpers/Helper';
+
+import { useAuth } from '../../../../context/AuthProvider';
 
 import { Codes } from '../../../../models/core/messages/Codes';
 
@@ -14,6 +17,13 @@ import { find } from '../../../../assets/api/School';
  *  @constructor
  *  @returns {JSX.Element} Schools */
 export const Schools = () => {
+    /** @desc In a suspense-enabled app, the navigate function is aware of when your app is suspending.
+     *        -> Used for changing the content after successful sign up */
+    const oNavigate = useNavigate();
+
+    /** @desc Get user object to check if user is signed in */
+    const { user, onSignOut } = useAuth();
+
     /** @desc Returns global state value by redux toolkit
      *  @type {array} oColumns */
     const oColumns = useSelector((state) => state.tableColumns.value);
@@ -22,6 +32,8 @@ export const Schools = () => {
      *        -> Used for displaying schools as table rows
      *  @type {[rows:array, setRows:function]} */
     const [ rows, setRows ] = useState([]);
+
+    const [reload, setReload] = useState(false)
 
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Show/Hide busy indicator/loader
@@ -43,7 +55,7 @@ export const Schools = () => {
     const [ error, setError ] = useState({});
 
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
-    useEffect(() => _fetchProjects(), []);
+    useEffect(() => _fetchProjects(), [reload]);
 
     /** @private */
     const _fetchProjects = () => {
@@ -152,9 +164,21 @@ export const Schools = () => {
         value: oSchool.key
     }, {
         type: "Button",
-        value: "Anmelden",
+        value: user && oSchool.key === user.schoolKey ? "Abmelden" : "Anmelden",
         iconSrc: "faSignIn",
-        onClick: (oEvt) => {}
+        disabled: user && oSchool.key !== user.schoolKey,
+        customStyle: user && oSchool.key === user.schoolKey ? { backgroundColor: "var(--color-error)", borderColor: "var(--border-color-error)" } : {},
+        onClick: async (oEvt) => {
+            if (!user) oNavigate("/signin", { state: { schoolKey: oSchool.key }})
+            else {
+                /** @desc Show busy indicator/loader */
+                setShowLoader(true);
+                document.cookie = "accessToken" + "=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+                await onSignOut();
+
+                setReload(true);
+            }
+        }
     }, {
         type: "Email",
         value: sEmail

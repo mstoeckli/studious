@@ -18,7 +18,6 @@ exports.signIn = (req, res, next) => {
      *  @param {string} oUser.username
      *  @param {string} sInfoMessage -> Local strategy i18n message */
     passport.authenticate("local", { session: false }, (oErr, oUser, sInfoMessage) => {
-        console.log(oErr, oUser, sInfoMessage);
         /** @desc Passport failure */
         if (oErr) return next(oErr);
         else {
@@ -45,6 +44,7 @@ exports.signIn = (req, res, next) => {
                         /** @desc Successfully signed in */
                         res.status(200).json({
                             success: true,
+                            schoolKey: oSchool.key,
                             userId: oUser._id,
                             username: oUser.username,
                             email: oUser.email
@@ -82,13 +82,23 @@ exports.signUp = async (req, res) => {
 
 /** @public */
 exports.userById = async (req, res) => {
-    Users.findById(req.body.id)
-    .then((oUser) => res.status(200).json({
-        success : true,
-        userId : oUser._id,
-        username: oUser.username,
-        email: oUser.email
-    }))
+    // /** @desc Check if user is registered in school */
+    // Schools.findOne({ key: req.body.key }).populate({
+    //     path: "users",
+    //     match: { _id: oUser._id }
+    // })
+    Users.findById(req.body.id).populate({
+        path: "schools"
+    })
+    .then((oUser) => {
+        console.log(oUser);
+        return res.status(200).json({
+            success : true,
+            userId : oUser._id,
+            username: oUser.username,
+            email: oUser.email
+        })
+    })
     .catch((oErr) => res.status(400).json({
         success: false,
         message: oErr.message

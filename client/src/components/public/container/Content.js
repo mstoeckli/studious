@@ -33,7 +33,7 @@ export const Content = ({ contentKey, iSidebarWidthPx }) => {
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Update active content key for handling the routing of nested routes
      *  @type {[activeContentKey:string, setActiveContentKey:function]} */
-    const [ activeContentKey, setActiveContentKey ] = useState(contentKey)
+    const [ activeContentKey, setActiveContentKey ] = useState(contentKey);
 
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
     useEffect(() => {

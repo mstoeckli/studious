@@ -34,7 +34,7 @@ export const SignInProvider = ({ children }) => {
     /** @public
      *  @param {string} sKey
      *  @param {*} value */
-    const onAddValue = ( sKey, value) => {
+    const onAddValue = (sKey, value) => {
         setValues((oValues) => {
             return {...oValues, [sKey]: value}
         });

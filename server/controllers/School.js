@@ -19,7 +19,7 @@ exports.find = async (req, res) => {
         path: "users"
     })
     .then((aSchools) => res.status(200).json({
-        success : true,
+        success: true,
         schools: aSchools,
     }))
     .catch((oErr) => res.status(400).json({

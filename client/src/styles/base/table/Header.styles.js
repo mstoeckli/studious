@@ -79,13 +79,13 @@ export const StyledTableHeader = styled.div`
 
       & > svg {
         color: var(--color-icon-default);
-        padding-right: 0.5rem;
       }
 
       & > span {
         font-size: 0.775rem;
         font-weight: 500;
         color: var(--title-color-nav-menu);
+        padding-left: 0.5rem;
       }
 
       &:hover {

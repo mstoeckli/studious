@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import { StyledSignIn } from '../../../../styles/public/container/content/SignIn.styles';
 
@@ -20,6 +21,10 @@ import * as FaDuotoneIcons from "@fortawesome/pro-duotone-svg-icons";
  *  @constructor
  *  @returns {JSX.Element} SignIn */
 export const SignIn = () => {
+    /** @desc In a suspense-enabled app, the navigate function is aware of when your app is suspending.
+     *        -> Used for changing the content after clicking element in the sidebar */
+    const oNavigate = useNavigate();
+
     /** @desc Get sign in provider context */
     const { values, progress } = useSignInContext();
 
@@ -56,11 +61,20 @@ export const SignIn = () => {
             .then(({ success, message, data }) => {
                 if (!success) setError(message);
                 /** @desc Update context provider after successful api call */
-                else !data.success ? setError(data.message) : onSignIn({
-                    userId: data.userId,
-                    username: data.username,
-                    email: data.email
-                });
+                else {
+                    if (!data.success) setError(data.message)
+                    else {
+                        onSignIn({
+                            schoolKey: data.schoolKey,
+                            userId: data.userId,
+                            username: data.username,
+                            email: data.email
+                        });
+
+                        /** @desc Go back to previous site */
+                        oNavigate(-1);
+                    }
+                }
 
                 /** @desc Hide busy indicator/loader */
                 setShowLoader(false);

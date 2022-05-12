@@ -17,11 +17,12 @@ export const GlobalStyle = createGlobalStyle`
     --color-dropdown-menu-hover: var(--title-color-nav-group);
     --color-product-title-hover: var(--title-color-nav-group);
     --border-color-search-hover: var(--title-color-nav-group);
+    --border-color-error: #a93c3c;
     --border-color-dropdown-filter-hover: var(--title-color-nav-group);
     --background-color-dropdown-filter-hover: var(--background-color-nav-menu-hover);
     --background-color-completed: #e0ffe0;
     --color-completed: #35ad0d;    
-    --color-error: #d83f3f;
+    --color-error: #a76060;
     --color-warning: #edc32c;
     --color-icon-default: #455a64;
     --color-input-border: #e9e9e9;

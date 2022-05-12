@@ -1,5 +1,6 @@
 import React from "react";
 import { Trans, useTranslation } from 'react-i18next';
+import { useLocation } from "react-router-dom";
 
 import { useSignInContext } from "../../../../../context/SignInProvider";
 
@@ -11,6 +12,7 @@ import { FormInput } from "../../../../base/forms/Input";
 import { RegexExp } from "../../../../../constants/RegexExp";
 
 import { progressPrev } from "../../../../../helpers/container/content/SignUp";
+
 
 /** @public
  *  @constructor
@@ -26,6 +28,9 @@ export const User = ({ errorMessage, showLoader, onSignIn }) => {
     /** @desc Returns the translation function for reading from the locales files
      *  @type {function} t */
     const { t } = useTranslation();
+
+    /** @desc Get custom routing parameter */
+    const { state } = useLocation();
 
     /** @private
      *  @param {MouseEvent<HTMLButtonElement>} oEvt */
@@ -60,7 +65,7 @@ export const User = ({ errorMessage, showLoader, onSignIn }) => {
             </span>
             {showLoader && <Loader />}
             <NavButtons
-                showPrev={true}
+                showPrev={!(state && state?.schoolKey)}
                 callbackPrev={_onClickStep2}
                 showNext={true}
                 callbackNext={onSignIn}

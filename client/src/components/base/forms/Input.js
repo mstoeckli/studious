@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { StyledInput } from '../../../styles/base/forms/Input.styles';
 
@@ -20,6 +20,28 @@ export const FormInput = ({ label, message, icon, fnChange, ...inputProps }) => 
      *  @type {[open:boolean, setOpen:function]} */
     const [ focused, setFocused ] = useState(false);
 
+    /** @desc Initialize reference object for input field */
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        /** @desc Initialize callback function for event listener */
+        const _fnChange = (oEvt) => fnChange(oEvt);
+
+        if (inputProps.value) {
+            /** @desc Initialize event listener for change handler to call it manually when a value is transferred */
+            inputRef.current.addEventListener("change", _fnChange);
+            const oEvt = new Event("change");
+            inputRef.current.dispatchEvent(oEvt);
+        }
+
+        return () => {
+            if (inputRef && inputRef?.current) {
+                /** @desc Remove event listener after useEffect is called */
+                inputRef.current.removeEventListener("change", _fnChange);
+            }
+        }
+    }, [inputProps.value]);
+
     /** @private */
     const _onBlur = () => setFocused(true);
 
@@ -27,6 +49,7 @@ export const FormInput = ({ label, message, icon, fnChange, ...inputProps }) => 
         <StyledInput>
             <label className={inputProps.required ? "required" : String()}>{label}</label>
             <input
+                ref={inputRef}
                 {...inputProps}
                 onChange={fnChange}
                 onBlur={_onBlur}

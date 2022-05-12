@@ -19,7 +19,7 @@ import { Checkbox } from './template/Checkbox';
  *  @param   {object=} oProperties.customStyle
  *  @param   {string=} oProperties.align -> left/center/right
  *  @param   {number=} oProperties.colSpan
- *  @param   {{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string, flexDirection:string}} oProperties.row
+ *  @param   {{type:string, title:string, description:string, disabled:boolean, customStyle:object, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string, flexDirection:string}} oProperties.row
  *  @returns {JSX.Element} TableRow */
 export const TableRow = (oProperties) => {
     /** @private
@@ -71,13 +71,17 @@ export const TableRow = (oProperties) => {
      *  @param   {object} args
      *  @param   {string} args.value
      *  @param   {string=} args.iconSrc
+     *  @param   {boolean=} args.disabled
+     *  @param   {object=} args.customStyle
      *  @param   {function} args.onClick
      *  @returns {JSX.Element} */
-    const _getTemplateButton = ({ value, iconSrc, onClick }) => (
+    const _getTemplateButton = ({ value, iconSrc, disabled, customStyle, onClick }) => (
         <Button
             text={value}
             iconSrc={iconSrc}
-            onClick={onClick} />
+            disabled={disabled}
+            customStyle={customStyle}
+            onClick={onClick}/>
     );
 
     /** @private

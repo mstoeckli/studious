@@ -29,7 +29,7 @@ export const DropdownItems = {
         "isPrivate": false
     }, {
         "icon": "faRightFromBracket",
-        "iconColor": "#d83f3f",
+        "iconColor": "var(--color-error)",
         "title": "Container.Header.Dropdown.Config.SignOut.title",
         "isPublic": false,
         "isPrivate": true

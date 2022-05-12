@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }) => {
             .then(({ data }) => {
                 if (data.success) {
                     setUser({
+                        schoolKey: data.schoolKey,
                         userId: data.userId,
                         username: data.username,
                         email: data.email
