@@ -124,6 +124,14 @@ export const Schools = () => {
         borderColor: "#cf5d77"
     }]);
 
+    /** @desc TODO: -SCHOOLS1: Implement partner project button */
+    // {
+    //     type: "Button",
+    //         value: "Anfrage",
+    //     iconSrc: "faDiagramSubtask",
+    //     onClick: (oEvt) => {}
+    // },
+
     /** @private
      *  @param   {object} oSchool
      *  @param   {string} oSchool.name
@@ -144,8 +152,8 @@ export const Schools = () => {
         value: oSchool.key
     }, {
         type: "Button",
-        value: "Anfrage",
-        iconSrc: "faDiagramSubtask",
+        value: "Anmelden",
+        iconSrc: "faSignIn",
         onClick: (oEvt) => {}
     }, {
         type: "Email",
@@ -205,14 +213,14 @@ export const Schools = () => {
     return (
         <>
             <Table
+                title="Schulen"
                 tableKey="Schools"
                 searchable={true}
                 filterable={true}
                 pagination={true}
-                showLineNumber={true}
                 showLoader={showLoader}
                 contentInitialVisibility={false}
-                headerCards={_getHeaderCards()}
+                // headerCards={_getHeaderCards()}
                 columns={oColumns["Schools"]}
                 rows={rows}
                 content={[<div>Test 123</div>, <div>Test 456</div>]}/>

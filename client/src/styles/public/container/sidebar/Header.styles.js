@@ -33,10 +33,11 @@ export const StyledHeader = styled.header`
       color: var(--title-color);
     }
 
-    & .description {
+    & p {
       display: block;
       font-size: 0.775rem;
-      color: var(--description-color);
+      color: var(--description-color) !important;
+      margin: 0 !important;
     }
   }
 

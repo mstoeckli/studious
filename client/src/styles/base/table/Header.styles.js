@@ -18,7 +18,6 @@ export const StyledTableHeader = styled.div`
     position: relative;
     display: flex;
     align-items: center;
-    padding-bottom: 0.75rem;
 
     & .content {
       & .title {
@@ -50,6 +49,7 @@ export const StyledTableHeader = styled.div`
 
   & > header {
     display: flex;
+    justify-content: space-between;
     flex-wrap: wrap;
     gap: 6px;
     align-items: center;
@@ -57,7 +57,15 @@ export const StyledTableHeader = styled.div`
     height: auto;
     width: 100%;
     padding-bottom: 0.5rem;
-
+    
+    & .left,
+    & .right {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    
     & .quick-options {
       height: 32px;
       border: 1px solid #e9e9e9;
@@ -71,7 +79,7 @@ export const StyledTableHeader = styled.div`
 
       & > svg {
         color: var(--color-icon-default);
-        padding-right: 0.25rem;
+        padding-right: 0.5rem;
       }
 
       & > span {

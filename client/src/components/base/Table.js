@@ -32,7 +32,7 @@ import { PaginationBase } from './Pagination';
  *  @param   {string=} oProperties.noDataTextDescription
  *  @param   {string=} oProperties.noDataTextIcon
  *  @param   {array=} oProperties.headerCards
- *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
+ *  @param   {[{key:string, title:string, sortable:boolean, searchable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
  *  @param   {[[{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]]} oProperties.rows
  *  @param   {[JSX.Element=]} oProperties.content
  *  @param   {function=} oProperties.onCheckboxClicked
@@ -124,7 +124,7 @@ export const Table = (oProperties) => {
      *  @param   {string=} oProperties.noDataTextTitle
      *  @param   {string=} oProperties.noDataTextDescription
      *  @param   {string=} oProperties.noDataTextIcon
-     *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
+     *  @param   {[{key:string, title:string, sortable:boolean, searchable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
      *  @param   {[[{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]]} oProperties.rows
      *  @returns {JSX.Element} */
     const _addTableBody = (oProperties) => {
@@ -136,7 +136,7 @@ export const Table = (oProperties) => {
                 {oProperties.rows.length > 0
                     ? oProperties.rows.slice(_indexFirst, _indexLast).map((aRow, iIdx) => {
                         /** @desc Determine the JSX for displaying additional row content */
-                        const content = oProperties.content[iIdx] ? oProperties.content[iIdx] : <span>Leider stehen Ihnen hierzu keine Daten zur Verfügung</span>
+                        const content = Array.isArray(oProperties?.content) && oProperties.content[iIdx] ? oProperties.content[iIdx] : <span>Leider stehen Ihnen hierzu keine Daten zur Verfügung</span>
 
                         return (
                             <>
@@ -155,7 +155,7 @@ export const Table = (oProperties) => {
      *  @param   {boolean=} oProperties.showLineNumber
      *  @param   {boolean=} oProperties.multiSelect
      *  @param   {[JSX.Element=]} oProperties.content
-     *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
+     *  @param   {[{key:string, title:string, sortable:boolean, searchable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
      *  @returns {JSX.Element} */
     const _addColumns = (oProperties) => (
         <tr>
@@ -180,8 +180,8 @@ export const Table = (oProperties) => {
      *  @param   {boolean=} oProperties.showLineNumber
      *  @param   {boolean=} oProperties.multiSelect
      *  @param   {[JSX.Element=]} oProperties.content
-     *  @param   {[{key:string, title:string, sortable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
      *  @param   {function=} oProperties.onCheckboxClicked
+     *  @param   {[{key:string, title:string, sortable:boolean, searchable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
      *  @param   {[{type:string, title:string, description:string, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]} aRow
      *  @returns {JSX.Element} */
     const _addRow = (oProperties, aRow) => (
@@ -300,7 +300,9 @@ export const Table = (oProperties) => {
                 searchable={oProperties?.searchable}
                 filterable={oProperties?.filterable}
                 groupable={oProperties?.groupable}
-                cards={oProperties.headerCards}/>
+                cards={oProperties?.headerCards}
+                showCreateButton={oProperties?.showCreateButton}
+                createButtonText={oProperties?.createButtonText}/>
             <div
                 style={{ height: `calc(100% - ${tableHeaderHeight}px)` }}
                 className="container">

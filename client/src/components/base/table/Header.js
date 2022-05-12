@@ -13,11 +13,12 @@ import { QuickOptions } from '../../../models/base/table/QuickOptions';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
+import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
 
 /** @public
  *  @constructor
  *  @param   {object} oProperties
- *  @param   {string} oProperties.title
+ *  @param   {string=} oProperties.title
  *  @param   {boolean=} oProperties.searchable
  *  @param   {boolean=} oProperties.filterable
  *  @param   {boolean=} oProperties.groupable
@@ -33,8 +34,20 @@ export const TableHeader = (oProperties) => {
      *        -> Handle showing and hiding of dropdown component for filtering content
      *  @type {[{filter:boolean}, setIsActive:function]} */
     const [ isActive, setIsActive ] = useState({
-        filter: false
+        filterable: false,
+        settings: false,
+        view: false
     });
+
+    /** @private
+     *  @param {string} sId
+     *  @param {boolean=} bIsActive */
+    const _setIsActive = (sId, bIsActive = false) => {
+        setIsActive((isActive) => ({
+            ...isActive,
+            [sId]: bIsActive
+        }));
+    };
 
     /** @private
      *  @returns {JSX.Element} */
@@ -53,8 +66,12 @@ export const TableHeader = (oProperties) => {
      *  @param   {object} oQuickOptions
      *  @param   {string} oQuickOptions.id
      *  @param   {string} oQuickOptions.title
+     *  @param   {string=} oQuickOptions.titleColor
      *  @param   {string} oQuickOptions.icon
      *  @param   {string} oQuickOptions.iconColor
+     *  @param   {boolean=} oQuickOptions.iconSolid
+     *  @param   {string=} oQuickOptions.backgroundColor
+     *  @param   {string=} oQuickOptions.borderColor
      *  @param   {string=} oQuickOptions.jsxElement
      *  @param   {boolean=} bGroupable
      *  @param   {boolean=} bFilterable
@@ -79,18 +96,16 @@ export const TableHeader = (oProperties) => {
                 <div
                     id={oQuickOptions.id}
                     className="quick-options"
-                    onClick={() => {}}>
+                    style={{ backgroundColor: oQuickOptions?.backgroundColor, borderColor: oQuickOptions?.borderColor }}
+                    onClick={() => _setIsActive(oQuickOptions.id, true)}>
                     <FontAwesomeIcon
-                        style={oQuickOptions.iconColor ? { color: oQuickOptions.iconColor } : ""}
-                        icon={FaDuotoneIcons[oQuickOptions.icon]} />
-                    <span>{t(oQuickOptions.title)}</span>
+                        style={{ color: oQuickOptions?.iconColor }}
+                        icon={oQuickOptions?.iconSolid ? FaSolidIcons[oQuickOptions.icon] : FaDuotoneIcons[oQuickOptions.icon]} />
+                    {oQuickOptions?.title && <span style={{ color: oQuickOptions?.titleColor }}>{t(oQuickOptions.title)}</span>}
                 </div>
                 {oQuickOptions.hasOwnProperty("jsxElement") && <Dropdown
                     isActive={isActive[oQuickOptions.id]}
-                    isClickedOutside={() => setIsActive((isActive) => ({
-                        ...isActive,
-                        [oQuickOptions.id]: false
-                    }))}
+                    isClickedOutside={() => _setIsActive(oQuickOptions.id)}
                     jsxElement={<div>jsxelement</div>}  />}
             </div>
         );
@@ -113,10 +128,22 @@ export const TableHeader = (oProperties) => {
 
     return (
         <StyledTableHeader>
-            {oProperties?.title && _addInfoContent(oProperties.title)}
             <header>
-                {oProperties.searchable && <Search />}
-                {QuickOptions["Base"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.groupable, oProperties.filterable, oProperties.favorite))}
+                {oProperties?.title && _addInfoContent(oProperties.title)}
+                {_addQuickOptions({
+                    id: "date",
+                    title: "06. Jan. 2022 - 13. Jan. 2022",
+                    icon: "faCalendarRange"
+                })}
+            </header>
+            <header>
+                <div className="left">
+                    {oProperties.searchable && <Search />}
+                    {QuickOptions["Left"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.groupable, oProperties.filterable, oProperties.favorite))}
+                </div>
+                <div className="right">
+                    {QuickOptions["Right"].map((oQuickOption) => _addQuickOptions(oQuickOption))}
+                </div>
             </header>
             {/*<article className="option-wrapper">*/}
             {/*    {[{ icon: "faMapPin", value: "Fislisbach" }, { icon: "faGraduationCap", value: "Grundschule Fislisbach" }].map((oFilterValue) => _addFilterValue(oFilterValue))}*/}

@@ -5,6 +5,34 @@
     "entries": "Einträge",
     "Search": {
       "placeholder": "Suchen"
+    },
+    "Table": {
+      "counter": "Einträge",
+      "CellConfig": {
+        "Ascending": {
+          "title": "Aufsteigend"
+        },
+        "Descending": {
+          "title": "Aufsteigend"
+        },
+        "HideColumn": {
+          "title": "Spalte ausblenden"
+        }
+      },
+      "QuickOptions": {
+        "Grouping": {
+          "title": "Gruppieren"
+        },
+        "Filter": {
+          "title": "Filter"
+        },
+        "New": {
+          "title": "Neuste"
+        },
+        "Favorite": {
+          "title": "Favoriten"
+        }
+      }
     }
   },
   "Container": {
@@ -64,6 +92,9 @@
         },
         "Services": {
           "title": "Dienste"
+        },
+        "ApprenticeshipSearch": {
+          "title": "Lehrstellensuche"
         }
       },
       "Reports": {
@@ -187,7 +218,8 @@
         },
         "User": {
           "title": "Anmelde-Informationen",
-          "description": "Willkommen zurück bei studios. Erfasse deine Anmelde-Informationen um <strong>Zugriff</strong> auf die <strong>Schul-Inhalte</strong> zu erhalten."
+          "description": "Willkommen zurück bei studios. Erfasse deine Anmelde-Informationen um <strong>Zugriff</strong> auf die <strong>Schul-Inhalte</strong> zu erhalten.",
+          "nextButtonText": "Anmelden"
         }
       },
       "SignUp": {
@@ -211,7 +243,7 @@
         },
         "License": {
           "title": "Definiere die Anzahl Lizenzen",
-          "description": "Die Kosten für die Klassenlehrer-Lizenz betragen <strong>CHF 29.90/Monat</strong>, die Fachlehrer-Lizenz <strong>CHF 9.90/Monat</strong> und die Schüler-Lizenz (inkl. Eltern-Lizenz) <strong>CHF 19.90/Monat</strong><br /> Preise können varieren!",
+          "description": "Die Kosten für die Klassenlehrer-Lizenz betragen <strong>CHF 9.90/Monat</strong>, die Fachlehrer-Lizenz <strong>CHF 4.90/Monat</strong> und die Schüler-Lizenz (inkl. Eltern-Lizenz) <strong>CHF 4.90/Monat</strong><br /> Preise können varieren!",
           "navButtonTextNext": "Abschliessen"
         }
       }

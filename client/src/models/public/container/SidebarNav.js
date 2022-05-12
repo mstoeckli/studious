@@ -130,6 +130,13 @@ export const SidebarNav = [{
         "title": "Container.Sidebar.SchoolLife.Services.title",
         "icon": "faHandHoldingHand",
         "isActive": false
+    }, {
+        "key": 35,
+        "keyGroup": 3,
+        "contentKey": "apprenticeshipSearch",
+        "title": "Container.Sidebar.SchoolLife.ApprenticeshipSearch.title",
+        "icon": "faBriefcase",
+        "isActive": false
     }]
 }, {
     "key": 4,

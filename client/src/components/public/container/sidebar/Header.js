@@ -3,6 +3,7 @@ import React from 'react';
 import { StyledHeader } from '../../../../styles/public/container/sidebar/Header.styles';
 
 import { Logo } from "../../../base/Logo";
+import { MadeInSwitzerland } from '../../../core/MadeInSwitzerland';
 
 /** @public
  *  @constructor
@@ -16,7 +17,7 @@ export const Header = ({ bSidebarToggle }) => (
         </div>
         <div className={!bSidebarToggle ? "company" : "company-hide"}>
             <span className="studious">studious</span>
-            <span className="description">Codemize GmbH</span>
+            <MadeInSwitzerland />
         </div>
     </StyledHeader>
 )

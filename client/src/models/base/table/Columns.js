@@ -1,8 +1,19 @@
+/** @desc TODO: -SCHOOLS1: Implement partner project button */
+// {
+//     key: "partnerProjects", title: "Partner-Projekt(e)",
+//     sortable: false,
+//     fixed: false,
+//     align: "center",
+//     isHidden: false,
+//     isCheckboxColumn: false
+// },
+
 export const Columns = {
     "Schools": [{
         key: "schoolName",
         title: "Schule",
         sortable: true,
+        searchable: true,
         ascending: false,
         fixed: true,
         isHidden: false,
@@ -12,16 +23,17 @@ export const Columns = {
         key: "schoolKey",
         title: "Schul-Identifikation",
         sortable: true,
+        searchable: true,
         ascending: false,
         fixed: true,
         isHidden: false,
         isDropdownActive: false,
         isCheckboxColumn: false
     }, {
-        key: "partnerProjects",
-        title: "Partner-Projekt(e)",
+        key: "signin",
+        title: "Anmelden",
         sortable: false,
-        fixed: false,
+        ascending: false,
         align: "center",
         isHidden: false,
         isCheckboxColumn: false

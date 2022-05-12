@@ -31,6 +31,12 @@
         },
         "Favorite": {
           "title": "Favoriten"
+        },
+        "Create": {
+          "title": "Anlegen"
+        },
+        "View": {
+          "title": "Standard"
         }
       }
     }
@@ -92,6 +98,9 @@
         },
         "Services": {
           "title": "Dienste"
+        },
+        "ApprenticeshipSearch": {
+          "title": "Lehrstellensuche"
         }
       },
       "Reports": {
@@ -240,7 +249,7 @@
         },
         "License": {
           "title": "Definiere die Anzahl Lizenzen",
-          "description": "Die Kosten für die Klassenlehrer-Lizenz betragen <strong>CHF 29.90/Monat</strong>, die Fachlehrer-Lizenz <strong>CHF 9.90/Monat</strong> und die Schüler-Lizenz (inkl. Eltern-Lizenz) <strong>CHF 19.90/Monat</strong><br /> Preise können varieren!",
+          "description": "Die Kosten für die Klassenlehrer-Lizenz betragen <strong>CHF 9.90/Monat</strong>, die Fachlehrer-Lizenz <strong>CHF 4.90/Monat</strong> und die Schüler-Lizenz (inkl. Eltern-Lizenz) <strong>CHF 4.90/Monat</strong><br /> Preise können varieren!",
           "navButtonTextNext": "Abschliessen"
         }
       }
