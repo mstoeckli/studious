@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { Table } from '../../../base/Table';
@@ -10,6 +9,7 @@ import { delay } from '../../../../helpers/Helper';
 import { useAuth } from '../../../../context/AuthProvider';
 
 import { Codes } from '../../../../models/core/messages/Codes';
+import { Columns } from '../../../../models/base/table/Columns';
 
 import { find } from '../../../../assets/api/School';
 
@@ -23,10 +23,6 @@ export const Schools = () => {
 
     /** @desc Get user object to check if user is signed in */
     const { user, onSignOut } = useAuth();
-
-    /** @desc Returns global state value by redux toolkit
-     *  @type {array} oColumns */
-    const oColumns = useSelector((state) => state.tableColumns.value);
 
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Used for displaying schools as table rows
@@ -153,11 +149,6 @@ export const Schools = () => {
      *  @param   {number} oSchool.subjectTeacher
      *  @param   {number} oSchool.students
      *  @param   {string} sEmail
-     // *  @param   {object} oUser
-     // *  @param   {number} oUser.schoolKey
-     // *  @param   {string} oUser.userId
-     // *  @param   {string} oUser.username
-     // *  @param   {string} oUser.email
      *  @returns {array} */
     const _addRow = (oSchool, sEmail) => ([{
         type: "Identifier",
@@ -243,14 +234,14 @@ export const Schools = () => {
         <>
             <Table
                 title="Schulen"
-                tableKey="Schools"
-                columns={oColumns["Schools"]}
+                tableKey="schools"
+                columns={Columns["Schools"]}
                 rows={rows}
                 content={{
                     jsxElement: [<div>Test 123</div>, <div>Test 456</div>]
                 }}
                 quickOptionsVisibility={{
-                    create: true,
+                    create: false,
                     dateCalendar: true
                 }}
                 pagination={{
@@ -259,11 +250,7 @@ export const Schools = () => {
                 }}
                 showHeader={true}
                 showLoader={showLoader}
-                showLineNumber={true}
-                showMultiSelect={true}
-                onCheckboxClicked={() => {}}
-                headerCards={_getHeaderCards()}
-            />
+                onCheckboxClicked={() => {}} />
             {Object.keys(error).length !== 0 && error.constructor === Object && <Dialog
                 title={error.title}
                 description={error.description}

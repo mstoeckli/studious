@@ -80,7 +80,6 @@ export const Table = (oProperties) => {
 
     /** @desc Initialize configuration object */
     if (!oConfiguration) {
-        debugger
         fnDispatch(initialize({
             key: oProperties.tableKey,
             title: oProperties?.title,
@@ -320,8 +319,6 @@ export const Table = (oProperties) => {
                 }));
             }} />
     );
-
-    debugger
 
     return (
         <StyledTable ref={headerRefObj}>

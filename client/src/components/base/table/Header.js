@@ -39,7 +39,7 @@ import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
  *  @param   {string=} oProperties.quickOptionsSettings.iconSolid
  *  @param   {string=} oProperties.quickOptionsSettings.backgroundColor
  *  @param   {string=} oProperties.quickOptionsSettings.borderColor
- *  @param   {[object=]} oProperties.headerCards
+ *  @param   {[object]=} oProperties.headerCards
  *  @param   {string} oProperties.headerCards.iconSrc
  *  @param   {string} oProperties.headerCards.title
  *  @param   {string} oProperties.headerCards.info
@@ -83,7 +83,6 @@ export const TableHeader = (oProperties) => {
             <div className="content">
                 <div className="title">
                     <span>{sTitle}</span>
-                    {/*{_addDropdownElement()}*/}
                 </div>
             </div>
         </div>
@@ -119,7 +118,6 @@ export const TableHeader = (oProperties) => {
      *  @param   {string=} oQuickOptionsSettings.backgroundColor
      *  @param   {string=} oQuickOptionsSettings.borderColor */
     const _addQuickOptions = (oQuickOptions, oQuickOptionsVisibility, oQuickOptionsSettings) => {
-        debugger
         /** @desc Pre-check visibility of a quick option */
         if (!oQuickOptionsVisibility[oQuickOptions.id]) {
             return ( <></> );
