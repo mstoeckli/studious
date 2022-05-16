@@ -24,7 +24,10 @@
           "title": "Gruppieren"
         },
         "Filter": {
-          "title": "Filter"
+          "title": "Filter",
+          "DropdownContent": {
+            "title": "Filter-Kriterien"
+          }
         },
         "New": {
           "title": "Neuste"
@@ -98,6 +101,12 @@
         },
         "Services": {
           "title": "Dienste"
+        },
+        "Exams": {
+          "title": "Prüfungen"
+        },
+        "ScheduleList": {
+          "title": "Terminliste"
         },
         "ApprenticeshipSearch": {
           "title": "Lehrstellensuche"

@@ -133,6 +133,20 @@ export const SidebarNav = [{
     }, {
         "key": 35,
         "keyGroup": 3,
+        "contentKey": "exams",
+        "title": "Container.Sidebar.SchoolLife.Exams.title",
+        "icon": "faMoneyCheckEdit",
+        "isActive": false
+    }, {
+        "key": 36,
+        "keyGroup": 3,
+        "contentKey": "scheduleList",
+        "title": "Container.Sidebar.SchoolLife.ScheduleList.title",
+        "icon": "faCalendarWeek",
+        "isActive": false
+    }, {
+        "key": 37,
+        "keyGroup": 3,
         "contentKey": "apprenticeshipSearch",
         "title": "Container.Sidebar.SchoolLife.ApprenticeshipSearch.title",
         "icon": "faBriefcase",

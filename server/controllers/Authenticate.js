@@ -82,23 +82,18 @@ exports.signUp = async (req, res) => {
 
 /** @public */
 exports.userById = async (req, res) => {
-    // /** @desc Check if user is registered in school */
-    // Schools.findOne({ key: req.body.key }).populate({
-    //     path: "users",
-    //     match: { _id: oUser._id }
-    // })
-    Users.findById(req.body.id).populate({
-        path: "schools"
+    /** @desc Check if user is registered in school */
+    Schools.findOne().populate({
+        path: "users",
+        match: { _id: req.body.id }
     })
-    .then((oUser) => {
-        console.log(oUser);
-        return res.status(200).json({
-            success : true,
-            userId : oUser._id,
-            username: oUser.username,
-            email: oUser.email
-        })
-    })
+    .then((oSchool) => res.status(200).json({
+        success : true,
+        schoolKey: oSchool.key,
+        userId : oSchool.users[0]._id,
+        username: oSchool.users[0].username,
+        email: oSchool.users[0].email
+    }))
     .catch((oErr) => res.status(400).json({
         success: false,
         message: oErr.message
@@ -111,7 +106,9 @@ exports.inputValidity = async (req, res) => {
         .then((oUser) => {
             res.status(200).json({
                 success : true,
-                userId : oUser._id
+                userId : oUser._id,
+                username: oUser.username,
+                email: oUser.email
             });
         })
         .catch((oErr) => res.status(400).json({

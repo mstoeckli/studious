@@ -153,6 +153,11 @@ export const Schools = () => {
      *  @param   {number} oSchool.subjectTeacher
      *  @param   {number} oSchool.students
      *  @param   {string} sEmail
+     // *  @param   {object} oUser
+     // *  @param   {number} oUser.schoolKey
+     // *  @param   {string} oUser.userId
+     // *  @param   {string} oUser.username
+     // *  @param   {string} oUser.email
      *  @returns {array} */
     const _addRow = (oSchool, sEmail) => ([{
         type: "Identifier",
@@ -244,7 +249,7 @@ export const Schools = () => {
                 pagination={true}
                 showLoader={showLoader}
                 contentInitialVisibility={false}
-                // headerCards={_getHeaderCards()}
+                headerCards={_getHeaderCards()}
                 columns={oColumns["Schools"]}
                 rows={rows}
                 content={[<div>Test 123</div>, <div>Test 456</div>]}/>
@@ -256,3 +261,5 @@ export const Schools = () => {
         </>
     );
 }
+
+

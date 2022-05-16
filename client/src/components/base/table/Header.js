@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { StyledTableHeader } from '../../../styles/base/table/Header.styles';
 
+import { Filter } from './header/Filter';
+
 import { Search } from '../Search';
 
 import { CardInfo } from '../card/Info';
@@ -48,6 +50,12 @@ export const TableHeader = (oProperties) => {
             [sId]: bIsActive
         }));
     };
+
+    const _getDropdownElement = (sKey) => (({
+        filterable: <Filter />,
+        settings: <div>settings</div>,
+        view: <div>view</div>
+    }))[sKey]
 
     /** @private
      *  @returns {JSX.Element} */
@@ -106,7 +114,7 @@ export const TableHeader = (oProperties) => {
                 {oQuickOptions.hasOwnProperty("jsxElement") && <Dropdown
                     isActive={isActive[oQuickOptions.id]}
                     isClickedOutside={() => _setIsActive(oQuickOptions.id)}
-                    jsxElement={<div>jsxelement</div>}  />}
+                    jsxElement={_getDropdownElement(oQuickOptions.id)}  />}
             </div>
         );
     }
