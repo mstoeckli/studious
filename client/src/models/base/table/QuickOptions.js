@@ -2,41 +2,41 @@ export const QuickOptions = {
     "Left": [{
         id: "groupable",
         title: "Base.Table.QuickOptions.Grouping.title",
-        icon: "faLayerGroup",
+        iconSrc: "faLayerGroup",
         jsxElement: "group"
     }, {
         id: "filterable",
         title: "Base.Table.QuickOptions.Filter.title",
-        icon: "faFilters",
+        iconSrc: "faFilters",
         jsxElement: "filter"
     }, {
-        id: "new",
+        id: "newest",
         title: "Base.Table.QuickOptions.New.title",
-        icon: "faRectangleHistory",
+        iconSrc: "faRectangleHistory",
         iconColor: "#3fd898"
     }, {
         id: "favorite",
         title: "Base.Table.QuickOptions.Favorite.title",
-        icon: "faCrown",
+        iconSrc: "faCrown",
         iconColor: "#eebf00"
     }],
     "Right":[{
         id: "create",
         title: "Base.Table.QuickOptions.Create.title",
         titleColor: "#fff",
-        icon: "faPlus",
+        iconSrc: "faPlus",
         iconColor: "#fff",
         iconSolid: true,
         backgroundColor: "#688ccd",
         borderColor: "#3f6ad8"
     }, {
-        id: "view",
+        id: "customView",
         title: "Base.Table.QuickOptions.View.title",
-        icon: "faMountain",
+        iconSrc: "faMountain",
         jsxElement: "view"
     }, {
         id: "settings",
-        icon: "faTools",
+        iconSrc: "faTools",
         jsxElement: "settings"
     }]
 }

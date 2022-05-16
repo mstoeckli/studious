@@ -244,15 +244,26 @@ export const Schools = () => {
             <Table
                 title="Schulen"
                 tableKey="Schools"
-                searchable={true}
-                filterable={true}
-                pagination={true}
-                showLoader={showLoader}
-                contentInitialVisibility={false}
-                headerCards={_getHeaderCards()}
                 columns={oColumns["Schools"]}
                 rows={rows}
-                content={[<div>Test 123</div>, <div>Test 456</div>]}/>
+                content={{
+                    jsxElement: [<div>Test 123</div>, <div>Test 456</div>]
+                }}
+                quickOptionsVisibility={{
+                    create: true,
+                    dateCalendar: true
+                }}
+                pagination={{
+                    active: true,
+                    perPage: 14
+                }}
+                showHeader={true}
+                showLoader={showLoader}
+                showLineNumber={true}
+                showMultiSelect={true}
+                onCheckboxClicked={() => {}}
+                headerCards={_getHeaderCards()}
+            />
             {Object.keys(error).length !== 0 && error.constructor === Object && <Dialog
                 title={error.title}
                 description={error.description}

@@ -8,21 +8,28 @@ import {Dialog} from "../../../base/messages/Dialog";
  *  @returns {JSX.Element} News */
 export const News = () => {
     return (
-        <>
-            <Table
-                tableKey="News"
-                searchable={true}
-                filterable={true}
-                pagination={true}
-                content={<div>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed d ipsum dolor sit amet.</div>}
-                contentInitialVisibility={false}
-                columns={[]}
-                rows={[]} />
-            {/*{Object.keys(error).length !== 0 && error.constructor === Object && <Dialog*/}
-            {/*    title={error.title}*/}
-            {/*    description={error.description}*/}
-            {/*    messageType="E"*/}
-            {/*    showSupport={true} />}*/}
-        </>
+        <Table
+            title="News"
+            tableKey="news"
+            columns={[]}
+            rows={[]}
+            // content={{
+            //     jsxElement: [<div>Test 123</div>, <div>Test 456</div>]
+            // }}
+            quickOptionsVisibility={{
+                create: true,
+                dateCalendar: true
+            }}
+            pagination={{
+                active: true,
+                perPage: 14
+            }}
+            showHeader={true}
+            // showLoader={showLoader}
+            // showLineNumber={true}
+            // showMultiSelect={true}
+            onCheckboxClicked={() => {}}
+            // headerCards={_getHeaderCards()}
+        />
     )
 }

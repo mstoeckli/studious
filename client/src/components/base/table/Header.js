@@ -20,12 +20,31 @@ import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
 /** @public
  *  @constructor
  *  @param   {object} oProperties
- *  @param   {string=} oProperties.title
- *  @param   {boolean=} oProperties.searchable
- *  @param   {boolean=} oProperties.filterable
- *  @param   {boolean=} oProperties.groupable
- *  @param   {boolean=} oProperties.favorite
- *  @param   {array=} oProperties.cards
+ *  @param   {string} oProperties.title
+ *  @param   {object=} oProperties.quickOptionsVisibility
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.searchable
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.filterable
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.groupable
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.favorite
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.newest
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.create
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.settings
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.customView
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.dateCalendar
+ *  @param   {object=} oProperties.quickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/settings/customView/dateCalendar
+ *  @param   {string} oProperties.quickOptionsSettings.title
+ *  @param   {string=} oProperties.quickOptionsSettings.titleColor
+ *  @param   {string} oProperties.quickOptionsSettings.iconSrc
+ *  @param   {string=} oProperties.quickOptionsSettings.iconColor
+ *  @param   {string=} oProperties.quickOptionsSettings.iconSolid
+ *  @param   {string=} oProperties.quickOptionsSettings.backgroundColor
+ *  @param   {string=} oProperties.quickOptionsSettings.borderColor
+ *  @param   {[object=]} oProperties.headerCards
+ *  @param   {string} oProperties.headerCards.iconSrc
+ *  @param   {string} oProperties.headerCards.title
+ *  @param   {string} oProperties.headerCards.info
+ *  @param   {string=} oProperties.headerCards.backgroundColor
+ *  @param   {string=} oProperties.headerCards.borderColor
  *  @returns {JSX.Element} TableHeader */
 export const TableHeader = (oProperties) => {
     /** @desc Returns the translation function for reading from the locales files
@@ -75,28 +94,41 @@ export const TableHeader = (oProperties) => {
      *  @param   {string} oQuickOptions.id
      *  @param   {string} oQuickOptions.title
      *  @param   {string=} oQuickOptions.titleColor
-     *  @param   {string} oQuickOptions.icon
+     *  @param   {string} oQuickOptions.iconSrc
      *  @param   {string} oQuickOptions.iconColor
      *  @param   {boolean=} oQuickOptions.iconSolid
      *  @param   {string=} oQuickOptions.backgroundColor
      *  @param   {string=} oQuickOptions.borderColor
      *  @param   {string=} oQuickOptions.jsxElement
-     *  @param   {boolean=} bGroupable
-     *  @param   {boolean=} bFilterable
-     *  @param   {boolean=} bFavorite
-     *  @returns {JSX.Element} */
-    const _addQuickOptions = (oQuickOptions, bGroupable = false, bFilterable = true, bFavorite = false) => {
-        const _fnActiveBasisQuickOptions = (sId) => ({
-            "groupable": bGroupable,
-            "filterable": bFilterable,
-            "favorite": bFavorite
-        })[sId];
+     *  @param   {object=} oQuickOptionsVisibility
+     *  @param   {boolean=} oQuickOptionsVisibility.searchable
+     *  @param   {boolean=} oQuickOptionsVisibility.filterable
+     *  @param   {boolean=} oQuickOptionsVisibility.groupable
+     *  @param   {boolean=} oQuickOptionsVisibility.favorite
+     *  @param   {boolean=} oQuickOptionsVisibility.newest
+     *  @param   {boolean=} oQuickOptionsVisibility.create
+     *  @param   {boolean=} oQuickOptionsVisibility.settings
+     *  @param   {boolean=} oQuickOptionsVisibility.customView
+     *  @param   {boolean=} oQuickOptionsVisibility.dateCalendar
+     *  @param   {object=} oQuickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/settings/customView/dateCalendar
+     *  @param   {string} oQuickOptionsSettings.title
+     *  @param   {string=} oQuickOptionsSettings.titleColor
+     *  @param   {string} oQuickOptionsSettings.iconSrc
+     *  @param   {string=} oQuickOptionsSettings.iconColor
+     *  @param   {string=} oQuickOptionsSettings.iconSolid
+     *  @param   {string=} oQuickOptionsSettings.backgroundColor
+     *  @param   {string=} oQuickOptionsSettings.borderColor */
+    const _addQuickOptions = (oQuickOptions, oQuickOptionsVisibility, oQuickOptionsSettings) => {
+        debugger
+        /** @desc Pre-check visibility of a quick option */
+        if (!oQuickOptionsVisibility[oQuickOptions.id]) {
+            return ( <></> );
+        }
 
-        /** @desc Check if grouping or sorting is active */
-        if (oQuickOptions.id === "groupable" || oQuickOptions.id === "filterable" || oQuickOptions.id === "favorite") {
-            if (!_fnActiveBasisQuickOptions(oQuickOptions.id)) {
-                return ( <></> );
-            }
+        const oQuickOptionSetting = oQuickOptionsSettings[oQuickOptions.id];
+        if (oQuickOptionSetting) for (const sKey of Object.keys(oQuickOptionSetting)) {
+            /** @desc Overwrite with custom values */
+            oQuickOptions[sKey] = oQuickOptionSetting[sKey];
         }
 
         return (
@@ -108,7 +140,7 @@ export const TableHeader = (oProperties) => {
                     onClick={() => _setIsActive(oQuickOptions.id, true)}>
                     <FontAwesomeIcon
                         style={{ color: oQuickOptions?.iconColor }}
-                        icon={oQuickOptions?.iconSolid ? FaSolidIcons[oQuickOptions.icon] : FaDuotoneIcons[oQuickOptions.icon]} />
+                        icon={oQuickOptions?.iconSolid ? FaSolidIcons[oQuickOptions.iconSrc] : FaDuotoneIcons[oQuickOptions.iconSrc]} />
                     {oQuickOptions?.title && <span style={{ color: oQuickOptions?.titleColor }}>{t(oQuickOptions.title)}</span>}
                 </div>
                 {oQuickOptions.hasOwnProperty("jsxElement") && <Dropdown
@@ -137,27 +169,27 @@ export const TableHeader = (oProperties) => {
     return (
         <StyledTableHeader>
             <header>
-                {oProperties?.title && _addInfoContent(oProperties.title)}
-                {_addQuickOptions({
-                    id: "date",
+                {oProperties.title && _addInfoContent(oProperties.title)}
+                {oProperties.quickOptionsVisibility.dateCalendar && _addQuickOptions({
+                    id: "dateCalendar",
                     title: "06. Jan. 2022 - 13. Jan. 2022",
-                    icon: "faCalendarRange"
-                })}
+                    iconSrc: "faCalendarRange"
+                }, oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings)}
             </header>
             <header>
                 <div className="left">
-                    {oProperties.searchable && <Search />}
-                    {QuickOptions["Left"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.groupable, oProperties.filterable, oProperties.favorite))}
+                    {oProperties.quickOptionsVisibility.searchable && <Search />}
+                    {QuickOptions["Left"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings))}
                 </div>
                 <div className="right">
-                    {QuickOptions["Right"].map((oQuickOption) => _addQuickOptions(oQuickOption))}
+                    {QuickOptions["Right"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings))}
                 </div>
             </header>
             {/*<article className="option-wrapper">*/}
             {/*    {[{ icon: "faMapPin", value: "Fislisbach" }, { icon: "faGraduationCap", value: "Grundschule Fislisbach" }].map((oFilterValue) => _addFilterValue(oFilterValue))}*/}
             {/*</article>*/}
-            {Array.isArray(oProperties.cards) && oProperties.cards.length > 0 && <article className="card-info">
-                {oProperties.cards.map((oCard) => (
+            {oProperties.headerCards.length > 0 && <article className="card-info">
+                {oProperties.headerCards.map((oCard) => (
                     <CardInfo
                         icon={oCard.icon}
                         title={oCard.title}

@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useSelector, useDispatch } from "react-redux";
 
 import { StyledTable } from '../../styles/base/Table.styles';
+
+import { initialize, setRows, setPaginationIdx, setResizeInfo } from '../../reducers/base/table/Configuration';
 
 import { TableHeader } from './table/Header';
 import { TableColumn } from './table/Column';
@@ -9,6 +12,7 @@ import { TableRow } from './table/Row';
 import { Loader } from "../core/Loader";
 
 import { getParentByInstance } from '../../helpers/Helper';
+import { getQuickOptionsVisibility, getPagination, getResizing, getGrouping, getContent, getNoDataText } from '../../helpers/base/Table';
 
 import { PaginationBase } from './Pagination';
 
@@ -17,183 +21,210 @@ import { PaginationBase } from './Pagination';
  *  @param   {object} oProperties
  *  @param   {string} oProperties.tableKey
  *  @param   {string=} oProperties.title
- *  @param   {boolean=} oProperties.favorite
- *  @param   {boolean=} oProperties.searchable
- *  @param   {boolean=} oProperties.filterable
- *  @param   {boolean=} oProperties.pagination
- *  @param   {boolean=} oProperties.groupable -> not supported at the moment!
- *  @param   {string=} oProperties.groupColumn
- *  @param   {boolean=} oProperties.multiSelect
- *  @param   {number=} oProperties.linesPerPage
- *  @param   {string=} oProperties.paginationAlignment -> left/center/right
- *  @param   {boolean=} oProperties.showLineNumber
- *  @param   {boolean=} oProperties.showLoader
- *  @param   {string=} oProperties.noDataTextTitle
- *  @param   {string=} oProperties.noDataTextDescription
- *  @param   {string=} oProperties.noDataTextIcon
- *  @param   {array=} oProperties.headerCards
  *  @param   {[{key:string, title:string, sortable:boolean, searchable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
  *  @param   {[[{type:string, title:string, description:string, disabled:boolean, customStyle:object, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]]} oProperties.rows
- *  @param   {[JSX.Element=]} oProperties.content
+ *  @param   {object} oProperties.content
+ *  @param   {[JSX.Element=]} oProperties.content.jsxElement
+ *  @param   {boolean=} oProperties.content.initialVisibility
+ *  @param   {object=} oProperties.quickOptionsVisibility
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.searchable
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.filterable
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.groupable
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.favorite
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.newest
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.create
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.settings
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.customView
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.dateCalendar
+ *  @param   {object=} oProperties.quickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/settings/customView/dateCalendar
+ *  @param   {string} oProperties.quickOptionsSettings.title
+ *  @param   {string=} oProperties.quickOptionsSettings.titleColor
+ *  @param   {string} oProperties.quickOptionsSettings.iconSrc
+ *  @param   {string=} oProperties.quickOptionsSettings.iconColor
+ *  @param   {string=} oProperties.quickOptionsSettings.iconSolid
+ *  @param   {string=} oProperties.quickOptionsSettings.backgroundColor
+ *  @param   {string=} oProperties.quickOptionsSettings.borderColor
+ *  @param   {object=} oProperties.pagination
+ *  @param   {boolean=} oProperties.pagination.active
+ *  @param   {number=} oProperties.pagination.idxFirst
+ *  @param   {number=} oProperties.pagination.idxLast
+ *  @param   {number=} oProperties.pagination.perPage
+ *  @param   {string=} oProperties.pagination.alignment -> left/center/right
+ *  @param   {object=} oProperties.grouping
+ *  @param   {boolean=} oProperties.grouping.active
+ *  @param   {string} oProperties.grouping.columnKey
+ *  @param   {object=} oProperties.noDataText
+ *  @param   {string=} oProperties.noDataText.title
+ *  @param   {string} oProperties.noDataText.description
+ *  @param   {string} oProperties.noDataText.iconSrc
+ *  @param   {[object]=} oProperties.headerCards
+ *  @param   {string} oProperties.headerCards.iconSrc
+ *  @param   {string} oProperties.headerCards.title
+ *  @param   {string} oProperties.headerCards.info
+ *  @param   {string=} oProperties.headerCards.backgroundColor
+ *  @param   {string=} oProperties.headerCards.borderColor
+ *  @param   {boolean=} oProperties.showHeader
+ *  @param   {boolean=} oProperties.showLineNumber
+ *  @param   {boolean=} oProperties.showLoader
+ *  @param   {boolean=} oProperties.showMultiSelect
  *  @param   {function=} oProperties.onCheckboxClicked
  *  @returns {JSX.Element} Table */
 export const Table = (oProperties) => {
-    /** @desc Throw console message when key property is missing */
-    if (!oProperties.tableKey) throw "missing property tableKey";
-    if (oProperties.groupable) throw "is not supported in the current version!";
-    if (!oProperties.columns || !Array.isArray(oProperties.columns)) throw "missing property columns";
-    if (!oProperties.rows || !Array.isArray(oProperties.rows)) throw "missing property rows";
+    /** @desc Returns dispatcher function to call the actions inside the reducer
+     *  @type {React.Dispatch} fnDispatch */
+    const fnDispatch = useDispatch();
 
-    /** @desc Returns a stateful value, and a function to update it.
-     *        -> Store pagination indexes
-     *  @type {[_indexFirst:number, _setIndexFirst:function]}
-     *  @type {[_indexLast:number, _setIndexLast:function]} */
-    const [ _indexFirst, _setIndexFirst ] = useState(0);
-    const [ _indexLast, _setIndexLast ] = useState(0);
+    /** @desc Returns global state value by redux toolkit
+     *  @type {object} oConfiguration */
+    let oConfiguration = useSelector((state) => state.tableConfiguration[oProperties.tableKey]);
 
-    /** @desc Returns a stateful value, and a function to update it.
-     *        -> Update table height for displaying content and enable the correct scrolling inside
-     *  @type {[sectionHeaderHeight:number, setSectionHeaderHeight:function]} */
-    const [ tableHeaderHeight, setTableHeaderHeight ] = useState(0);
+    /** @desc Initialize configuration object */
+    if (!oConfiguration) {
+        debugger
+        fnDispatch(initialize({
+            key: oProperties.tableKey,
+            title: oProperties?.title,
+            columns: oProperties?.columns && Array.isArray(oProperties.columns) ? oProperties.columns : [],
+            rows: oProperties?.rows && Array.isArray(oProperties.rows) ? oProperties.rows : [],
+            content: getContent(oProperties?.content),
+            quickOptionsVisibility: getQuickOptionsVisibility(oProperties?.quickOptionsVisibility),
+            quickOptionsSettings: oProperties?.quickOptionsSettings ? oProperties.quickOptionsSettings : {},
+            pagination: getPagination(oProperties?.pagination),
+            grouping: getGrouping(oProperties?.grouping),
+            noDataText: getNoDataText(oProperties?.noDataText),
+            resizing: getResizing({ headerHeight: 0 }),
+            headerCards: oProperties?.headerCards && Array.isArray(oProperties.headerCards) ? oProperties.headerCards : [],
+            showHeader: oProperties?.showHeader ? oProperties.showHeader : false,
+            showLineNumber: oProperties?.showLineNumber ? oProperties.showLineNumber : false,
+            showLoader: oProperties?.showLoader ? oProperties.showLoader : false,
+            showMultiSelect: oProperties?.showMultiSelect ? oProperties.showMultiSelect : false,
+            onCheckBoxClicked: oProperties?.onCheckboxClicked && typeof oProperties.onCheckboxClicked === "function" ? oProperties.onCheckboxClicked : () => {}
+        }));
+    }
+
+    /** @desc Update rows after fetching data */
+    if (oProperties.rows.length > 0 && oConfiguration.rows.length === 0) fnDispatch(setRows({
+        key: oConfiguration.key,
+        rows: oProperties.rows
+    }));
+
+    /** @desc Returns global state value by redux toolkit
+     *  @type {object} oConfiguration */
+    oConfiguration = useSelector((state) => state.tableConfiguration[oProperties.tableKey]);
+
+    /** @desc Pre-checks */
+    if (!oConfiguration.key) throw "missing property tableKey";
+    if (oConfiguration.grouping.active) throw "grouping is not supported in the current version!";
 
     /** @desc Initialize reference object for setting object pagination */
-    const paginationRefreshRef = useRef(null);
+    const paginationRefObj = useRef(null);
 
     /** @desc Initialize reference object for updating the style "height" for displaying table content correctly */
-    const tableHeaderRef = useRef(null);
-
-    /** @desc Entries per page */
-    const iPerPage = oProperties?.linesPerPage ? oProperties.linesPerPage : 20;
-    let iLineIdx = 1;
+    const headerRefObj = useRef(null);
 
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
     useEffect(() => {
         /** @desc Dispatch it once mounted */
-        if (tableHeaderRef) {
+        if (headerRefObj) {
             /** @desc Call resize event manually */
-            tableHeaderRef.current.dispatchEvent(new Event("resize"));
+            headerRefObj?.current.dispatchEvent(new Event("resize"));
         }
-    }, [tableHeaderRef?.current]);
+    }, [headerRefObj]);
 
-    if (tableHeaderRef?.current) {
+    if (headerRefObj?.current) {
         /** @desc Defines the resize hook for changing the height of the table */
-        tableHeaderRef.current.addEventListener("resize", (oEvt) => {
-            setTableHeaderHeight((tableHeaderHeight) => oEvt.target.firstChild.offsetHeight + (oProperties.pagination && oProperties.rows.length > iPerPage ? 70 : 40));
+        headerRefObj.current.addEventListener("resize", (oEvt) => {
+            fnDispatch(setResizeInfo({
+                key: oConfiguration.tableKey,
+                headerHeight: oEvt.target.firstChild.offsetHeight + (oConfiguration.pagination.active && oConfiguration.rows.length > oConfiguration.pagination.perPage ? 70 : 40)
+            }));
         });
     }
 
     /** @private
-     *  @param   {object} oProperties
      *  @returns {JSX.Element} */
-    const _addContainer = (oProperties) => {
+    const _addContainer = () => {
         return (
             <section style={{ height: "100%" }}>
-                {_addTableContent(oProperties)}
+                {_addTableContent()}
             </section>
         );
     };
 
     /** @private
-     *  @param   {object} oProperties
      *  @returns {JSX.Element} */
-    const _addTableContent = (oProperties) => (
+    const _addTableContent = () => (
         <article>
             <table>
-                {_addTableHeader(oProperties)}
-                {_addTableBody(oProperties)}
+                {_addTableHeader()}
+                {_addTableBody()}
             </table>
         </article>
     );
 
     /** @private
-     *  @param   {object} oProperties
      *  @returns {JSX.Element} */
-    const _addTableHeader = (oProperties) => (
+    const _addTableHeader = () => (
         <thead>
-            {_addColumns(oProperties)}
+            {_addColumns()}
         </thead>
     );
 
     /** @private
-     *  @param   {object} oProperties
-     *  @param   {boolean=} oProperties.showLoader
-     *  @param   {boolean=} oProperties.showLineNumber
-     *  @param   {boolean=} oProperties.multiSelect
-     *  @param   {[JSX.Element=]} oProperties.content
-     *  @param   {boolean=} oProperties.contentInitialVisibility
-     *  @param   {string=} oProperties.noDataTextTitle
-     *  @param   {string=} oProperties.noDataTextDescription
-     *  @param   {string=} oProperties.noDataTextIcon
-     *  @param   {[{key:string, title:string, sortable:boolean, searchable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
-     *  @param   {[[{type:string, title:string, description:string, disabled:boolean, customStyle:object, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]]} oProperties.rows
      *  @returns {JSX.Element} */
-    const _addTableBody = (oProperties) => {
+    const _addTableBody = () => {
         /** @desc Calculate col span columns for displaying sub content */
-        const iColSpan = oProperties.columns.length + (oProperties.showLineNumber ? 1 : 0) + (oProperties.multiSelect ? 1 : 0) + (oProperties.content ? 1 : 0);
+        const iColSpan = oConfiguration.columns.length + (oConfiguration.showLineNumber ? 1 : 0) + (oConfiguration.showMultiSelect ? 1 : 0) + (oConfiguration.content.jsxElement.length > 0 ? 1 : 0);
 
         return (
             <tbody>
-                {oProperties.rows.length > 0
-                    ? oProperties.rows.slice(_indexFirst, _indexLast).map((aRow, iIdx) => {
-                        /** @desc Determine the JSX for displaying additional row content */
-                        const content = Array.isArray(oProperties?.content) && oProperties.content[iIdx] ? oProperties.content[iIdx] : <span>Leider stehen Ihnen hierzu keine Daten zur Verfügung</span>
+                {oConfiguration.rows.length > 0 ? oConfiguration.rows.slice(oConfiguration.pagination.idxFirst, oConfiguration.pagination.idxLast).map((aRow, iIdx) => {
+                    /** @desc Determine the JSX for displaying additional row content */
+                    const content = Array.isArray(oConfiguration.content.jsxElement) && oConfiguration.content.jsxElement[iIdx]
+                        ? oConfiguration.content.jsxElement[iIdx]
+                        : <span>Leider stehen Ihnen hierzu keine Daten zur Verfügung</span>;
 
-                        return (
-                            <>
-                                {_addRow(oProperties, aRow)}
-                                {Array.isArray(oProperties?.content) && oProperties.content.length > 0 && _addContent(content, oProperties.contentInitialVisibility, iColSpan)}
-                            </>
-                        )
-                    }) : _addRowNoDataFound(iColSpan, oProperties.noDataTextTitle, oProperties.noDataTextDescription, oProperties.noDataTextIcon)}
+                    return (
+                        <>
+                            {_addRow(aRow)}
+                            {Array.isArray(oConfiguration.content.jsxElement) && oConfiguration.content.jsxElement.length > 0 && _addContent(content, iColSpan)}
+                        </>
+                    )
+                }) : _addRowNoDataFound(iColSpan)}
             </tbody>
         );
     }
 
     /** @private
-     *  @param   {object} oProperties
-     *  @param   {string} oProperties.tableKey
-     *  @param   {boolean=} oProperties.showLineNumber
-     *  @param   {boolean=} oProperties.multiSelect
-     *  @param   {[JSX.Element=]} oProperties.content
-     *  @param   {[{key:string, title:string, sortable:boolean, searchable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
      *  @returns {JSX.Element} */
-    const _addColumns = (oProperties) => (
+    const _addColumns = () => (
         <tr>
-            {oProperties?.showLineNumber && <TableColumn />}
-            {Array.isArray(oProperties?.content) && oProperties.content.length > 0 && <TableColumn />}
-            {oProperties?.multiSelect && <TableColumn
+            {oConfiguration.showLineNumber && <TableColumn />}
+            {oConfiguration.content.jsxElement.length > 0 && <TableColumn />}
+            {oConfiguration.showMultiSelect && <TableColumn
                 align="center"
                 isCheckboxColumn={true}
-                onCheckboxClicked={(oEvt) => {
-                    debugger
-                }}/>}
-            {oProperties.columns.map((oColumn) => <TableColumn
-                tableKey={oProperties.tableKey}
+                onCheckboxClicked={(oEvt) => {}}/>}
+            {oConfiguration.columns.map((oColumn) => <TableColumn
+                tableKey={oConfiguration.key}
                 column={oColumn}
                 isCheckboxColumn={oColumn.isCheckboxColumn} />)}
         </tr>
     );
 
     /** @private
-     *  @param   {object} oProperties
-     *  @param   {string} oProperties.tableKey
-     *  @param   {boolean=} oProperties.showLineNumber
-     *  @param   {boolean=} oProperties.multiSelect
-     *  @param   {[JSX.Element=]} oProperties.content
-     *  @param   {function=} oProperties.onCheckboxClicked
-     *  @param   {[{key:string, title:string, sortable:boolean, searchable:boolean, ascending:boolean, fixed:boolean, isHidden:boolean, isDropdownActive:boolean, isCheckboxColumn:boolean}]} oProperties.columns
      *  @param   {[{type:string, title:string, description:string, disabled:boolean, customStyle:object, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]} aRow
      *  @returns {JSX.Element} */
-    const _addRow = (oProperties, aRow) => (
+    const _addRow = (aRow) => (
         <tr>
-            {oProperties?.showLineNumber && _addRowShowLineNumber()}
-            {Array.isArray(oProperties?.content) && oProperties.content.length > 0 && _addRowContent()}
-            {oProperties?.multiSelect && _addRowMultiSelect(oProperties?.onCheckboxClicked)}
+            {oConfiguration.showLineNumber && _addRowShowLineNumber()}
+            {oConfiguration.content.jsxElement.length > 0 && _addRowContent()}
+            {oConfiguration.showMultiSelect && _addRowMultiSelect(oConfiguration.onCheckboxClicked)}
             {aRow.map((oRow, iCellIdx) => (
                 <TableRow
-                    tableKey={oProperties.tableKey}
-                    attrColumnKey={oProperties.columns[iCellIdx].key}
-                    align={oProperties.columns[iCellIdx]?.align}
+                    tableKey={oConfiguration.key}
+                    attrColumnKey={oConfiguration.columns[iCellIdx].key}
+                    align={oConfiguration.columns[iCellIdx]?.align}
                     row={oRow} />
             ))}
         </tr>
@@ -201,32 +232,28 @@ export const Table = (oProperties) => {
 
     /** @private
      *  @param   {number} iColSpan
-     *  @param   {string=} sNoDataTextTitle
-     *  @param   {string=} sNoDataTextDescription
-     *  @param   {string=} sNoDataTextIconSrc
      *  @returns {JSX.Element} */
-    const _addRowNoDataFound = (iColSpan, sNoDataTextTitle = "Oops. It looks like the database fall asleep or ... ", sNoDataTextDescription = "... you got lost while filtering the data", sNoDataTextIconSrc = "faServer") => (
+    const _addRowNoDataFound = (iColSpan) => (
         <tr>
             <TableRow
                 colSpan={iColSpan}
                 align="center"
                 row={{
                     type: "Identifier",
-                    iconSrc: sNoDataTextIconSrc,
-                    title: sNoDataTextTitle,
-                    description: sNoDataTextDescription,
-                    flexDirection: "column"
+                    iconSrc: oConfiguration.noDataText.iconSrc,
+                    title: oConfiguration.noDataText.title,
+                    description: oConfiguration.noDataText.description,
+                    flexDirection: oConfiguration.noDataText.flexDirection
                 }}/>
         </tr>
     );
 
     /** @private
      *  @param   {JSX.Element} content
-     *  @param   {boolean} bContentInitialVisibility
      *  @param   {number} iColSpan
      *  @returns {JSX.Element} */
-    const _addContent = (content, bContentInitialVisibility = false, iColSpan) => (
-        <tr className={bContentInitialVisibility ? "row-content" : "row-content-hide"}>
+    const _addContent = (content, iColSpan) => (
+        <tr className={oConfiguration.content.initialVisibility ? "row-content" : "row-content-hide"}>
             <td colSpan={iColSpan}>
                 {content}
             </td>
@@ -240,7 +267,7 @@ export const Table = (oProperties) => {
             align="center"
             row={{
                 type: "Number",
-                value: iLineIdx++
+                value: 0
         }} />
     );
 
@@ -277,39 +304,39 @@ export const Table = (oProperties) => {
     );
 
     /** @private
-     *  @param   {array} aRows
-     *  @param   {string=} sJustifyContent
      *  @returns {JSX.Element} */
-    const _addPagination = (aRows, sJustifyContent = "center") => (
+    const _addPagination = () => (
         <PaginationBase
-            ref={paginationRefreshRef}
-            perPage={iPerPage}
-            data={aRows}
-            customStyle={{ display: "flex", justifyContent: sJustifyContent, alignItems: "center" }}
+            ref={paginationRefObj}
+            perPage={oConfiguration.pagination.perPage}
+            data={oConfiguration.rows}
+            customStyle={{ display: "flex", justifyContent: oConfiguration.pagination.alignment, alignItems: "center" }}
             onIndexCalculated={(iIndexLast, iIndexFirst) => {
-                _setIndexFirst((_indexFirst) => iIndexFirst);
-                _setIndexLast((_indexLast) => iIndexLast);
+                /** @desc Update pagination information */
+                fnDispatch(setPaginationIdx({
+                    key: oConfiguration.key,
+                    idxFirst: iIndexFirst,
+                    idxLast: iIndexLast
+                }));
             }} />
     );
 
+    debugger
+
     return (
-        <StyledTable ref={tableHeaderRef}>
-            <TableHeader
+        <StyledTable ref={headerRefObj}>
+            {oConfiguration.showHeader && <TableHeader
                 title={oProperties.title}
-                favorite={oProperties?.favorite}
-                searchable={oProperties?.searchable}
-                filterable={oProperties?.filterable}
-                groupable={oProperties?.groupable}
-                cards={oProperties?.headerCards}
-                showCreateButton={oProperties?.showCreateButton}
-                createButtonText={oProperties?.createButtonText}/>
+                headerCards={oConfiguration.headerCards}
+                quickOptionsVisibility={oConfiguration.quickOptionsVisibility}
+                quickOptionsSettings={oConfiguration.quickOptionsSettings}/>}
             <div
-                style={{ height: `calc(100% - ${tableHeaderHeight}px)` }}
+                style={{ height: `calc(100% - ${oConfiguration.resizing.headerHeight}px)` }}
                 className="container">
-                {_addContainer(oProperties)}
+                {_addContainer()}
             </div>
             {oProperties.showLoader && <Loader/>}
-            {oProperties.pagination && _addPagination(oProperties.rows, oProperties.paginationAlignment)}
+            {_addPagination()}
         </StyledTable>
     )
 }
