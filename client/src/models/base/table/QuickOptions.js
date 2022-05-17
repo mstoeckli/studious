@@ -30,10 +30,10 @@ export const QuickOptions = {
         backgroundColor: "#688ccd",
         borderColor: "#3f6ad8"
     }, {
-        id: "customView",
-        title: "Base.Table.QuickOptions.View.title",
-        iconSrc: "faMountain",
-        jsxElement: "view"
+        id: "customize",
+        title: "Base.Table.QuickOptions.Customize.title",
+        iconSrc: "faColumns3",
+        jsxElement: "customize"
     }, {
         id: "settings",
         iconSrc: "faTools",

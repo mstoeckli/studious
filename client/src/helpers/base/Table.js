@@ -31,7 +31,7 @@ export const getNoDataText = (oNoDataText = {}) => ({
  *  @param   {boolean} oQuickOptions.newest
  *  @param   {boolean} oQuickOptions.create
  *  @param   {boolean} oQuickOptions.settings
- *  @param   {boolean} oQuickOptions.customView
+ *  @param   {boolean} oQuickOptions.customize
  *  @param   {boolean} oQuickOptions.dateCalendar
  *  @returns {object} */
 export const getQuickOptionsVisibility = (oQuickOptions = {}) => ({
@@ -42,7 +42,7 @@ export const getQuickOptionsVisibility = (oQuickOptions = {}) => ({
     newest: oQuickOptions?.newest ? oQuickOptions.newest : false,
     create: oQuickOptions?.create ? oQuickOptions.create : false,
     settings: oQuickOptions?.settings ? oQuickOptions.settings : true,
-    customView: oQuickOptions?.customView ? oQuickOptions.customView : true,
+    customize: oQuickOptions?.customize ? oQuickOptions.customize : true,
     dateCalendar: oQuickOptions?.dateCalendar ? oQuickOptions.dateCalendar : false
 });
 

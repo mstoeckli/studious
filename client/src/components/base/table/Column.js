@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { StyledTableColumn } from '../../../styles/base/table/Column.styles';
 
-import { setDropdownActive, isClickedOutside } from '../../../reducers/base/table/Configuration';
+import { setHidden, setDropdownActive, isClickedOutside } from '../../../reducers/base/table/Configuration';
 
 import { Checkbox } from './template/Checkbox';
 
@@ -56,8 +56,16 @@ export const TableColumn = (oProperties) => {
         }));
     };
 
-    const _onHideColumn = () => {
-
+    /** @private
+     *  @param {string} sTableKey
+     *  @param {string} sColumnKey
+     *  @param {boolean} bIsHidden */
+    const _onHideColumn = (sTableKey, sColumnKey, bIsHidden) => {
+        fnDispatch(setHidden({
+            key: sTableKey,
+            columnKey: sColumnKey,
+            isHidden: bIsHidden
+        }));
     };
 
     /** @private
@@ -89,7 +97,7 @@ export const TableColumn = (oProperties) => {
             isClickedOutside={() => _onClickOutside(sTableKey, sColumnKey, bIsActive)}
             onListItemClick={(oEvt) => {
                 debugger
-                _onHideColumn();
+                _onHideColumn(sTableKey, sColumnKey, true);
             }}/>
     );
 

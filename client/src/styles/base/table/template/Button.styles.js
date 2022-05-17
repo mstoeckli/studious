@@ -2,6 +2,9 @@ import styled from 'styled-components';
 
 /**  @return {React.RefAttributes<HTMLSpanElement>} StyledButton */
 export const StyledButton = styled.button`
+  display: flex;
+  align-items: center;
+  width: 100%;
   border: 1px solid ${props => props.disabled ? "#9d9d9d" : "#3f6ad8"};
   border-radius: 5px;
   background: ${props => props.disabled ? "#adb1b7" : "#688ccd"};

@@ -131,6 +131,28 @@ export const TableConfigurationSlice = createSlice({
          *  @param {Proxy} state
          *  @param {array} state.value
          *  @param {object} action
+         *  @param {string} action.type -> tableColumns/setHidden
+         *  @param {string} action.payload.key
+         *  @param {string} action.payload.columnKey
+         *  @param {boolean} action.payload.isHidden  */
+        setHidden: (state, action) => {
+            return {
+                ...state,
+                [action.payload.key]: {
+                    ...state[action.payload.key],
+                    columns: state[action.payload.key].columns.map(
+                        (oColumn) => oColumn.key === action.payload.columnKey
+                            ? {...oColumn, isHidden: action.payload.isHidden}
+                            : oColumn
+                    )
+                }
+            }
+        },
+
+        /** @public
+         *  @param {Proxy} state
+         *  @param {array} state.value
+         *  @param {object} action
          *  @param {string} action.type -> tableColumns/setDropdownActive
          *  @param {string} action.payload.key
          *  @param {string} action.payload.columnKey
@@ -150,5 +172,5 @@ export const TableConfigurationSlice = createSlice({
     }
 });
 
-export const { initialize, setRows, setPaginationIdx, setResizeInfo, setDropdownActive, isClickedOutside } = TableConfigurationSlice.actions;
+export const { initialize, setRows, setPaginationIdx, setResizeInfo, setHidden, setDropdownActive, isClickedOutside } = TableConfigurationSlice.actions;
 export default TableConfigurationSlice.reducer;

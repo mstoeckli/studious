@@ -34,7 +34,7 @@ import { PaginationBase } from './Pagination';
  *  @param   {boolean=} oProperties.quickOptionsVisibility.newest
  *  @param   {boolean=} oProperties.quickOptionsVisibility.create
  *  @param   {boolean=} oProperties.quickOptionsVisibility.settings
- *  @param   {boolean=} oProperties.quickOptionsVisibility.customView
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.customize
  *  @param   {boolean=} oProperties.quickOptionsVisibility.dateCalendar
  *  @param   {object=} oProperties.quickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/settings/customView/dateCalendar
  *  @param   {string} oProperties.quickOptionsSettings.title
@@ -204,7 +204,7 @@ export const Table = (oProperties) => {
                 align="center"
                 isCheckboxColumn={true}
                 onCheckboxClicked={(oEvt) => {}}/>}
-            {oConfiguration.columns.map((oColumn) => <TableColumn
+            {oConfiguration.columns.map((oColumn) => !oColumn.isHidden && <TableColumn
                 tableKey={oConfiguration.key}
                 column={oColumn}
                 isCheckboxColumn={oColumn.isCheckboxColumn} />)}
@@ -220,7 +220,7 @@ export const Table = (oProperties) => {
             {oConfiguration.content.jsxElement.length > 0 && _addRowContent()}
             {oConfiguration.showMultiSelect && _addRowMultiSelect(oConfiguration.onCheckboxClicked)}
             {aRow.map((oRow, iCellIdx) => (
-                <TableRow
+                !oConfiguration.columns[iCellIdx].isHidden && <TableRow
                     tableKey={oConfiguration.key}
                     attrColumnKey={oConfiguration.columns[iCellIdx].key}
                     align={oConfiguration.columns[iCellIdx]?.align}

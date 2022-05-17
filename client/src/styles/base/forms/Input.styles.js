@@ -24,7 +24,7 @@ export const StyledInput = styled.div`
     width: 100%;
     min-height: 44px;
     margin: 0.35rem 0;
-    padding: 8px 16px 8px 35px;
+    padding: 8px 16px 8px 40px;
     font-size: 0.85rem;
     font-weight: 600;
     font-family: inherit;

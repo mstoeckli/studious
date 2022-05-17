@@ -38,8 +38,11 @@
         "Create": {
           "title": "Anlegen"
         },
-        "View": {
-          "title": "Standard"
+        "Customize": {
+          "title": "Personalisieren",
+          "DropdownContent": {
+            "title": "Personalisieren"
+          }
         }
       }
     }

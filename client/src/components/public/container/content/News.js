@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Table } from '../../../base/Table'
-import {Dialog} from "../../../base/messages/Dialog";
 
 /** @public
  *  @constructor

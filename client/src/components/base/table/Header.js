@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { StyledTableHeader } from '../../../styles/base/table/Header.styles';
 
 import { Filter } from './header/Filter';
+import { Customize } from './header/Customize';
 
 import { Search } from '../Search';
 
@@ -29,7 +30,7 @@ import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
  *  @param   {boolean=} oProperties.quickOptionsVisibility.newest
  *  @param   {boolean=} oProperties.quickOptionsVisibility.create
  *  @param   {boolean=} oProperties.quickOptionsVisibility.settings
- *  @param   {boolean=} oProperties.quickOptionsVisibility.customView
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.customize
  *  @param   {boolean=} oProperties.quickOptionsVisibility.dateCalendar
  *  @param   {object=} oProperties.quickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/settings/customView/dateCalendar
  *  @param   {string} oProperties.quickOptionsSettings.title
@@ -73,7 +74,7 @@ export const TableHeader = (oProperties) => {
     const _getDropdownElement = (sKey) => (({
         filterable: <Filter />,
         settings: <div>settings</div>,
-        view: <div>view</div>
+        customize: <Customize />
     }))[sKey]
 
     /** @private
@@ -107,9 +108,9 @@ export const TableHeader = (oProperties) => {
      *  @param   {boolean=} oQuickOptionsVisibility.newest
      *  @param   {boolean=} oQuickOptionsVisibility.create
      *  @param   {boolean=} oQuickOptionsVisibility.settings
-     *  @param   {boolean=} oQuickOptionsVisibility.customView
+     *  @param   {boolean=} oQuickOptionsVisibility.customize
      *  @param   {boolean=} oQuickOptionsVisibility.dateCalendar
-     *  @param   {object=} oQuickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/settings/customView/dateCalendar
+     *  @param   {object=} oQuickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/settings/customize/dateCalendar
      *  @param   {string} oQuickOptionsSettings.title
      *  @param   {string=} oQuickOptionsSettings.titleColor
      *  @param   {string} oQuickOptionsSettings.iconSrc
