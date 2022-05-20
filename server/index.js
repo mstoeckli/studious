@@ -10,6 +10,7 @@ const { getPort } = require('./config/Environment.js');
 
 const authenticateRoute = require('./routes/AuthenticateRoute.js');
 const schoolRoute = require('./routes/SchoolRoute');
+const customizeRoute = require('./routes/CustomizeRoute');
 
 /** @desc Initialize API */
 const api = express();
@@ -41,6 +42,7 @@ passport.strategies();
 api.get("/", (req, res) => res.send("API available!"));
 api.use("/authenticate", authenticateRoute);
 api.use("/school", schoolRoute);
+api.use("/customize", customizeRoute);
 
 // api.use((err, req, res, next) => res.status(500).send('An unknown error occurred.'));
 

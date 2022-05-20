@@ -29,7 +29,10 @@ export const Schools = () => {
      *  @type {[rows:array, setRows:function]} */
     const [ rows, setRows ] = useState([]);
 
-    const [reload, setReload] = useState(false)
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Used for refreshing data while fetching
+     *  @type {[reload:boolean, setReload:function]} */
+    const [ reload, setReload ] = useState(false)
 
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Show/Hide busy indicator/loader
@@ -51,10 +54,18 @@ export const Schools = () => {
     const [ error, setError ] = useState({});
 
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
-    useEffect(() => _fetchProjects(), [reload]);
+    useEffect(() => _fetchSchools(), []);
+
+    /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
+    useEffect(() => {
+        if (reload) {
+            /** @desc Fetching school information */
+            _fetchSchools();
+        } setReload(false);
+    }, [reload]);
 
     /** @private */
-    const _fetchProjects = () => {
+    const _fetchSchools = () => {
         /** @desc Show busy indicator/loader */
         setShowLoader(true);
 

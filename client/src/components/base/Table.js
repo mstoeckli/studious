@@ -9,10 +9,18 @@ import { TableHeader } from './table/Header';
 import { TableColumn } from './table/Column';
 import { TableRow } from './table/Row';
 
-import { Loader } from "../core/Loader";
+import { Dialog } from "./messages/Dialog";
+
+import { useAuth } from '../../context/AuthProvider';
+
+import { create } from '../../assets/api/Customize';
+
+import { Loader } from '../core/Loader';
+
+import { Codes } from "../../models/core/messages/Codes";
 
 import { getParentByInstance } from '../../helpers/Helper';
-import { getQuickOptionsVisibility, getPagination, getResizing, getGrouping, getContent, getNoDataText } from '../../helpers/base/Table';
+import { getQuickOptionsVisibility, getQuickOptionsEvents, getPagination, getResizing, getGrouping, getContent, getNoDataText } from '../../helpers/base/Table';
 
 import { PaginationBase } from './Pagination';
 
@@ -32,11 +40,12 @@ import { PaginationBase } from './Pagination';
  *  @param   {boolean=} oProperties.quickOptionsVisibility.groupable
  *  @param   {boolean=} oProperties.quickOptionsVisibility.favorite
  *  @param   {boolean=} oProperties.quickOptionsVisibility.newest
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.refresh
  *  @param   {boolean=} oProperties.quickOptionsVisibility.create
  *  @param   {boolean=} oProperties.quickOptionsVisibility.settings
  *  @param   {boolean=} oProperties.quickOptionsVisibility.customize
  *  @param   {boolean=} oProperties.quickOptionsVisibility.dateCalendar
- *  @param   {object=} oProperties.quickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/settings/customView/dateCalendar
+ *  @param   {object=} oProperties.quickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/refresh/settings/customView/dateCalendar
  *  @param   {string} oProperties.quickOptionsSettings.title
  *  @param   {string=} oProperties.quickOptionsSettings.titleColor
  *  @param   {string} oProperties.quickOptionsSettings.iconSrc
@@ -44,6 +53,8 @@ import { PaginationBase } from './Pagination';
  *  @param   {string=} oProperties.quickOptionsSettings.iconSolid
  *  @param   {string=} oProperties.quickOptionsSettings.backgroundColor
  *  @param   {string=} oProperties.quickOptionsSettings.borderColor
+ *  @param   {object=} oProperties.quickOptionsEvents -> { refresh: () => {}} / Elements: refresh
+ *  @param   {function} oProperties.quickOptionsEvents.refresh
  *  @param   {object=} oProperties.pagination
  *  @param   {boolean=} oProperties.pagination.active
  *  @param   {number=} oProperties.pagination.idxFirst
@@ -78,42 +89,18 @@ export const Table = (oProperties) => {
      *  @type {object} oConfiguration */
     let oConfiguration = useSelector((state) => state.tableConfiguration[oProperties.tableKey]);
 
-    /** @desc Initialize configuration object */
-    if (!oConfiguration) {
-        fnDispatch(initialize({
-            key: oProperties.tableKey,
-            title: oProperties?.title,
-            columns: oProperties?.columns && Array.isArray(oProperties.columns) ? oProperties.columns : [],
-            rows: oProperties?.rows && Array.isArray(oProperties.rows) ? oProperties.rows : [],
-            content: getContent(oProperties?.content),
-            quickOptionsVisibility: getQuickOptionsVisibility(oProperties?.quickOptionsVisibility),
-            quickOptionsSettings: oProperties?.quickOptionsSettings ? oProperties.quickOptionsSettings : {},
-            pagination: getPagination(oProperties?.pagination),
-            grouping: getGrouping(oProperties?.grouping),
-            noDataText: getNoDataText(oProperties?.noDataText),
-            resizing: getResizing({ headerHeight: 0 }),
-            headerCards: oProperties?.headerCards && Array.isArray(oProperties.headerCards) ? oProperties.headerCards : [],
-            showHeader: oProperties?.showHeader ? oProperties.showHeader : false,
-            showLineNumber: oProperties?.showLineNumber ? oProperties.showLineNumber : false,
-            showLoader: oProperties?.showLoader ? oProperties.showLoader : false,
-            showMultiSelect: oProperties?.showMultiSelect ? oProperties.showMultiSelect : false,
-            onCheckBoxClicked: oProperties?.onCheckboxClicked && typeof oProperties.onCheckboxClicked === "function" ? oProperties.onCheckboxClicked : () => {}
-        }));
-    }
+    /** @desc Get user object to check if user is signed in */
+    let { user } = useAuth();
 
-    /** @desc Update rows after fetching data */
-    if (oProperties.rows.length > 0 && oConfiguration.rows.length === 0) fnDispatch(setRows({
-        key: oConfiguration.key,
-        rows: oProperties.rows
-    }));
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Used for displaying error dialog while fetching data from database
+     *  @type {[error:{title:string, description:string}, setError:function]} */
+    const [ error, setError ] = useState({});
 
-    /** @desc Returns global state value by redux toolkit
-     *  @type {object} oConfiguration */
-    oConfiguration = useSelector((state) => state.tableConfiguration[oProperties.tableKey]);
-
-    /** @desc Pre-checks */
-    if (!oConfiguration.key) throw "missing property tableKey";
-    if (oConfiguration.grouping.active) throw "grouping is not supported in the current version!";
+    const [ configuration, setConfiguration ] = useState({
+        loading: false,
+        loaded: false
+    });
 
     /** @desc Initialize reference object for setting object pagination */
     const paginationRefObj = useRef(null);
@@ -138,6 +125,132 @@ export const Table = (oProperties) => {
                 headerHeight: oEvt.target.firstChild.offsetHeight + (oConfiguration.pagination.active && oConfiguration.rows.length > oConfiguration.pagination.perPage ? 70 : 40)
             }));
         });
+    }
+
+    /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
+    useEffect(() => {
+        if ((!oConfiguration && !configuration.loading && !configuration.loaded) || (oConfiguration && !oConfiguration.userLoaded && user !== null)) {
+            /** @desc Set configuration status while loading/fetching user customizing */
+            setConfiguration(() => ({
+                loading: true,
+                loaded: false
+            }));
+
+            /** @desc Fetching user customizing */
+            _fetchCustomize()
+        }
+    }, []);
+
+    /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
+    useEffect(() => {
+        /** @desc Update rows after fetching data */
+        if (oProperties.rows.length > 0 && oConfiguration && oConfiguration.rows !== oProperties.rows) {
+            fnDispatch(setRows({
+                key: oConfiguration?.key ? oConfiguration.key : oProperties.tableKey,
+                rows: oProperties.rows
+            }));
+        }
+    }, [oProperties.rows])
+
+    /** @private */
+    const _fetchCustomize = () => {
+        /** @desc Check if user is signed in */
+        if (user !== null) {
+            /** @private
+             *  @returns {Promise<*>} */
+            const _fetch = async () => await create({
+                user: user.userId,
+                tables: {
+                    key: oProperties.tableKey,
+                    views: [_getStandardView()]
+            }});
+
+            /** @param {object} oFetchedObj
+             *  @param {boolean} oFetchedObj.success
+             *  @param {array} oFetchedObj.schools */
+            _fetch()
+            .then(async ({ success, data, url, message }) => {
+                if (success) {
+                    if (data.success) {
+                        /** @desc Get customizing for current table object for reading active view */
+                        const oCustomize = data.oCustomize.tables.find(({ key }) => key === oProperties.tableKey);
+                        const oView = oCustomize.views.find(({ active }) => active === true);
+
+                        /** @desc Initialize configuration object */
+                        _initialize(oView.columns, oCustomize.views, true);
+
+                        /** @desc Set configuration status while loading/fetching user customizing -> Fetching completed! */
+                        setConfiguration(() => ({
+                            loading: true,
+                            loaded: true
+                        }));
+                    } else _setError({ message: `${data.message} - ${url}` });
+                } else _setError({ message: `${message} - ${url}` });
+            })
+            .catch((oErr) => _setError(oErr));
+        } else _initialize()
+    };
+
+    /** @private
+     *  @param {array} aColumns
+     *  @param {array} aViews
+     *  @param {boolean} bUserLoaded */
+    const _initialize = (aColumns = oProperties?.columns && Array.isArray(oProperties.columns) ? oProperties.columns : [], aViews = [_getStandardView()], bUserLoaded = false) => {
+        fnDispatch(initialize({
+            key: oProperties.tableKey,
+            userLoaded: bUserLoaded,
+            title: oProperties?.title,
+            columns: aColumns,
+            rows: bUserLoaded ? oConfiguration.rows : oProperties?.rows && Array.isArray(oProperties.rows) ? oProperties.rows : [],
+            views: aViews,
+            content: getContent(oProperties?.content),
+            quickOptionsVisibility: getQuickOptionsVisibility(oProperties?.quickOptionsVisibility),
+            quickOptionsSettings: oProperties?.quickOptionsSettings ? oProperties.quickOptionsSettings : {},
+            quickOptionsEvents: getQuickOptionsEvents(oProperties?.quickOptionsEvents),
+            pagination: getPagination(oProperties?.pagination),
+            grouping: getGrouping(oProperties?.grouping),
+            noDataText: getNoDataText(oProperties?.noDataText),
+            resizing: getResizing({ headerHeight: 0 }),
+            headerCards: oProperties?.headerCards && Array.isArray(oProperties.headerCards) ? oProperties.headerCards : [],
+            showHeader: oProperties?.showHeader ? oProperties.showHeader : false,
+            showLineNumber: oProperties?.showLineNumber ? oProperties.showLineNumber : false,
+            showLoader: oProperties?.showLoader ? oProperties.showLoader : false,
+            showMultiSelect: oProperties?.showMultiSelect ? oProperties.showMultiSelect : false,
+            onCheckBoxClicked: oProperties?.onCheckboxClicked && typeof oProperties.onCheckboxClicked === "function" ? oProperties.onCheckboxClicked : () => {},
+            onRefreshClicked: oProperties?.onRefreshClicked && typeof oProperties.onRefreshClicked === "function" ? oProperties.onRefreshClicked : () => {}
+        }));
+    };
+
+    /** @private
+     *  @param {object} oErr
+     *  @param {string} oErr.message */
+    const _setError = ({ message }) => {
+        setError((oError) => {
+            return {
+                ...oError,
+                title: `${Codes["database-access"].key} - ${Codes["database-access"].text}`,
+                description: message
+            }
+        });
+    };
+
+    /** @private
+     *  @returns {{columns: ({key: string, title: string, sortable: boolean, searchable: boolean, ascending: boolean, fixed: boolean, isHidden: boolean, isDropdownActive: boolean, isCheckboxColumn: boolean}[]|*[]), active: boolean, title: string, key: string, order: *[]}}*/
+    const _getStandardView = () => ({
+        key: "S00",
+        title: "Standard",
+        active: true,
+        columns: oProperties?.columns && Array.isArray(oProperties.columns) ? oProperties.columns : [],
+        order: _getOrderStandardView()
+    });
+
+    /** @private
+     *  @returns {[]} */
+    const _getOrderStandardView = () => {
+        const aOrder = [];
+        for (const oColumn of oProperties.columns) {
+            aOrder.push(oColumn.key);
+        } return aOrder;
     }
 
     /** @private
@@ -322,18 +435,27 @@ export const Table = (oProperties) => {
 
     return (
         <StyledTable ref={headerRefObj}>
-            {oConfiguration.showHeader && <TableHeader
-                title={oProperties.title}
+            {oConfiguration && oConfiguration.showHeader && <TableHeader
+                tableKey={oConfiguration.key}
+                title={oConfiguration.title}
+                views={oConfiguration.views}
                 headerCards={oConfiguration.headerCards}
                 quickOptionsVisibility={oConfiguration.quickOptionsVisibility}
-                quickOptionsSettings={oConfiguration.quickOptionsSettings}/>}
-            <div
+                quickOptionsSettings={oConfiguration.quickOptionsSettings}
+                quickOptionsEvents={oConfiguration.quickOptionsEvents}/>}
+            {oConfiguration && <div
                 style={{ height: `calc(100% - ${oConfiguration.resizing.headerHeight}px)` }}
                 className="container">
                 {_addContainer()}
-            </div>
-            {oProperties.showLoader && <Loader/>}
-            {_addPagination()}
+            </div>}
+            {!oConfiguration && <Loader />}
+            {oConfiguration && oProperties.showLoader && <Loader/>}
+            {oConfiguration && _addPagination()}
+            {Object.keys(error).length !== 0 && error.constructor === Object && <Dialog
+                title={error.title}
+                description={error.description}
+                messageType="E"
+                showSupport={true} />}
         </StyledTable>
     )
 }

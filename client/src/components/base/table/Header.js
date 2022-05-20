@@ -21,6 +21,7 @@ import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
 /** @public
  *  @constructor
  *  @param   {object} oProperties
+ *  @param   {string} oProperties.tableKey
  *  @param   {string} oProperties.title
  *  @param   {object=} oProperties.quickOptionsVisibility
  *  @param   {boolean=} oProperties.quickOptionsVisibility.searchable
@@ -28,6 +29,7 @@ import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
  *  @param   {boolean=} oProperties.quickOptionsVisibility.groupable
  *  @param   {boolean=} oProperties.quickOptionsVisibility.favorite
  *  @param   {boolean=} oProperties.quickOptionsVisibility.newest
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.refresh
  *  @param   {boolean=} oProperties.quickOptionsVisibility.create
  *  @param   {boolean=} oProperties.quickOptionsVisibility.settings
  *  @param   {boolean=} oProperties.quickOptionsVisibility.customize
@@ -40,12 +42,15 @@ import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
  *  @param   {string=} oProperties.quickOptionsSettings.iconSolid
  *  @param   {string=} oProperties.quickOptionsSettings.backgroundColor
  *  @param   {string=} oProperties.quickOptionsSettings.borderColor
+ *  @param   {object=} oProperties.quickOptionsEvents -> { refresh: () => {}} / Elements: refresh
+ *  @param   {function} oProperties.quickOptionsEvents.refresh
  *  @param   {[object]=} oProperties.headerCards
  *  @param   {string} oProperties.headerCards.iconSrc
  *  @param   {string} oProperties.headerCards.title
  *  @param   {string} oProperties.headerCards.info
  *  @param   {string=} oProperties.headerCards.backgroundColor
  *  @param   {string=} oProperties.headerCards.borderColor
+ *  @param   {[object]} oProperties.views
  *  @returns {JSX.Element} TableHeader */
 export const TableHeader = (oProperties) => {
     /** @desc Returns the translation function for reading from the locales files
@@ -74,7 +79,9 @@ export const TableHeader = (oProperties) => {
     const _getDropdownElement = (sKey) => (({
         filterable: <Filter />,
         settings: <div>settings</div>,
-        customize: <Customize />
+        customize: <Customize
+            tableKey={oProperties.tableKey}
+            views={oProperties.views}/>
     }))[sKey]
 
     /** @private
@@ -107,6 +114,7 @@ export const TableHeader = (oProperties) => {
      *  @param   {boolean=} oQuickOptionsVisibility.favorite
      *  @param   {boolean=} oQuickOptionsVisibility.newest
      *  @param   {boolean=} oQuickOptionsVisibility.create
+     *  @param   {boolean=} oQuickOptionsVisibility.refresh
      *  @param   {boolean=} oQuickOptionsVisibility.settings
      *  @param   {boolean=} oQuickOptionsVisibility.customize
      *  @param   {boolean=} oQuickOptionsVisibility.dateCalendar
@@ -117,8 +125,10 @@ export const TableHeader = (oProperties) => {
      *  @param   {string=} oQuickOptionsSettings.iconColor
      *  @param   {string=} oQuickOptionsSettings.iconSolid
      *  @param   {string=} oQuickOptionsSettings.backgroundColor
-     *  @param   {string=} oQuickOptionsSettings.borderColor */
-    const _addQuickOptions = (oQuickOptions, oQuickOptionsVisibility, oQuickOptionsSettings) => {
+     *  @param   {string=} oQuickOptionsSettings.borderColor
+     *  @param   {object=} oQuickOptionsEvents -> { refresh: () => {}} / Elements: refresh
+     *  @param   {function} oQuickOptionsEvents.refresh */
+    const _addQuickOptions = (oQuickOptions, oQuickOptionsVisibility, oQuickOptionsSettings, oQuickOptionsEvents) => {
         /** @desc Pre-check visibility of a quick option */
         if (!oQuickOptionsVisibility[oQuickOptions.id]) {
             return ( <></> );
@@ -136,13 +146,15 @@ export const TableHeader = (oProperties) => {
                     id={oQuickOptions.id}
                     className="quick-options"
                     style={{ backgroundColor: oQuickOptions?.backgroundColor, borderColor: oQuickOptions?.borderColor }}
-                    onClick={() => _setIsActive(oQuickOptions.id, true)}>
+                    onClick={(oEvt) => Object.keys(oQuickOptionsEvents).length > 0 && oQuickOptionsEvents.constructor === Object && oQuickOptionsEvents.hasOwnProperty(oQuickOptions.id)
+                        ? oQuickOptionsEvents[oQuickOptions.id](oEvt)
+                        : _setIsActive(oQuickOptions.id, true)}>
                     <FontAwesomeIcon
                         style={{ color: oQuickOptions?.iconColor }}
                         icon={oQuickOptions?.iconSolid ? FaSolidIcons[oQuickOptions.iconSrc] : FaDuotoneIcons[oQuickOptions.iconSrc]} />
                     {oQuickOptions?.title && <span style={{ color: oQuickOptions?.titleColor }}>{t(oQuickOptions.title)}</span>}
                 </div>
-                {oQuickOptions.hasOwnProperty("jsxElement") && <Dropdown
+                {oQuickOptions?.jsxElement && <Dropdown
                     isActive={isActive[oQuickOptions.id]}
                     isClickedOutside={() => _setIsActive(oQuickOptions.id)}
                     jsxElement={_getDropdownElement(oQuickOptions.id)}  />}
@@ -178,10 +190,10 @@ export const TableHeader = (oProperties) => {
             <header>
                 <div className="left">
                     {oProperties.quickOptionsVisibility.searchable && <Search />}
-                    {QuickOptions["Left"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings))}
+                    {QuickOptions["Left"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings, oProperties.quickOptionsEvents))}
                 </div>
                 <div className="right">
-                    {QuickOptions["Right"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings))}
+                    {QuickOptions["Right"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings, oProperties.quickOptionsEvents))}
                 </div>
             </header>
             {/*<article className="option-wrapper">*/}

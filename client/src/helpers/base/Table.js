@@ -29,6 +29,7 @@ export const getNoDataText = (oNoDataText = {}) => ({
  *  @param   {boolean} oQuickOptions.groupable
  *  @param   {boolean} oQuickOptions.favorite
  *  @param   {boolean} oQuickOptions.newest
+ *  @param   {boolean} oQuickOptions.refresh
  *  @param   {boolean} oQuickOptions.create
  *  @param   {boolean} oQuickOptions.settings
  *  @param   {boolean} oQuickOptions.customize
@@ -40,10 +41,19 @@ export const getQuickOptionsVisibility = (oQuickOptions = {}) => ({
     groupable: oQuickOptions?.groupable ? oQuickOptions.groupable : false,
     favorite: oQuickOptions?.favorite ? oQuickOptions.favorite : false,
     newest: oQuickOptions?.newest ? oQuickOptions.newest : false,
+    refresh: oQuickOptions?.refresh ? oQuickOptions.refresh : false,
     create: oQuickOptions?.create ? oQuickOptions.create : false,
     settings: oQuickOptions?.settings ? oQuickOptions.settings : true,
     customize: oQuickOptions?.customize ? oQuickOptions.customize : true,
     dateCalendar: oQuickOptions?.dateCalendar ? oQuickOptions.dateCalendar : false
+});
+
+/** @public
+ *  @param   {object=} oQuickOptions -> { refresh: () => {}} / Elements: refresh
+ *  @param   {function} oQuickOptions.refresh
+ *  @returns {object} */
+export const getQuickOptionsEvents = (oQuickOptions = {}) => ({
+    refresh: oQuickOptions?.refresh ? oQuickOptions.refresh : () => {}
 });
 
 /** @public

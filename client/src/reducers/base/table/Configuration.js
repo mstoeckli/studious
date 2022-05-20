@@ -27,16 +27,19 @@ export const TableConfigurationSlice = createSlice({
          *  @param {string} action.type -> tableConfiguration/initialize
          *  @param {object} action.payload
          *  @param {string} action.payload.key
+         *  @param {boolean} action.payload.userLoaded
          *  @param {string=} action.payload.title
          *  @param {array} action.payload.columns
          *  @param {array} action.payload.rows
          *  @param {array} action.payload.content
          *  @param {object} action.payload.quickOptionsVisibility
          *  @param {object} action.payload.quickOptionsSettings
+         *  @param {object} action.payload.quickOptionsEvents
          *  @param {object} action.payload.pagination
          *  @param {object} action.payload.noDataText
          *  @param {object} action.payload.grouping
          *  @param {object} action.payload.resizing
+         *  @param {[object]} action.payload.views
          *  @param {[object]} action.payload.headerCards
          *  @param {boolean} action.payload.showHeader
          *  @param {boolean} action.payload.showLineNumber
@@ -48,16 +51,19 @@ export const TableConfigurationSlice = createSlice({
                 ...state,
                 [action.payload.key]: {
                     key: action.payload.key,
+                    userLoaded: action.payload.userLoaded,
                     title: action.payload.title,
                     columns: action.payload.columns,
                     rows: action.payload.rows,
                     content: action.payload.content,
                     quickOptionsVisibility: action.payload.quickOptionsVisibility,
                     quickOptionsSettings: action.payload.quickOptionsSettings,
+                    quickOptionsEvents: action.payload.quickOptionsEvents,
                     pagination: action.payload.pagination,
                     grouping: action.payload.grouping,
                     noDataText: action.payload.noDataText,
                     resizing: action.payload.resizing,
+                    views: action.payload.views,
                     headerCards: action.payload.headerCards,
                     showHeader: action.payload.showHeader,
                     showLineNumber: action.payload.showLineNumber,
@@ -140,10 +146,9 @@ export const TableConfigurationSlice = createSlice({
                 ...state,
                 [action.payload.key]: {
                     ...state[action.payload.key],
-                    columns: state[action.payload.key].columns.map(
-                        (oColumn) => oColumn.key === action.payload.columnKey
-                            ? {...oColumn, isHidden: action.payload.isHidden}
-                            : oColumn
+                    columns: state[action.payload.key].columns.map((oColumn) => oColumn.key === action.payload.columnKey
+                        ? {...oColumn, isHidden: action.payload.isHidden}
+                        : oColumn
                     )
                 }
             }
@@ -168,9 +173,26 @@ export const TableConfigurationSlice = createSlice({
          *  @param {string} action.payload.key
          *  @param {string} action.payload.columnKey
          *  @param {boolean} action.payload.isActive  */
-        isClickedOutside: (state, action) => _setDropdownVisibility(state, action)
+        isClickedOutside: (state, action) => _setDropdownVisibility(state, action),
+
+        cloneCustomize: (state, action) => {
+            debugger
+            return {
+                ...state,
+                [action.payload.key]: {
+                    ...state[action.payload.key],
+                    views: [...state[action.payload.key].views, {
+                        key: "C01",
+                        title: "Variante 1",
+                        active: true,
+                        columns: [],
+                        order: []
+                    }]
+                }
+            }
+        }
     }
 });
 
-export const { initialize, setRows, setPaginationIdx, setResizeInfo, setHidden, setDropdownActive, isClickedOutside } = TableConfigurationSlice.actions;
+export const { initialize, setRows, setPaginationIdx, setResizeInfo, setHidden, setDropdownActive, isClickedOutside, cloneCustomize } = TableConfigurationSlice.actions;
 export default TableConfigurationSlice.reducer;

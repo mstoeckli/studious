@@ -38,5 +38,9 @@ export const QuickOptions = {
         id: "settings",
         iconSrc: "faTools",
         jsxElement: "settings"
+    }, {
+        id: "refresh",
+        iconSrc: "faArrowsRotate",
+        iconColor: "#3f6ad8"
     }]
 }

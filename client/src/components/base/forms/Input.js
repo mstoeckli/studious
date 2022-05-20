@@ -14,7 +14,7 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons'
  *  @param   {function} oProperties.fnChange
  *  @param   {object} oProperties.inputProps
  *  @returns {JSX.Element} FormInput */
-export const FormInput = ({ label, message, icon, fnChange, ...inputProps }) => {
+export const FormInput = ({ label, message, icon, fnChange = () => {}, ...inputProps }) => {
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Update the focus for an input field to handle validations
      *  @type {[open:boolean, setOpen:function]} */

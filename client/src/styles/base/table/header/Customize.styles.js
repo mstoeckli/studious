@@ -19,11 +19,34 @@ export const StyledCustomize = styled.div`
     padding: 0.5rem;
     border-bottom: 1px solid #e9e9e9;
     
+    & .article-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 0.2rem;
+      
+      & svg {
+        color: var(--title-color-nav-group);
+        padding-left: 0.5rem;
+        cursor: pointer;
+      }
+    }
+    
     & span {
       font-size: 0.7rem;
       font-weight: 600;
       text-transform: uppercase;
       color: var(--title-color-nav-group);
+    }
+    
+    & div.customize-manage-content-info {
+      text-align: center;
+      margin-top: 0.5rem;
+      
+      & > span {
+        text-transform: none;
+        color: var(--color-error);
+      }
     }
     
     & button {

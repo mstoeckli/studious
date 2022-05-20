@@ -14,5 +14,6 @@ mongoose.connect(getDatabase().studious.toString(), {
 });
 
 module.exports.Users = require("./Users");
+module.exports.Customize = require("./Customize");
 module.exports.Schools = require("./Schools");
 
