@@ -53,8 +53,9 @@ import { PaginationBase } from './Pagination';
  *  @param   {string=} oProperties.quickOptionsSettings.iconSolid
  *  @param   {string=} oProperties.quickOptionsSettings.backgroundColor
  *  @param   {string=} oProperties.quickOptionsSettings.borderColor
- *  @param   {object=} oProperties.quickOptionsEvents -> { refresh: () => {}} / Elements: refresh
+ *  @param   {object=} oProperties.quickOptionsEvents -> { refresh: () => {}} / Elements: refresh/search
  *  @param   {function} oProperties.quickOptionsEvents.refresh
+ *  @param   {function} oProperties.quickOptionsEvents.search
  *  @param   {object=} oProperties.pagination
  *  @param   {boolean=} oProperties.pagination.active
  *  @param   {number=} oProperties.pagination.idxFirst
@@ -79,6 +80,8 @@ import { PaginationBase } from './Pagination';
  *  @param   {boolean=} oProperties.showLoader
  *  @param   {boolean=} oProperties.showMultiSelect
  *  @param   {function=} oProperties.onCheckboxClicked
+ *  @param   {function=} oProperties.onRefreshClicked
+ *  @param   {function=} oProperties.onSearch
  *  @returns {JSX.Element} Table */
 export const Table = (oProperties) => {
     /** @desc Returns dispatcher function to call the actions inside the reducer
@@ -91,6 +94,7 @@ export const Table = (oProperties) => {
 
     /** @desc Get user object to check if user is signed in */
     let { user } = useAuth();
+    let bInitialCall = false;
 
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Used for displaying error dialog while fetching data from database
@@ -144,13 +148,23 @@ export const Table = (oProperties) => {
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
     useEffect(() => {
         /** @desc Update rows after fetching data */
-        if (oProperties.rows.length > 0 && oConfiguration && oConfiguration.rows !== oProperties.rows) {
+        if (oProperties.rows.length > 0 && oConfiguration && JSON.stringify(oConfiguration.rows) !== JSON.stringify(oProperties.rows)) {
             fnDispatch(setRows({
                 key: oConfiguration?.key ? oConfiguration.key : oProperties.tableKey,
-                rows: oProperties.rows
-            }));
+                rows: bInitialCall ? oConfiguration.rows : oProperties.rows
+            })); bInitialCall = true;
         }
-    }, [oProperties.rows])
+    }, [JSON.stringify(oProperties.rows)])
+
+    /** @private
+     *  @param {array} aRows */
+    const _onFilter = (aRows) => {
+        debugger
+        fnDispatch(setRows({
+            key: oConfiguration.key,
+            rows: aRows
+        }));
+    };
 
     /** @private */
     const _fetchCustomize = () => {
@@ -201,13 +215,13 @@ export const Table = (oProperties) => {
             userLoaded: bUserLoaded,
             title: oProperties?.title,
             columns: aColumns,
-            rows: bUserLoaded ? oConfiguration.rows : oProperties?.rows && Array.isArray(oProperties.rows) ? oProperties.rows : [],
+            rows: bUserLoaded && oConfiguration ? oConfiguration.rows : oProperties?.rows && Array.isArray(oProperties.rows) ? oProperties.rows : [],
             views: aViews,
             content: getContent(oProperties?.content),
             quickOptionsVisibility: getQuickOptionsVisibility(oProperties?.quickOptionsVisibility),
             quickOptionsSettings: oProperties?.quickOptionsSettings ? oProperties.quickOptionsSettings : {},
             quickOptionsEvents: getQuickOptionsEvents(oProperties?.quickOptionsEvents),
-            pagination: getPagination(oProperties?.pagination),
+            pagination: oConfiguration?.pagination ? oConfiguration.pagination : getPagination(oProperties?.pagination),
             grouping: getGrouping(oProperties?.grouping),
             noDataText: getNoDataText(oProperties?.noDataText),
             resizing: getResizing({ headerHeight: 0 }),
@@ -215,9 +229,7 @@ export const Table = (oProperties) => {
             showHeader: oProperties?.showHeader ? oProperties.showHeader : false,
             showLineNumber: oProperties?.showLineNumber ? oProperties.showLineNumber : false,
             showLoader: oProperties?.showLoader ? oProperties.showLoader : false,
-            showMultiSelect: oProperties?.showMultiSelect ? oProperties.showMultiSelect : false,
-            onCheckBoxClicked: oProperties?.onCheckboxClicked && typeof oProperties.onCheckboxClicked === "function" ? oProperties.onCheckboxClicked : () => {},
-            onRefreshClicked: oProperties?.onRefreshClicked && typeof oProperties.onRefreshClicked === "function" ? oProperties.onRefreshClicked : () => {}
+            showMultiSelect: oProperties?.showMultiSelect ? oProperties.showMultiSelect : false
         }));
     };
 
@@ -258,29 +270,17 @@ export const Table = (oProperties) => {
     const _addContainer = () => {
         return (
             <section style={{ height: "100%" }}>
-                {_addTableContent()}
+                <article>
+                    <table>
+                        <thead>
+                            {_addColumns()}
+                        </thead>
+                        {_addTableBody()}
+                    </table>
+                </article>
             </section>
         );
     };
-
-    /** @private
-     *  @returns {JSX.Element} */
-    const _addTableContent = () => (
-        <article>
-            <table>
-                {_addTableHeader()}
-                {_addTableBody()}
-            </table>
-        </article>
-    );
-
-    /** @private
-     *  @returns {JSX.Element} */
-    const _addTableHeader = () => (
-        <thead>
-            {_addColumns()}
-        </thead>
-    );
 
     /** @private
      *  @returns {JSX.Element} */
@@ -290,19 +290,11 @@ export const Table = (oProperties) => {
 
         return (
             <tbody>
-                {oConfiguration.rows.length > 0 ? oConfiguration.rows.slice(oConfiguration.pagination.idxFirst, oConfiguration.pagination.idxLast).map((aRow, iIdx) => {
-                    /** @desc Determine the JSX for displaying additional row content */
-                    const content = Array.isArray(oConfiguration.content.jsxElement) && oConfiguration.content.jsxElement[iIdx]
-                        ? oConfiguration.content.jsxElement[iIdx]
-                        : <span>Leider stehen Ihnen hierzu keine Daten zur Verfügung</span>;
-
-                    return (
-                        <>
-                            {_addRow(aRow)}
-                            {Array.isArray(oConfiguration.content.jsxElement) && oConfiguration.content.jsxElement.length > 0 && _addContent(content, iColSpan)}
-                        </>
-                    )
-                }) : _addRowNoDataFound(iColSpan)}
+                {oConfiguration.rows.length > 0
+                    ? oConfiguration.pagination.active
+                        ? oConfiguration.rows.slice(oConfiguration.pagination.idxFirst, oConfiguration.pagination.idxLast).map((aRow, iIdx) => _addRows(aRow, iIdx, iColSpan))
+                        : oConfiguration.rows.map((aRow, iIdx) => _addRows(aRow, iIdx, iColSpan))
+                    : _addRowNoDataFound(iColSpan)}
             </tbody>
         );
     }
@@ -324,6 +316,20 @@ export const Table = (oProperties) => {
         </tr>
     );
 
+    const _addRows = (aRow, iIdx, iColSpan) => {
+        /** @desc Determine the JSX for displaying additional row content */
+        const content = Array.isArray(oConfiguration.content.jsxElement) && oConfiguration.content.jsxElement[iIdx]
+            ? oConfiguration.content.jsxElement[iIdx]
+            : <span>Leider stehen Ihnen hierzu keine Daten zur Verfügung</span>;
+
+        return (
+            <>
+                {_addRow(aRow)}
+                {Array.isArray(oConfiguration.content.jsxElement) && oConfiguration.content.jsxElement.length > 0 && _addContent(content, iColSpan)}
+            </>
+        )
+    };
+
     /** @private
      *  @param   {[{type:string, title:string, description:string, disabled:boolean, customStyle:object, value:*, iconSrc:string, onClick:function, borderColor:string, backgroundColor:string}]} aRow
      *  @returns {JSX.Element} */
@@ -331,7 +337,7 @@ export const Table = (oProperties) => {
         <tr>
             {oConfiguration.showLineNumber && _addRowShowLineNumber()}
             {oConfiguration.content.jsxElement.length > 0 && _addRowContent()}
-            {oConfiguration.showMultiSelect && _addRowMultiSelect(oConfiguration.onCheckboxClicked)}
+            {oConfiguration.showMultiSelect && _addRowMultiSelect(oProperties.onCheckboxClicked)}
             {aRow.map((oRow, iCellIdx) => (
                 !oConfiguration.columns[iCellIdx].isHidden && <TableRow
                     tableKey={oConfiguration.key}
@@ -439,10 +445,13 @@ export const Table = (oProperties) => {
                 tableKey={oConfiguration.key}
                 title={oConfiguration.title}
                 views={oConfiguration.views}
+                rows={oProperties.rows}
+                columns={oConfiguration.columns}
                 headerCards={oConfiguration.headerCards}
                 quickOptionsVisibility={oConfiguration.quickOptionsVisibility}
                 quickOptionsSettings={oConfiguration.quickOptionsSettings}
-                quickOptionsEvents={oConfiguration.quickOptionsEvents}/>}
+                quickOptionsEvents={oConfiguration.quickOptionsEvents}
+                onFilter={_onFilter}/>}
             {oConfiguration && <div
                 style={{ height: `calc(100% - ${oConfiguration.resizing.headerHeight}px)` }}
                 className="container">
@@ -450,7 +459,7 @@ export const Table = (oProperties) => {
             </div>}
             {!oConfiguration && <Loader />}
             {oConfiguration && oProperties.showLoader && <Loader/>}
-            {oConfiguration && _addPagination()}
+            {oConfiguration && oConfiguration.pagination.active && _addPagination()}
             {Object.keys(error).length !== 0 && error.constructor === Object && <Dialog
                 title={error.title}
                 description={error.description}

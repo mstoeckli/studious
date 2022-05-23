@@ -28,6 +28,7 @@ export const Schools = () => {
      *        -> Used for displaying schools as table rows
      *  @type {[rows:array, setRows:function]} */
     const [ rows, setRows ] = useState([]);
+    const aRows = []
 
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Used for refreshing data while fetching
@@ -86,7 +87,6 @@ export const Schools = () => {
 
             if (success) {
                 if (data.success) {
-                    const aRows = [];
                     for (const oSchool of data.schools) {
                         /** @desc Determine administrator email */
                         const { email } = oSchool.users.find(({ _id }) => _id === oSchool.admin);
@@ -256,7 +256,7 @@ export const Schools = () => {
                     dateCalendar: true
                 }}
                 pagination={{
-                    active: true,
+                    active: false,
                     perPage: 14
                 }}
                 showHeader={true}

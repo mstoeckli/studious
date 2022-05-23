@@ -49,11 +49,13 @@ export const getQuickOptionsVisibility = (oQuickOptions = {}) => ({
 });
 
 /** @public
- *  @param   {object=} oQuickOptions -> { refresh: () => {}} / Elements: refresh
+ *  @param   {object=} oQuickOptions -> { refresh: () => {}} / Elements: refresh/search
  *  @param   {function} oQuickOptions.refresh
+ *  @param   {function} oQuickOptions.search
  *  @returns {object} */
 export const getQuickOptionsEvents = (oQuickOptions = {}) => ({
-    refresh: oQuickOptions?.refresh ? oQuickOptions.refresh : () => {}
+    refresh: oQuickOptions?.refresh ? oQuickOptions.refresh : () => {},
+    search: oQuickOptions?.search /** @desc Does not need a default callback function, because the initial callback is defined in TableHeader.js */
 });
 
 /** @public

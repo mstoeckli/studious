@@ -18,11 +18,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
 import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
 
+
+import { useDispatch } from 'react-redux';
+import {setRows} from "../../../reducers/base/table/Configuration";
+
 /** @public
  *  @constructor
  *  @param   {object} oProperties
  *  @param   {string} oProperties.tableKey
  *  @param   {string} oProperties.title
+ *  @param   {[object]} oProperties.columns
  *  @param   {object=} oProperties.quickOptionsVisibility
  *  @param   {boolean=} oProperties.quickOptionsVisibility.searchable
  *  @param   {boolean=} oProperties.quickOptionsVisibility.filterable
@@ -42,8 +47,9 @@ import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
  *  @param   {string=} oProperties.quickOptionsSettings.iconSolid
  *  @param   {string=} oProperties.quickOptionsSettings.backgroundColor
  *  @param   {string=} oProperties.quickOptionsSettings.borderColor
- *  @param   {object=} oProperties.quickOptionsEvents -> { refresh: () => {}} / Elements: refresh
+ *  @param   {object=} oProperties.quickOptionsEvents -> { refresh: () => {}} / Elements: refresh/search
  *  @param   {function} oProperties.quickOptionsEvents.refresh
+ *  @param   {function} oProperties.quickOptionsEvents.search
  *  @param   {[object]=} oProperties.headerCards
  *  @param   {string} oProperties.headerCards.iconSrc
  *  @param   {string} oProperties.headerCards.title
@@ -57,6 +63,10 @@ export const TableHeader = (oProperties) => {
      *  @type {function} t */
     const { t } = useTranslation();
 
+    /** @desc Returns dispatcher function to call the actions inside the reducer
+     *  @type {React.Dispatch} fnDispatch */
+    const fnDispatch = useDispatch();
+
     /** @desc Returns a stateful value, and a function to update it.
      *        -> Handle showing and hiding of dropdown component for filtering content
      *  @type {[{filter:boolean}, setIsActive:function]} */
@@ -65,6 +75,24 @@ export const TableHeader = (oProperties) => {
         settings: false,
         view: false
     });
+
+    const _onSearch = (oEvt) => {
+        debugger
+        oProperties.columns.forEach((oColumn, iIdx) => {
+            if (oColumn?.searchable) {
+
+                // aRows.filter((aRow) => {
+                //     debugger
+                //     return aRow[iIdx]?.title.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase())
+                //         || aRow[iIdx]?.description.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase())
+                //         || aRow[iIdx]?.value.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase()) ;
+                // })
+            }
+        });
+
+        let a = 1;
+        oProperties.onFilter(a === 1 ? [] : oProperties.rows.filter((aRow, iIdx) => iIdx !== 0));
+    }
 
     /** @private
      *  @param {string} sId
@@ -126,8 +154,9 @@ export const TableHeader = (oProperties) => {
      *  @param   {string=} oQuickOptionsSettings.iconSolid
      *  @param   {string=} oQuickOptionsSettings.backgroundColor
      *  @param   {string=} oQuickOptionsSettings.borderColor
-     *  @param   {object=} oQuickOptionsEvents -> { refresh: () => {}} / Elements: refresh
-     *  @param   {function} oQuickOptionsEvents.refresh */
+     *  @param   {object=} oQuickOptionsEvents -> { refresh: () => {}} / Elements: refresh/search
+     *  @param   {function} oQuickOptionsEvents.refresh
+     *  @param   {function} oQuickOptionsEvents.search */
     const _addQuickOptions = (oQuickOptions, oQuickOptionsVisibility, oQuickOptionsSettings, oQuickOptionsEvents) => {
         /** @desc Pre-check visibility of a quick option */
         if (!oQuickOptionsVisibility[oQuickOptions.id]) {
@@ -177,6 +206,7 @@ export const TableHeader = (oProperties) => {
         </div>
     );
 
+    debugger
     return (
         <StyledTableHeader>
             <header>
@@ -189,7 +219,9 @@ export const TableHeader = (oProperties) => {
             </header>
             <header>
                 <div className="left">
-                    {oProperties.quickOptionsVisibility.searchable && <Search />}
+                    {oProperties.quickOptionsVisibility.searchable && <Search
+                        onSearch={oProperties?.quickOptionsEvents?.search ? oProperties.quickOptionsEvents.search : _onSearch}
+                        onChange={oProperties?.quickOptionsEvents?.search ? oProperties.quickOptionsEvents.search : _onSearch} />}
                     {QuickOptions["Left"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings, oProperties.quickOptionsEvents))}
                 </div>
                 <div className="right">

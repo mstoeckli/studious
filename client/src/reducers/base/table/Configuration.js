@@ -44,8 +44,7 @@ export const TableConfigurationSlice = createSlice({
          *  @param {boolean} action.payload.showHeader
          *  @param {boolean} action.payload.showLineNumber
          *  @param {boolean} action.payload.showLoader
-         *  @param {boolean} action.payload.showMultiSelect
-         *  @param {function} action.payload.onCheckBoxClicked */
+         *  @param {boolean} action.payload.showMultiSelect */
         initialize: (state, action) => {
             return {
                 ...state,
@@ -68,8 +67,7 @@ export const TableConfigurationSlice = createSlice({
                     showHeader: action.payload.showHeader,
                     showLineNumber: action.payload.showLineNumber,
                     showLoader: action.payload.showLoader,
-                    showMultiSelect: action.payload.showMultiSelect,
-                    onCheckBoxClicked: action.payload.onCheckBoxClicked
+                    showMultiSelect: action.payload.showMultiSelect
                 }
             }
         },
@@ -100,6 +98,7 @@ export const TableConfigurationSlice = createSlice({
          *  @param {number} action.payload.idxFirst
          *  @param {number} action.payload.idxLast */
         setPaginationIdx: (state, action) => {
+            debugger
             return {
                 ...state,
                 [action.payload.key]: {
@@ -230,7 +229,6 @@ export const TableConfigurationSlice = createSlice({
                 [action.payload.key]: {
                     ...state[action.payload.key],
                     views: state[action.payload.key].views.map((oView) => {
-                        debugger
                         return {
                             ...oView,
                             active: action.payload?.activeKey ? oView.key === action.payload.activeKey : false
