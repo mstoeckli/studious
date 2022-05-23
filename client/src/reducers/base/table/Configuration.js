@@ -135,7 +135,6 @@ export const TableConfigurationSlice = createSlice({
 
         /** @public
          *  @param {Proxy} state
-         *  @param {array} state.value
          *  @param {object} action
          *  @param {string} action.type -> tableColumns/setHidden
          *  @param {string} action.payload.key
@@ -156,7 +155,6 @@ export const TableConfigurationSlice = createSlice({
 
         /** @public
          *  @param {Proxy} state
-         *  @param {array} state.value
          *  @param {object} action
          *  @param {string} action.type -> tableColumns/setDropdownActive
          *  @param {string} action.payload.key
@@ -166,7 +164,6 @@ export const TableConfigurationSlice = createSlice({
 
         /** @public
          *  @param {Proxy} state
-         *  @param {array} state.value
          *  @param {object} action
          *  @param {string} action.type -> tableColumns/isClickedOutside
          *  @param {objects} action.payload
@@ -175,24 +172,75 @@ export const TableConfigurationSlice = createSlice({
          *  @param {boolean} action.payload.isActive  */
         isClickedOutside: (state, action) => _setDropdownVisibility(state, action),
 
+        /** @public
+         *  @param {Proxy} state
+         *  @param {object} action
+         *  @param {string} action.type -> tableColumns/cloneCustomize
+         *  @param {objects} action.payload
+         *  @param {string} action.payload.key
+         *  @param {object} action.payload.view
+         *  @param {string} action.payload.view.key
+         *  @param {string} action.payload.view.title
+         *  @param {boolean} action.payload.view.active
+         *  @param {array} action.payload.view.columns
+         *  @param {array} action.payload.view.order  */
         cloneCustomize: (state, action) => {
-            debugger
             return {
                 ...state,
                 [action.payload.key]: {
                     ...state[action.payload.key],
                     views: [...state[action.payload.key].views, {
-                        key: "C01",
-                        title: "Variante 1",
-                        active: true,
-                        columns: [],
-                        order: []
+                        key: `${action.payload.view.key}${state[action.payload.key].views.length + 1}`,
+                        title: action.payload.view.title,
+                        active: action.payload.view.active,
+                        columns: action.payload.view.columns,
+                        order: action.payload.view.order
                     }]
+                }
+            }
+        },
+
+        /** @public
+         *  @param {Proxy} state
+         *  @param {object} action
+         *  @param {string} action.type -> tableColumns/cloneCustomize
+         *  @param {objects} action.payload
+         *  @param {string} action.payload.key
+         *  @param {object} action.payload.deleteKey */
+        deleteCustomize: (state, action) => {
+            return {
+                ...state,
+                [action.payload.key]: {
+                    ...state[action.payload.key],
+                    views: state[action.payload.key].views.filter(({ key }) => key !== action.payload.deleteKey)
+                }
+            }
+        },
+
+        /** @public
+         *  @param {Proxy} state
+         *  @param {object} action
+         *  @param {string} action.type -> tableColumns/cloneCustomize
+         *  @param {objects} action.payload
+         *  @param {string} action.payload.key
+         *  @param {object} action.payload.activeKey */
+        updateCustomizeActivity: (state, action) => {
+            return {
+                ...state,
+                [action.payload.key]: {
+                    ...state[action.payload.key],
+                    views: state[action.payload.key].views.map((oView) => {
+                        debugger
+                        return {
+                            ...oView,
+                            active: action.payload?.activeKey ? oView.key === action.payload.activeKey : false
+                        }
+                    })
                 }
             }
         }
     }
 });
 
-export const { initialize, setRows, setPaginationIdx, setResizeInfo, setHidden, setDropdownActive, isClickedOutside, cloneCustomize } = TableConfigurationSlice.actions;
+export const { initialize, setRows, setPaginationIdx, setResizeInfo, setHidden, setDropdownActive, isClickedOutside, cloneCustomize, deleteCustomize, updateCustomizeActivity } = TableConfigurationSlice.actions;
 export default TableConfigurationSlice.reducer;

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { StyledCustomize } from '../../../../styles/base/table/header/Customize.styles';
 
-import { cloneCustomize } from "../../../../reducers/base/table/Configuration";
+import { cloneCustomize, deleteCustomize, updateCustomizeActivity } from "../../../../reducers/base/table/Configuration";
 
 import { Button } from "../template/Button";
 
@@ -34,32 +34,87 @@ export const Customize = (oProperties) => {
      *  @type {React.Dispatch} fnDispatch */
     const fnDispatch = useDispatch();
 
+    debugger;
+
     /** @desc Determine active view information */
     const oActiveView = oProperties.views.find(({ active }) => active === true);
 
+    // const [ activeView, setActiveView ] = useState(oActiveView);
+    const [ title, setTitle ] = useState(oActiveView.title);
     const [ columns, setColumns ] = useState(oActiveView.columns);
 
     const shownList = useRef(null);
     const hideList = useRef(null);
 
+    const _onViewClick = (oEvt) => {
+        debugger
+        const sKey = oEvt.currentTarget.getAttribute("data-viewkey");
 
+        /** @desc Resetting activity of custom view */
+        fnDispatch(updateCustomizeActivity({
+            key: oProperties.tableKey,
+            activeKey: sKey
+        }));
+
+        const _oActiveView = oProperties.views.find(({ key }) => key === sKey);
+
+        setTitle(_oActiveView.title);
+        setColumns(_oActiveView.columns);
+
+        debugger
+    };
 
     /** @private
      *  @param {Event} oEvt */
     const _onDelete = (oEvt) => {
+        /** @desc Resetting activity of custom view */
+        fnDispatch(updateCustomizeActivity({
+            key: oProperties.tableKey,
+            activeKey: "S0"
+        }));
 
+        /** @desc Resetting activity of custom view */
+        fnDispatch(deleteCustomize({
+            key: oProperties.tableKey,
+            deleteKey: oActiveView.key
+        }));
+
+        const _oActiveView = oProperties.views.find(({ key }) => key === "S0");
+
+        setTitle(_oActiveView.title);
+        setColumns(_oActiveView.columns);
     };
 
     /** @private
      *  @param {Event} oEvt */
     const _onClone = (oEvt) => {
+        const aOrder = [];
+        const aColumns = [];
 
-        const a = shownList.current;
-        debugger
+        /** @desc Determine order and column for creating custom view */
+        for (const child of [...shownList.current.children]) {
+            const sKey = child.getAttribute("data-columnkey");
+            aOrder.push(sKey);
+            aColumns.push(columns.find(({ key }) => key === sKey));
+        }
 
-        fnDispatch(cloneCustomize({
+        /** @desc Resetting activity of custom view */
+        fnDispatch(updateCustomizeActivity({
             key: oProperties.tableKey
         }));
+
+        /** @desc Clone/Create custom view */
+        const a = fnDispatch(cloneCustomize({
+            key: oProperties.tableKey,
+            view: {
+                key: "C",
+                title: title,
+                active: true,
+                columns: aColumns,
+                order: aOrder
+            }
+        }));
+        debugger
     };
 
     /** @private
@@ -78,17 +133,16 @@ export const Customize = (oProperties) => {
                 <div className="customize-manage-content">
                     <FormInput
                         icon={oActiveView.key.charAt(0) === "S" ? "faMountain" : "faMountainSun"}
-                        value={oActiveView.title}
+                        value={title}
                         placeholder="Meine Ansicht 1"
-                        fnChange={() => {
-
-                        }}/>
+                        fnChange={(oEvt) => setTitle(oEvt.currentTarget.value)}/>
                     <div className="customize-manage-content-buttons">
                         <Button
                             text="Löschen"
                             disabled={oActiveView.key.charAt(0) === "S"}
                             iconSrc="faTrash"
-                            iconSolid={true} />
+                            iconSolid={true}
+                            onClick={_onDelete}/>
                         <Button
                             text="Klonen"
                             iconSrc="faClone"
@@ -109,7 +163,10 @@ export const Customize = (oProperties) => {
                 <span>Views</span>
                 <ul>
                     {oProperties.views.map((oView) => (
-                        <li className={oView.active ? "active-view" : String()}>
+                        <li
+                            data-viewkey={oView.key}
+                            className={oView.active ? "active-view" : String()}
+                            onClick={_onViewClick}>
                             <div className="left">
                                 <FontAwesomeIcon icon={FaDuotoneIcons[oView.key.charAt(0) === "S" ? "faMountain" : "faMountainSun"]} />
                                 <span>{oView.title}</span>
@@ -140,8 +197,6 @@ export const Customize = (oProperties) => {
                         oEvt.preventDefault();
                         let oListItem = shownList.current.querySelector(".dragging");
 
-                        const b = columns;
-
                         const afterElement = [...oEvt.currentTarget.children].reduce((closest, child) => {
                             const box = child.getBoundingClientRect();
                             const offset = oEvt.clientY - box.top - box.height / 2;
@@ -159,7 +214,7 @@ export const Customize = (oProperties) => {
                         else oEvt.currentTarget.insertBefore(oListItem, afterElement);
                     }}>
 
-                    {oActiveView.columns.filter(({ isHidden }) => isHidden === false).map((oColumn) => (
+                    {columns.filter(({ isHidden }) => isHidden === false).map((oColumn) => (
                         <li
                             data-columnkey={oColumn.key}
                             draggable={true}
@@ -197,7 +252,7 @@ export const Customize = (oProperties) => {
                     ))}
                 </ul>
             </article>
-            {oActiveView.columns.filter(({ isHidden }) => isHidden === true).length > 0 && <article className="customize-hide">
+            {columns.filter(({ isHidden }) => isHidden === true).length > 0 && <article className="customize-hide">
                 <div className="article-header">
                     <span>hide</span>
                     <div>
@@ -206,7 +261,7 @@ export const Customize = (oProperties) => {
                     </div>
                 </div>
                 <ul ref={hideList}>
-                    {oActiveView.columns.filter(({ isHidden }) => isHidden === true).map((oColumn) => (
+                    {columns.filter(({ isHidden }) => isHidden === true).map((oColumn) => (
                         <li>
                             <div className="left">
                                 <FontAwesomeIcon icon={FaDuotoneIcons["faGripDotsVertical"]} />

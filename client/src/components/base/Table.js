@@ -237,7 +237,7 @@ export const Table = (oProperties) => {
     /** @private
      *  @returns {{columns: ({key: string, title: string, sortable: boolean, searchable: boolean, ascending: boolean, fixed: boolean, isHidden: boolean, isDropdownActive: boolean, isCheckboxColumn: boolean}[]|*[]), active: boolean, title: string, key: string, order: *[]}}*/
     const _getStandardView = () => ({
-        key: "S00",
+        key: "S0",
         title: "Standard",
         active: true,
         columns: oProperties?.columns && Array.isArray(oProperties.columns) ? oProperties.columns : [],
