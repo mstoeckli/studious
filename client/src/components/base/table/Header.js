@@ -78,20 +78,21 @@ export const TableHeader = (oProperties) => {
 
     const _onSearch = (oEvt) => {
         debugger
+        const aRows = []
         oProperties.columns.forEach((oColumn, iIdx) => {
             if (oColumn?.searchable) {
+                    const aRows = oProperties.rows.filter((aRow) => {
+                        if (aRow[iIdx].type === "Identifier") {
+                            return aRow[iIdx]?.title.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase())
+                                || aRow[iIdx]?.description.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase())
+                                || aRow[iIdx]?.value.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase()) ;
+                        } else return false
 
-                // aRows.filter((aRow) => {
-                //     debugger
-                //     return aRow[iIdx]?.title.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase())
-                //         || aRow[iIdx]?.description.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase())
-                //         || aRow[iIdx]?.value.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase()) ;
-                // })
+                    })
             }
         });
 
-        let a = 1;
-        oProperties.onFilter(a === 1 ? [] : oProperties.rows.filter((aRow, iIdx) => iIdx !== 0));
+        oProperties.onFilter(aRows);
     }
 
     /** @private
