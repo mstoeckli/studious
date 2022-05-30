@@ -21,6 +21,10 @@ import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
  *  @param   {object} oProperties
  *  @param   {string} oProperties.tableKey
  *  @param   {[object]} oProperties.views
+ *  @param   {object} oProperties.resizing
+ *  @param   {number} oProperties.resizing.headerHeight
+ *  @param   {number} oProperties.resizing.tableHeight
+ *  @param   {number} oProperties.resizing.headerHeightCustom
  *  @returns {JSX.Element} Customize */
 export const Customize = (oProperties) => {
     /** @desc Returns the translation function for reading from the locales files
@@ -34,12 +38,9 @@ export const Customize = (oProperties) => {
      *  @type {React.Dispatch} fnDispatch */
     const fnDispatch = useDispatch();
 
-    debugger;
-
     /** @desc Determine active view information */
     const oActiveView = oProperties.views.find(({ active }) => active === true);
 
-    // const [ activeView, setActiveView ] = useState(oActiveView);
     const [ title, setTitle ] = useState(oActiveView.title);
     const [ columns, setColumns ] = useState(oActiveView.columns);
 
@@ -124,7 +125,8 @@ export const Customize = (oProperties) => {
     };
 
     return (
-        <StyledCustomize>
+        <StyledCustomize
+            tableHeight={oProperties.resizing.tableHeight}>
             <header>
                 <span>{t("Base.Table.QuickOptions.Customize.DropdownContent.title")}</span>
             </header>
@@ -155,7 +157,7 @@ export const Customize = (oProperties) => {
                             iconSolid={true} />
                     </div>
                     {user === null && <div className="customize-manage-content-info">
-                        <span>Für eine übergreifende Browser-Sicherung der Personalisierung müssen sie sich bei studious anmelden!.</span>
+                        <span>Für eine übergreifende Browser-Sicherung der Personalisierung müssen sie sich bei studious anmelden!</span>
                     </div>}
                 </div>
             </article>

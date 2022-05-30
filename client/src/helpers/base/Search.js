@@ -9,3 +9,22 @@ export const unorderedListFilterBySelector = (sSelector, sValue) => {
             : "none";
     });
 }
+
+/** @public
+ *  @param   {string} sTitle
+ *  @param   {string} sDescription
+ *  @param   {string} sCheckValue
+ *  @returns {boolean} */
+export const containsIdentifier = (sTitle, sDescription, sCheckValue) => sTitle.toLowerCase().includes(sCheckValue.toLowerCase()) || sDescription.toLowerCase().includes(sCheckValue.toLowerCase());
+
+/** @public
+ *  @param   {number} iValue
+ *  @param   {string} sCheckValue
+ *  @returns {boolean} */
+export const containsNumber = (iValue, sCheckValue) => (iValue + String()).includes(sCheckValue);
+
+/** @public
+ *  @param   {string} sValue
+ *  @param   {string} sCheckValue
+ *  @returns {boolean} */
+export const containsValue = (sValue, sCheckValue) => sValue.toLowerCase().includes(sCheckValue.toLowerCase());

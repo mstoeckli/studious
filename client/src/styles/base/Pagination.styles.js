@@ -4,8 +4,8 @@ import styled from 'styled-components';
 export const StyledPagination = styled.ul`
   list-style-type: none;
   overflow: hidden;
-  padding: 1rem 0 0 0;
-  margin: 0 0 0.75rem 0;
+  padding: 0.5rem 0 0 0;
+  margin: 0 0 0.25rem 0;
 
   & li {
     float: left;

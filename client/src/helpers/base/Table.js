@@ -33,7 +33,7 @@ export const getNoDataText = (oNoDataText = {}) => ({
  *  @param   {boolean} oQuickOptions.create
  *  @param   {boolean} oQuickOptions.settings
  *  @param   {boolean} oQuickOptions.customize
- *  @param   {boolean} oQuickOptions.dateCalendar
+ *  @param   {boolean} oQuickOptions.datepicker
  *  @returns {object} */
 export const getQuickOptionsVisibility = (oQuickOptions = {}) => ({
     searchable: oQuickOptions?.searchable ? oQuickOptions.searchable : true,
@@ -45,17 +45,34 @@ export const getQuickOptionsVisibility = (oQuickOptions = {}) => ({
     create: oQuickOptions?.create ? oQuickOptions.create : false,
     settings: oQuickOptions?.settings ? oQuickOptions.settings : true,
     customize: oQuickOptions?.customize ? oQuickOptions.customize : true,
-    dateCalendar: oQuickOptions?.dateCalendar ? oQuickOptions.dateCalendar : false
+    datepicker: oQuickOptions?.datepicker ? oQuickOptions.datepicker : false
 });
 
 /** @public
- *  @param   {object=} oQuickOptions -> { refresh: () => {}} / Elements: refresh/search
+ *  @desc    Without callback: Does not need a default callback function, because the initial callback is defined in TableHeader.js
+ *  @param   {object=} oQuickOptions
+ *  @param   {function} oQuickOptions.searchable
+ *  @param   {function} oQuickOptions.filterable
+ *  @param   {function} oQuickOptions.groupable
+ *  @param   {function} oQuickOptions.favorite
+ *  @param   {function} oQuickOptions.newest
  *  @param   {function} oQuickOptions.refresh
- *  @param   {function} oQuickOptions.search
+ *  @param   {function} oQuickOptions.create
+ *  @param   {function} oQuickOptions.settings
+ *  @param   {function} oQuickOptions.customize
+ *  @param   {function} oQuickOptions.datepicker
  *  @returns {object} */
 export const getQuickOptionsEvents = (oQuickOptions = {}) => ({
+    searchable: oQuickOptions?.searchable,
+    filterable: oQuickOptions?.filterable,
+    groupable: oQuickOptions?.groupable,
+    favorite: oQuickOptions?.favorite,
+    newest: oQuickOptions?.newest,
     refresh: oQuickOptions?.refresh ? oQuickOptions.refresh : () => {},
-    search: oQuickOptions?.search /** @desc Does not need a default callback function, because the initial callback is defined in TableHeader.js */
+    create: oQuickOptions?.create ? oQuickOptions.create : () => {},
+    settings: oQuickOptions?.settings,
+    customize: oQuickOptions?.customize,
+    datepicker: oQuickOptions?.datepicker
 });
 
 /** @public
@@ -85,9 +102,27 @@ export const getGrouping = (oGrouping = {}) => ({
 });
 
 /** @public
- *  @param   {object} oResizing
+ *  @param   {object=} oResizing
  *  @param   {number} oResizing.headerHeight
+ *  @param   {number} oResizing.tableHeight
+ *  @param   {number} oResizing.headerHeightCustom
  *  @returns {object} */
 export const getResizing = (oResizing = {}) => ({
     headerHeight: oResizing?.headerHeight ? oResizing.headerHeight : 0,
+    tableHeight: oResizing?.tableHeight ? oResizing.tableHeight : 0,
+    headerHeightCustom: oResizing?.headerHeightCustom ? oResizing.headerHeightCustom : 0,
+});
+
+/** @public
+ *  @param   {object=} oFilterValues
+ *  @param   {boolean} oFilterValues.isActive
+ *  @param   {string} oFilterValues.searchValue
+ *  @param   {number} oFilterValues.filters
+ *  @param   {array} oFilterValues.filteredRows
+ *  @returns {object} */
+export const getFilterValues = (oFilterValues) => ({
+    isActive: oFilterValues?.isActive ? oFilterValues.isActive : false,
+    searchValue: oFilterValues?.searchValue ? oFilterValues.searchValue : String(),
+    filters: oFilterValues?.filters ? oFilterValues.filters : [],
+    filteredRows: oFilterValues?.filteredRows ? oFilterValues.filteredRows : []
 });

@@ -58,7 +58,6 @@ export const PaginationBase = forwardRef((oProperties, ref) => {
                 firstPageText={<FontAwesomeIcon icon={FaDuotoneIcons["faAngleDoubleLeft"]} />}
                 lastPageText={<FontAwesomeIcon icon={FaDuotoneIcons["faAngleDoubleRight"]} />}
                 itemsCountPerPage={pagination.perPage}
-                // totalItemsCount={pagination.data.length}
                 totalItemsCount={oProperties.data.length}
                 pageRangeDisplayed={oProperties.pageRangeDisplayed ? oProperties.pageRangeDisplayed : 8}
                 hideDisabled={oProperties.hideDisabled ? oProperties.hideDisabled : true}

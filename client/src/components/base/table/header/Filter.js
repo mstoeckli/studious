@@ -9,6 +9,10 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
 /** @public
  *  @constructor
  *  @param   {object} oProperties
+ *  @param   {object} oProperties.resizing
+ *  @param   {number} oProperties.resizing.headerHeight
+ *  @param   {number} oProperties.resizing.tableHeight
+ *  @param   {number} oProperties.resizing.headerHeightCustom
  *  @returns {JSX.Element} Filter */
 export const Filter = (oProperties) => {
     /** @desc Returns the translation function for reading from the locales files
@@ -16,7 +20,8 @@ export const Filter = (oProperties) => {
     const { t } = useTranslation();
 
     return (
-        <StyledFilter>
+        <StyledFilter
+            tableHeight={oProperties.resizing.tableHeight}>
             <header>
                 <span>{t("Base.Table.QuickOptions.Filter.DropdownContent.title")}</span>
                 <div>

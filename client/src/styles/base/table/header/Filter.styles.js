@@ -2,7 +2,10 @@ import styled from 'styled-components';
 
 /**  @return {React.RefAttributes<HTMLDivElement>} StyledFilter */
 export const StyledFilter = styled.div`
-  width: 370px;
+  width: 300px;
+  max-height: ${props => `${props.tableHeight - 40}px`};
+  overflow-x: hidden;
+  overflow-y: auto;
   
   & > header {
     display: flex;

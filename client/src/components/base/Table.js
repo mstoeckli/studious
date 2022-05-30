@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { StyledTable } from '../../styles/base/Table.styles';
 
-import { initialize, setRows, setPaginationIdx, setResizeInfo } from '../../reducers/base/table/Configuration';
+import { initialize, setRows, setPaginationIdx, setResizeInfo, setFilterValues } from '../../reducers/base/table/Configuration';
 
 import { TableHeader } from './table/Header';
 import { TableColumn } from './table/Column';
@@ -20,7 +20,7 @@ import { Loader } from '../core/Loader';
 import { Codes } from "../../models/core/messages/Codes";
 
 import { getParentByInstance } from '../../helpers/Helper';
-import { getQuickOptionsVisibility, getQuickOptionsEvents, getPagination, getResizing, getGrouping, getContent, getNoDataText } from '../../helpers/base/Table';
+import { getQuickOptionsVisibility, getQuickOptionsEvents, getPagination, getResizing, getGrouping, getContent, getNoDataText, getFilterValues } from '../../helpers/base/Table';
 
 import { PaginationBase } from './Pagination';
 
@@ -44,8 +44,8 @@ import { PaginationBase } from './Pagination';
  *  @param   {boolean=} oProperties.quickOptionsVisibility.create
  *  @param   {boolean=} oProperties.quickOptionsVisibility.settings
  *  @param   {boolean=} oProperties.quickOptionsVisibility.customize
- *  @param   {boolean=} oProperties.quickOptionsVisibility.dateCalendar
- *  @param   {object=} oProperties.quickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/refresh/settings/customView/dateCalendar
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.datepicker
+ *  @param   {object=} oProperties.quickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/refresh/settings/customView/datepicker
  *  @param   {string} oProperties.quickOptionsSettings.title
  *  @param   {string=} oProperties.quickOptionsSettings.titleColor
  *  @param   {string} oProperties.quickOptionsSettings.iconSrc
@@ -53,9 +53,17 @@ import { PaginationBase } from './Pagination';
  *  @param   {string=} oProperties.quickOptionsSettings.iconSolid
  *  @param   {string=} oProperties.quickOptionsSettings.backgroundColor
  *  @param   {string=} oProperties.quickOptionsSettings.borderColor
- *  @param   {object=} oProperties.quickOptionsEvents -> { refresh: () => {}} / Elements: refresh/search
- *  @param   {function} oProperties.quickOptionsEvents.refresh
- *  @param   {function} oProperties.quickOptionsEvents.search
+ *  @param   {object=} oProperties.quickOptionsEvents -> { refresh: () => {}} / Elements: searchable/filterable/groupable/favorite/newest/refresh/settings/customView/datepicker
+ *  @param   {function=} oProperties.quickOptionsEvents.searchable
+ *  @param   {function=} oProperties.quickOptionsEvents.filterable
+ *  @param   {function=} oProperties.quickOptionsEvents.groupable
+ *  @param   {function=} oProperties.quickOptionsEvents.favorite
+ *  @param   {function=} oProperties.quickOptionsEvents.newest
+ *  @param   {function=} oProperties.quickOptionsEvents.refresh
+ *  @param   {function=} oProperties.quickOptionsEvents.create
+ *  @param   {function=} oProperties.quickOptionsEvents.settings
+ *  @param   {function=} oProperties.quickOptionsEvents.customize
+ *  @param   {function=} oProperties.quickOptionsEvents.datepicker
  *  @param   {object=} oProperties.pagination
  *  @param   {boolean=} oProperties.pagination.active
  *  @param   {number=} oProperties.pagination.idxFirst
@@ -108,28 +116,7 @@ export const Table = (oProperties) => {
 
     /** @desc Initialize reference object for setting object pagination */
     const paginationRefObj = useRef(null);
-
-    /** @desc Initialize reference object for updating the style "height" for displaying table content correctly */
-    const headerRefObj = useRef(null);
-
-    /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
-    useEffect(() => {
-        /** @desc Dispatch it once mounted */
-        if (headerRefObj) {
-            /** @desc Call resize event manually */
-            headerRefObj?.current.dispatchEvent(new Event("resize"));
-        }
-    }, [headerRefObj]);
-
-    if (headerRefObj?.current) {
-        /** @desc Defines the resize hook for changing the height of the table */
-        headerRefObj.current.addEventListener("resize", (oEvt) => {
-            fnDispatch(setResizeInfo({
-                key: oConfiguration.tableKey,
-                headerHeight: oEvt.target.firstChild.offsetHeight + (oConfiguration.pagination.active && oConfiguration.rows.length > oConfiguration.pagination.perPage ? 70 : 40)
-            }));
-        });
-    }
+    const tableRefObj = useRef(null);
 
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
     useEffect(() => {
@@ -148,23 +135,71 @@ export const Table = (oProperties) => {
     /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
     useEffect(() => {
         /** @desc Update rows after fetching data */
-        if (oProperties.rows.length > 0 && oConfiguration && JSON.stringify(oConfiguration.rows) !== JSON.stringify(oProperties.rows)) {
+        if (oProperties.rows.length > 0 && oConfiguration && JSON.stringify(oConfiguration.rows) !== JSON.stringify(oProperties.rows) && !oConfiguration.filterValues.isActive) {
             fnDispatch(setRows({
                 key: oConfiguration?.key ? oConfiguration.key : oProperties.tableKey,
                 rows: bInitialCall ? oConfiguration.rows : oProperties.rows
             })); bInitialCall = true;
         }
-    }, [JSON.stringify(oProperties.rows)])
+    }, [JSON.stringify(oProperties.rows)]);
+
+    // /** @desc Perform side effects in function components -> Similar to componentDidMount and componentDidUpdate */
+    // useEffect(() => {
+    //     debugger
+    //     // if (oProperties.rows.length > 0 && oConfiguration) {
+    //     if (oConfiguration && oConfiguration.filterValues.isActive) {
+    //         fnDispatch(setRows({
+    //             key: oConfiguration.key,
+    //             rows: oConfiguration.filterValues.filteredRows
+    //             // rows: oConfiguration.filterValues.isActive ? oConfiguration.filterValues.filteredRows : oProperties.rows
+    //         }));
+    //     }
+    //
+    //
+    //
+    // //
+    // //
+    // //     // if (oConfiguration && oConfiguration && JSON.stringify(oConfiguration.rows) !== JSON.stringify(oConfiguration.filterValues.filteredRows)) {
+    // //     //     /** @desc Update rows after filtering */
+    // //     //     fnDispatch(setRows({
+    // //     //         key: oConfiguration.key,
+    // //     //         rows: oConfiguration.filterValues.isActive ? oConfiguration.filterValues.filteredRows : oProperties.rows
+    // //     //     }));
+    // //     // }
+    // }, [oConfiguration && oConfiguration.filterValues])
 
     /** @private
-     *  @param {array} aRows */
-    const _onFilter = (aRows) => {
+     *  @param {array} aRows
+     *  @param {string} sSearchValue */
+    const _onFilter = (aRows, sSearchValue) => {
         debugger
-        fnDispatch(setRows({
+        /** @desc Update filtering for re-rendering page correctly after re-opening */
+        fnDispatch(setFilterValues({
             key: oConfiguration.key,
-            rows: aRows
+            isActive: sSearchValue ? true : false,
+            searchValue: sSearchValue,
+            filters: [],
+            filteredRows: aRows
         }));
+
+        // /** @desc Update resize header height after filtering table data */
+        // if (aRows.length < oConfiguration.rows.length) {
+        //     _onResize(oConfiguration.resizing.headerHeight, aRows.length);
+        // }
     };
+
+    /** @private
+     *  @param {number} iHeight
+     *  @param {number} iRowsLength */
+    const _onResize = (iHeight, iRowsLength = oConfiguration.rows.length ) => {
+        /** @desc Update resizing information for handling the correct display of components like Customize or Filter */
+        fnDispatch(setResizeInfo({
+            key: oConfiguration.key,
+            headerHeight: iHeight,
+            tableHeight: tableRefObj.current.offsetHeight,
+            headerHeightCustom: iHeight + (oConfiguration.pagination.active && iRowsLength > oConfiguration.pagination.perPage ? 20 : 0),
+        }));
+    }
 
     /** @private */
     const _fetchCustomize = () => {
@@ -210,6 +245,11 @@ export const Table = (oProperties) => {
      *  @param {array} aViews
      *  @param {boolean} bUserLoaded */
     const _initialize = (aColumns = oProperties?.columns && Array.isArray(oProperties.columns) ? oProperties.columns : [], aViews = [_getStandardView()], bUserLoaded = false) => {
+
+        debugger
+        const a = getQuickOptionsVisibility(oProperties?.quickOptionsVisibility);
+        const b = getQuickOptionsEvents(oProperties?.quickOptionsEvents);
+
         fnDispatch(initialize({
             key: oProperties.tableKey,
             userLoaded: bUserLoaded,
@@ -224,7 +264,8 @@ export const Table = (oProperties) => {
             pagination: oConfiguration?.pagination ? oConfiguration.pagination : getPagination(oProperties?.pagination),
             grouping: getGrouping(oProperties?.grouping),
             noDataText: getNoDataText(oProperties?.noDataText),
-            resizing: getResizing({ headerHeight: 0 }),
+            resizing: getResizing(),
+            filterValues: getFilterValues({ searchValue: oConfiguration && oConfiguration.filterValues.searchValue }),
             headerCards: oProperties?.headerCards && Array.isArray(oProperties.headerCards) ? oProperties.headerCards : [],
             showHeader: oProperties?.showHeader ? oProperties.showHeader : false,
             showLineNumber: oProperties?.showLineNumber ? oProperties.showLineNumber : false,
@@ -269,7 +310,8 @@ export const Table = (oProperties) => {
      *  @returns {JSX.Element} */
     const _addContainer = () => {
         return (
-            <section style={{ height: "100%" }}>
+            <section
+                style={{ height: "100%" }}>
                 <article>
                     <table>
                         <thead>
@@ -439,21 +481,27 @@ export const Table = (oProperties) => {
             }} />
     );
 
+
+
     return (
-        <StyledTable ref={headerRefObj}>
+        <StyledTable>
             {oConfiguration && oConfiguration.showHeader && <TableHeader
                 tableKey={oConfiguration.key}
                 title={oConfiguration.title}
+                filterValues={oConfiguration.filterValues}
                 views={oConfiguration.views}
                 rows={oProperties.rows}
                 columns={oConfiguration.columns}
                 headerCards={oConfiguration.headerCards}
+                resizing={oConfiguration.resizing}
                 quickOptionsVisibility={oConfiguration.quickOptionsVisibility}
                 quickOptionsSettings={oConfiguration.quickOptionsSettings}
                 quickOptionsEvents={oConfiguration.quickOptionsEvents}
-                onFilter={_onFilter}/>}
+                onFilter={_onFilter}
+                onResize={_onResize}/>}
             {oConfiguration && <div
-                style={{ height: `calc(100% - ${oConfiguration.resizing.headerHeight}px)` }}
+                ref={tableRefObj}
+                style={{ height: `calc(100% - ${oConfiguration.resizing.headerHeightCustom}px)` }}
                 className="container">
                 {_addContainer()}
             </div>}

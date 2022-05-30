@@ -9,6 +9,7 @@ import * as FaDuotoneIcons from "@fortawesome/pro-duotone-svg-icons";
  *  @constructor
  *  @param   {object} oProperties
  *  @param   {string} oProperties.placeholder
+ *  @param   {string} oProperties.value
  *  @param   {function=} oProperties.onChange
  *  @param   {function=} oProperties.onSearch
  *  @param   {string=} oProperties.customStyle
@@ -26,13 +27,15 @@ export const Search = (oProperties) => {
             <input
                 type="text"
                 placeholder={oProperties.placeholder ? oProperties.placeholder : t("Base.Search.placeholder")}
-                onChange={oProperties?.onChange} />
+                value={oProperties?.value}
+                onChange={(oEvt) => oProperties?.onChange(oEvt.currentTarget.value)} />
             <FontAwesomeIcon
                 className="clear"
                 icon={FaDuotoneIcons["faDeleteLeft"]}
                 onClick={(oEvt) => {
+                    /** @desc Clear input value */
                     oEvt.currentTarget.previousSibling.value = String();
-                    oProperties?.onSearch(oEvt.currentTarget.previousSibling.value);
+                    oProperties?.onSearch(oEvt.currentTarget.previousSibling.value)
                 }} />
         </StyledSearch>
     )

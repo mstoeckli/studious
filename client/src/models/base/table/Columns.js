@@ -41,6 +41,7 @@ export const Columns = {
         key: "administrator",
         title: "Administrator",
         sortable: true,
+        searchable: true,
         ascending: false,
         fixed: false,
         isHidden: false,

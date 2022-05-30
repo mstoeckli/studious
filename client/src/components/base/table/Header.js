@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { StyledTableHeader } from '../../../styles/base/table/Header.styles';
 
 import { Filter } from './header/Filter';
 import { Customize } from './header/Customize';
+import { DatePicker } from '../DatePicker';
+
+import { containsIdentifier, containsNumber, containsValue } from '../../../helpers/base/Search';
+import { useResizeHandler } from "../../../hooks/ResizeHandler";
 
 import { Search } from '../Search';
 
 import { CardInfo } from '../card/Info';
-
 import { Dropdown } from '../dropdown/Dropdown';
 
 import { QuickOptions } from '../../../models/base/table/QuickOptions';
@@ -19,15 +22,17 @@ import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
 import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
 
 
-import { useDispatch } from 'react-redux';
-import {setRows} from "../../../reducers/base/table/Configuration";
-
 /** @public
  *  @constructor
  *  @param   {object} oProperties
  *  @param   {string} oProperties.tableKey
  *  @param   {string} oProperties.title
  *  @param   {[object]} oProperties.columns
+ *  @param   {object=} oProperties.filterValues
+ *  @param   {string} oProperties.filterValues.isActive
+ *  @param   {string} oProperties.filterValues.searchValue
+ *  @param   {array} oProperties.filterValues.filters
+ *  @param   {array} oProperties.filterValues.filteredRows
  *  @param   {object=} oProperties.quickOptionsVisibility
  *  @param   {boolean=} oProperties.quickOptionsVisibility.searchable
  *  @param   {boolean=} oProperties.quickOptionsVisibility.filterable
@@ -38,7 +43,7 @@ import {setRows} from "../../../reducers/base/table/Configuration";
  *  @param   {boolean=} oProperties.quickOptionsVisibility.create
  *  @param   {boolean=} oProperties.quickOptionsVisibility.settings
  *  @param   {boolean=} oProperties.quickOptionsVisibility.customize
- *  @param   {boolean=} oProperties.quickOptionsVisibility.dateCalendar
+ *  @param   {boolean=} oProperties.quickOptionsVisibility.datepicker
  *  @param   {object=} oProperties.quickOptionsSettings -> { settings: { title: .... }} / Elements: searchable/filterable/groupable/favorite/newest/settings/customView/dateCalendar
  *  @param   {string} oProperties.quickOptionsSettings.title
  *  @param   {string=} oProperties.quickOptionsSettings.titleColor
@@ -47,9 +52,21 @@ import {setRows} from "../../../reducers/base/table/Configuration";
  *  @param   {string=} oProperties.quickOptionsSettings.iconSolid
  *  @param   {string=} oProperties.quickOptionsSettings.backgroundColor
  *  @param   {string=} oProperties.quickOptionsSettings.borderColor
- *  @param   {object=} oProperties.quickOptionsEvents -> { refresh: () => {}} / Elements: refresh/search
- *  @param   {function} oProperties.quickOptionsEvents.refresh
- *  @param   {function} oProperties.quickOptionsEvents.search
+ *  @param   {object=} oProperties.quickOptionsEvents -> { refresh: () => {}} / Elements: searchable/filterable/groupable/favorite/newest/settings/customView/dateCalendar
+ *  @param   {function=} oProperties.quickOptionsEvents.searchable
+ *  @param   {function=} oProperties.quickOptionsEvents.filterable
+ *  @param   {function=} oProperties.quickOptionsEvents.groupable
+ *  @param   {function=} oProperties.quickOptionsEvents.favorite
+ *  @param   {function=} oProperties.quickOptionsEvents.newest
+ *  @param   {function=} oProperties.quickOptionsEvents.create
+ *  @param   {function=} oProperties.quickOptionsEvents.refresh
+ *  @param   {function=} oProperties.quickOptionsEvents.settings
+ *  @param   {function=} oProperties.quickOptionsEvents.customize
+ *  @param   {function=} oProperties.quickOptionsEvents.dateCalendar
+ *  @param   {object} oProperties.resizing
+ *  @param   {number} oProperties.resizing.headerHeight
+ *  @param   {number} oProperties.resizing.tableHeight
+ *  @param   {number} oProperties.resizing.headerHeightCustom
  *  @param   {[object]=} oProperties.headerCards
  *  @param   {string} oProperties.headerCards.iconSrc
  *  @param   {string} oProperties.headerCards.title
@@ -57,42 +74,73 @@ import {setRows} from "../../../reducers/base/table/Configuration";
  *  @param   {string=} oProperties.headerCards.backgroundColor
  *  @param   {string=} oProperties.headerCards.borderColor
  *  @param   {[object]} oProperties.views
+ *  @param   {function=} oProperties.onFilter
+ *  @param   {function=} oProperties.onResize
  *  @returns {JSX.Element} TableHeader */
 export const TableHeader = (oProperties) => {
     /** @desc Returns the translation function for reading from the locales files
      *  @type {function} t */
     const { t } = useTranslation();
 
-    /** @desc Returns dispatcher function to call the actions inside the reducer
-     *  @type {React.Dispatch} fnDispatch */
-    const fnDispatch = useDispatch();
-
     /** @desc Returns a stateful value, and a function to update it.
-     *        -> Handle showing and hiding of dropdown component for filtering content
-     *  @type {[{filter:boolean}, setIsActive:function]} */
+     *        -> Handle showing and hiding of dropdown component for filtering/settings and customize content
+     *  @type {[{filterable:boolean, settings:boolean, customize:boolean, datepicker:boolean}, setIsActive:function]} */
     const [ isActive, setIsActive ] = useState({
         filterable: false,
         settings: false,
-        view: false
+        customize: false,
+        datepicker: false
     });
 
-    const _onSearch = (oEvt) => {
-        debugger
-        const aRows = []
-        oProperties.columns.forEach((oColumn, iIdx) => {
-            if (oColumn?.searchable) {
-                    const aRows = oProperties.rows.filter((aRow) => {
-                        if (aRow[iIdx].type === "Identifier") {
-                            return aRow[iIdx]?.title.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase())
-                                || aRow[iIdx]?.description.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase())
-                                || aRow[iIdx]?.value.toLowerCase().includes(oEvt.currentTarget.value.toLowerCase()) ;
-                        } else return false
+    /** @desc Initialize reference object for table header object */
+    const headerRefObj = useRef(null);
 
-                    })
+    /** @desc Add hook to reference object for calculating header height */
+    useResizeHandler(headerRefObj, (oEvt) => {
+        /** @desc Get header height and add 20px of padding */
+        oProperties.onResize((oEvt.contentRect.height + 20));
+    });
+
+
+    //
+    // useEffect(() => {
+    //     if (oProperties.rows.length > 0 && oProperties.filterValues.isActive) {
+    //         _onSearch(oProperties.filterValues.searchValue);
+    //     }
+    // }, [oProperties.rows])
+
+
+
+    /** @private
+     *  @param {string} sValue */
+    const _onSearch = (sValue) => {
+        /** @desc Check if search value has entered */
+        if (!sValue) {
+            oProperties.onFilter(oProperties.rows);
+            return;
+        }
+
+        /** @desc Loop through all the columns which are defined as searchable */
+        const aRows = [];
+        oProperties.columns.forEach((oColumn, iIdx) => {
+            if (!oColumn?.searchable) return;
+
+            /** @desc Filter the rows which are transferred from the main component in which the "Table.js" component was included */
+            const _aRows = oProperties.rows.filter((aRow) => {
+                /** @desc Do value checks for each type of row with the current column index */
+                if (aRow[iIdx].type === "Identifier") return containsIdentifier(aRow[iIdx]?.title, aRow[iIdx]?.description, sValue)
+                else if (aRow[iIdx].type === "Number") return containsNumber(aRow[iIdx]?.value, sValue)
+                else return containsValue(aRow[iIdx]?.value, sValue)
+            });
+
+            if (_aRows.length > 0) for (const _aRow of _aRows) {
+                /** @desc Check if row already was added or not */
+                const _iIdx = aRows.findIndex((aRow) => JSON.stringify(aRow) === JSON.stringify(_aRow));
+                if (_iIdx < 0) aRows.push(_aRow);
             }
         });
 
-        oProperties.onFilter(aRows);
+        oProperties.onFilter(aRows, sValue);
     }
 
     /** @private
@@ -105,12 +153,14 @@ export const TableHeader = (oProperties) => {
         }));
     };
 
+    /** @private
+     *  @param   {string} sKey
+     *  @returns {JSX.Element} */
     const _getDropdownElement = (sKey) => (({
-        filterable: <Filter />,
+        filterable: <Filter resizing={oProperties.resizing}/>,
         settings: <div>settings</div>,
-        customize: <Customize
-            tableKey={oProperties.tableKey}
-            views={oProperties.views}/>
+        customize: <Customize tableKey={oProperties.tableKey} views={oProperties.views} resizing={oProperties.resizing} />,
+        datepicker: <DatePicker tableKey={oProperties.tableKey} resizing={oProperties.resizing}/>
     }))[sKey]
 
     /** @private
@@ -135,7 +185,7 @@ export const TableHeader = (oProperties) => {
      *  @param   {boolean=} oQuickOptions.iconSolid
      *  @param   {string=} oQuickOptions.backgroundColor
      *  @param   {string=} oQuickOptions.borderColor
-     *  @param   {string=} oQuickOptions.jsxElement
+     *  @param   {boolean=} oQuickOptions.hasDropdown
      *  @param   {object=} oQuickOptionsVisibility
      *  @param   {boolean=} oQuickOptionsVisibility.searchable
      *  @param   {boolean=} oQuickOptionsVisibility.filterable
@@ -155,10 +205,18 @@ export const TableHeader = (oProperties) => {
      *  @param   {string=} oQuickOptionsSettings.iconSolid
      *  @param   {string=} oQuickOptionsSettings.backgroundColor
      *  @param   {string=} oQuickOptionsSettings.borderColor
-     *  @param   {object=} oQuickOptionsEvents -> { refresh: () => {}} / Elements: refresh/search
-     *  @param   {function} oQuickOptionsEvents.refresh
-     *  @param   {function} oQuickOptionsEvents.search */
-    const _addQuickOptions = (oQuickOptions, oQuickOptionsVisibility, oQuickOptionsSettings, oQuickOptionsEvents) => {
+     *  @param   {object=} oQuickOptionsEvents -> { refresh: () => {}} / Elements: refresh/searchable
+     *  @param   {function=} oQuickOptionsEvents.searchable
+     *  @param   {function=} oQuickOptionsEvents.filterable
+     *  @param   {function=} oQuickOptionsEvents.groupable
+     *  @param   {function=} oQuickOptionsEvents.favorite
+     *  @param   {function=} oQuickOptionsEvents.newest
+     *  @param   {function=} oQuickOptionsEvents.create
+     *  @param   {function=} oQuickOptionsEvents.refresh
+     *  @param   {function=} oQuickOptionsEvents.settings
+     *  @param   {function=} oQuickOptionsEvents.customize
+     *  @param   {function=} oQuickOptionsEvents.dateCalendar */
+    const _addQuickOptions = (oQuickOptions, oQuickOptionsVisibility= {}, oQuickOptionsSettings = {}, oQuickOptionsEvents = {}) => {
         /** @desc Pre-check visibility of a quick option */
         if (!oQuickOptionsVisibility[oQuickOptions.id]) {
             return ( <></> );
@@ -176,15 +234,18 @@ export const TableHeader = (oProperties) => {
                     id={oQuickOptions.id}
                     className="quick-options"
                     style={{ backgroundColor: oQuickOptions?.backgroundColor, borderColor: oQuickOptions?.borderColor }}
-                    onClick={(oEvt) => Object.keys(oQuickOptionsEvents).length > 0 && oQuickOptionsEvents.constructor === Object && oQuickOptionsEvents.hasOwnProperty(oQuickOptions.id)
-                        ? oQuickOptionsEvents[oQuickOptions.id](oEvt)
-                        : _setIsActive(oQuickOptions.id, true)}>
+                    onClick={(oEvt) => {
+                        debugger;
+                        Object.keys(oQuickOptionsEvents).length > 0 && oQuickOptionsEvents.constructor === Object && typeof oQuickOptionsEvents[oQuickOptions.id] === "function"
+                            ? oQuickOptionsEvents[oQuickOptions.id](oEvt)
+                            : _setIsActive(oQuickOptions.id, true)
+                    } }>
                     <FontAwesomeIcon
                         style={{ color: oQuickOptions?.iconColor }}
                         icon={oQuickOptions?.iconSolid ? FaSolidIcons[oQuickOptions.iconSrc] : FaDuotoneIcons[oQuickOptions.iconSrc]} />
                     {oQuickOptions?.title && <span style={{ color: oQuickOptions?.titleColor }}>{t(oQuickOptions.title)}</span>}
                 </div>
-                {oQuickOptions?.jsxElement && <Dropdown
+                {oQuickOptions?.hasDropdown && <Dropdown
                     isActive={isActive[oQuickOptions.id]}
                     isClickedOutside={() => _setIsActive(oQuickOptions.id)}
                     jsxElement={_getDropdownElement(oQuickOptions.id)}  />}
@@ -193,45 +254,31 @@ export const TableHeader = (oProperties) => {
     }
 
     /** @private
-     *  @param   {object} oFilterValue
-     *  @param   {string} oFilterValue.icon
-     *  @param   {string} oFilterValue.value
      *  @returns {JSX.Element} */
-    const _addFilterValue = (oFilterValue) => (
-        <div className="values">
-            <FontAwesomeIcon
-                className="type"
-                icon={FaDuotoneIcons[oFilterValue.icon]}>
-            </FontAwesomeIcon>
-            <span>{oFilterValue.value}</span>
-        </div>
+    const _addSearch = () => (
+        <Search
+            value={oProperties?.filterValues.searchValue}
+            onSearch={oProperties?.quickOptionsEvents?.search ? oProperties.quickOptionsEvents.search : _onSearch}
+            onChange={oProperties?.quickOptionsEvents?.search ? oProperties.quickOptionsEvents.search : _onSearch} />
     );
 
-    debugger
     return (
-        <StyledTableHeader>
+        <StyledTableHeader
+            ref={headerRefObj}>
             <header>
                 {oProperties.title && _addInfoContent(oProperties.title)}
-                {oProperties.quickOptionsVisibility.dateCalendar && _addQuickOptions({
-                    id: "dateCalendar",
-                    title: "06. Jan. 2022 - 13. Jan. 2022",
-                    iconSrc: "faCalendarRange"
-                }, oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings)}
+                {oProperties.quickOptionsVisibility.datepicker && _addQuickOptions(QuickOptions["DatePicker"], oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings)}
             </header>
             <header>
                 <div className="left">
-                    {oProperties.quickOptionsVisibility.searchable && <Search
-                        onSearch={oProperties?.quickOptionsEvents?.search ? oProperties.quickOptionsEvents.search : _onSearch}
-                        onChange={oProperties?.quickOptionsEvents?.search ? oProperties.quickOptionsEvents.search : _onSearch} />}
+                    {oProperties.quickOptionsVisibility.searchable && _addSearch()}
                     {QuickOptions["Left"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings, oProperties.quickOptionsEvents))}
                 </div>
                 <div className="right">
                     {QuickOptions["Right"].map((oQuickOption) => _addQuickOptions(oQuickOption, oProperties.quickOptionsVisibility, oProperties.quickOptionsSettings, oProperties.quickOptionsEvents))}
                 </div>
             </header>
-            {/*<article className="option-wrapper">*/}
-            {/*    {[{ icon: "faMapPin", value: "Fislisbach" }, { icon: "faGraduationCap", value: "Grundschule Fislisbach" }].map((oFilterValue) => _addFilterValue(oFilterValue))}*/}
-            {/*</article>*/}
+
             {oProperties.headerCards.length > 0 && <article className="card-info">
                 {oProperties.headerCards.map((oCard) => (
                     <CardInfo
@@ -245,3 +292,22 @@ export const TableHeader = (oProperties) => {
         </StyledTableHeader>
     )
 }
+
+// /** @private
+//  *  @param   {object} oFilterValue
+//  *  @param   {string} oFilterValue.icon
+//  *  @param   {string} oFilterValue.value
+//  *  @returns {JSX.Element} */
+// const _addFilterValue = (oFilterValue) => (
+//     <div className="values">
+//         <FontAwesomeIcon
+//             className="type"
+//             icon={FaDuotoneIcons[oFilterValue.icon]}>
+//         </FontAwesomeIcon>
+//         <span>{oFilterValue.value}</span>
+//     </div>
+// );
+
+// {/*<article className="option-wrapper">*/}
+// {/*    {[{ icon: "faMapPin", value: "Fislisbach" }, { icon: "faGraduationCap", value: "Grundschule Fislisbach" }].map((oFilterValue) => _addFilterValue(oFilterValue))}*/}
+// {/*</article>*/}

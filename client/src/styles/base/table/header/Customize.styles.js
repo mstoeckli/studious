@@ -3,6 +3,9 @@ import styled from 'styled-components';
 /**  @return {React.RefAttributes<HTMLDivElement>} StyledCustomize */
 export const StyledCustomize = styled.div`
   width: 300px;
+  max-height: ${props => `${props.tableHeight - 40}px`};
+  overflow-x: hidden;
+  overflow-y: auto;
   
   & > header {
     padding: 0.5rem;
@@ -117,5 +120,18 @@ export const StyledCustomize = styled.div`
         justify-content: flex-end;
       }
     }
+  }
+
+  ::-webkit-scrollbar {
+    width: var(--webkit-scrollbar-width);
+    height: var(--webkit-scrollbar-width);
+    border-radius: var(--webkit-scrollbar-border-radius);
+    background: var(--webkit-scrollbar-background);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    height: var(--webkit-scrollbar-thumb-height);
+    border-radius: var(--webkit-scrollbar-thumb-border-radius);
+    background-color: var(--webkit-scrollbar-thumb-background-color);
   }
 `

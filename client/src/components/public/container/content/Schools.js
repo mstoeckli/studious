@@ -121,27 +121,27 @@ export const Schools = () => {
         });
     }
 
-    /** @private
-     *  @returns {array} */
-    const _getHeaderCards = () => ([{
-        icon: "faGraduationCap",
-        title: "Schulen",
-        info: counterInfo.schools,
-        backgroundColor: "#98d1bf",
-        borderColor: "#61cfac"
-    }, {
-        icon: "faChalkboardUser",
-        title: "Lehrer",
-        info: counterInfo.teachers,
-        backgroundColor: "#98b9d1",
-        borderColor: "#5d9ecd"
-    }, {
-        icon: "faUserGraduate",
-        title: "Schüler",
-        info: counterInfo.students,
-        backgroundColor: "#d198a5",
-        borderColor: "#cf5d77"
-    }]);
+    // /** @private
+    //  *  @returns {[object]} */
+    // const _getHeaderCards = () => ([{
+    //     icon: "faGraduationCap",
+    //     title: "Schulen",
+    //     info: counterInfo.schools,
+    //     backgroundColor: "#98d1bf",
+    //     borderColor: "#61cfac"
+    // }, {
+    //     icon: "faChalkboardUser",
+    //     title: "Lehrer",
+    //     info: counterInfo.teachers,
+    //     backgroundColor: "#98b9d1",
+    //     borderColor: "#5d9ecd"
+    // }, {
+    //     icon: "faUserGraduate",
+    //     title: "Schüler",
+    //     info: counterInfo.students,
+    //     backgroundColor: "#d198a5",
+    //     borderColor: "#cf5d77"
+    // }]);
 
     /** @desc TODO: -SCHOOLS1: Implement partner project button */
     // {
@@ -175,7 +175,7 @@ export const Schools = () => {
         iconSrc: "faSignIn",
         disabled: user && oSchool.key !== user.schoolKey,
         customStyle: user && oSchool.key === user.schoolKey ? { backgroundColor: "var(--color-error)", borderColor: "var(--border-color-error)" } : {},
-        onClick: async (oEvt) => {
+        onClick: async () => {
             if (!user) oNavigate("/signin", { state: { schoolKey: oSchool.key }})
             else {
                 /** @desc Show busy indicator/loader */
@@ -249,15 +249,15 @@ export const Schools = () => {
                 columns={Columns["Schools"]}
                 rows={rows}
                 content={{
-                    jsxElement: [<div>Test 123</div>, <div>Test 456</div>]
+                    jsxElement: [<div>Partner-Projekte:</div>, <div>Test 456</div>]
                 }}
                 quickOptionsVisibility={{
                     create: false,
-                    dateCalendar: true
+                    datepicker: true
                 }}
                 pagination={{
-                    active: false,
-                    perPage: 14
+                    active: true,
+                    alignment: "right"
                 }}
                 showHeader={true}
                 showLoader={showLoader}

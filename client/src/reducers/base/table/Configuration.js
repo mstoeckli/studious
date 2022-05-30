@@ -41,6 +41,7 @@ export const TableConfigurationSlice = createSlice({
          *  @param {object} action.payload.resizing
          *  @param {[object]} action.payload.views
          *  @param {[object]} action.payload.headerCards
+         *  @param {object} action.payload.filterValues
          *  @param {boolean} action.payload.showHeader
          *  @param {boolean} action.payload.showLineNumber
          *  @param {boolean} action.payload.showLoader
@@ -64,6 +65,7 @@ export const TableConfigurationSlice = createSlice({
                     resizing: action.payload.resizing,
                     views: action.payload.views,
                     headerCards: action.payload.headerCards,
+                    filterValues: action.payload.filterValues,
                     showHeader: action.payload.showHeader,
                     showLineNumber: action.payload.showLineNumber,
                     showLoader: action.payload.showLoader,
@@ -84,7 +86,7 @@ export const TableConfigurationSlice = createSlice({
                 ...state,
                 [action.payload.key]: {
                     ...state[action.payload.key],
-                    rows: action.payload.rows
+                    rows: [...action.payload.rows]
                 }
             }
         },
@@ -98,7 +100,6 @@ export const TableConfigurationSlice = createSlice({
          *  @param {number} action.payload.idxFirst
          *  @param {number} action.payload.idxLast */
         setPaginationIdx: (state, action) => {
-            debugger
             return {
                 ...state,
                 [action.payload.key]: {
@@ -118,7 +119,9 @@ export const TableConfigurationSlice = createSlice({
          *  @param {string} action.type -> tableConfiguration/setResizeInfo
          *  @param {object} action.payload
          *  @param {string} action.payload.key
-         *  @param {number} action.payload.headerHeight */
+         *  @param {number} action.payload.headerHeight
+         *  @param {number} action.payload.tableHeight
+         *  @param {number} action.payload.headerHeightCustom */
         setResizeInfo: (state, action) => {
             return {
                 ...state,
@@ -126,7 +129,9 @@ export const TableConfigurationSlice = createSlice({
                     ...state[action.payload.key],
                     resizing: {
                         ...state[action.payload.key].resizing,
-                        headerHeight: action.payload.headerHeight
+                        headerHeight: action.payload.headerHeight,
+                        tableHeight: action.payload.tableHeight,
+                        headerHeightCustom: action.payload.headerHeightCustom
                     }
                 }
             }
@@ -148,6 +153,30 @@ export const TableConfigurationSlice = createSlice({
                         ? {...oColumn, isHidden: action.payload.isHidden}
                         : oColumn
                     )
+                }
+            }
+        },
+
+        /** @public
+         *  @param {Proxy} state
+         *  @param {object} action
+         *  @param {string} action.type -> tableColumns/setFilterValues
+         *  @param {string} action.payload.key
+         *  @param {boolean} action.payload.isActive
+         *  @param {string} action.payload.searchValue
+         *  @param {array} action.payload.filters
+         *  @param {array} action.payload.filteredRows */
+        setFilterValues: (state, action) => {
+            return {
+                ...state,
+                [action.payload.key]: {
+                    ...state[action.payload.key],
+                    filterValues: {
+                        isActive: action.payload.isActive,
+                        searchValue: action.payload.searchValue,
+                        filters: action.payload.filters,
+                        filteredRows: action.payload.filteredRows
+                    }
                 }
             }
         },
@@ -240,5 +269,5 @@ export const TableConfigurationSlice = createSlice({
     }
 });
 
-export const { initialize, setRows, setPaginationIdx, setResizeInfo, setHidden, setDropdownActive, isClickedOutside, cloneCustomize, deleteCustomize, updateCustomizeActivity } = TableConfigurationSlice.actions;
+export const { initialize, setRows, setPaginationIdx, setResizeInfo, setHidden, setFilterValues, setDropdownActive, isClickedOutside, cloneCustomize, deleteCustomize, updateCustomizeActivity } = TableConfigurationSlice.actions;
 export default TableConfigurationSlice.reducer;
