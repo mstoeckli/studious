@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 
 import { StyledDatePicker } from '../../styles/base/DatePicker.styles';
 
-import { getDaysOfMonth, getCurrentDate, getFirstDay, getLastDay, getPreviousDay, getRemainingDaysOfWeek } from '../../helpers/base/Calendar';
+import { getCalendarDays, getCurrentDate, getDatesBetween, getMonthDescription, getMonths, getYears } from '../../helpers/base/Calendar';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as FaDuotoneIcons from '@fortawesome/pro-duotone-svg-icons';
@@ -12,81 +12,183 @@ import * as FaSolidIcons from '@fortawesome/pro-solid-svg-icons';
  *  @constructor
  *  @returns {JSX.Element} Datepicker */
 export const DatePicker = () => {
+    const oInitialState = {
+        month: getCurrentDate().getMonth(),
+        year: getCurrentDate().getFullYear(),
+        startDate: null,
+        endDate: null,
+        datesBetween: []
+    };
 
-    const _addDays = (iMonth = getCurrentDate().getMonth(), iYear = getCurrentDate().getFullYear()) => {
-        /** @desc 0 = Sunday; 1 = Monday; ... 6 = Saturday */
+    /** @desc Returns a stateful value, and a function to update it.
+     *        -> Update date information
+     *  @type {{month:number, year:number}, setDate:function} */
+    const [ date, setDate ] = useState(oInitialState);
 
+    const monthsRefObj = useRef(null);
+    const yearsRefObj = useRef(null);
+    const calendarDaysRefObj = useRef(null);
 
-        const aPrevDays = [];
-        const aDays = [];
-        const aNextDays = [];
+    /** @private */
+    const _onClickYear = () => yearsRefObj.current.classList.add("show");
 
-        for (let i = getDaysOfMonth(iYear)[iMonth - 1]; i > getDaysOfMonth(iYear)[iMonth - 1] - getRemainingDaysOfWeek(getFirstDay(iMonth, iYear)); i--) {
-            aPrevDays.unshift(<span className="prev">{i}</span>);
+    /** @private */
+    const _onClickMonth = () => monthsRefObj.current.classList.add("show");
+
+    /** @private */
+    const _onClickToday = () => setDate(() => (oInitialState))
+
+    /** @private */
+    const _onClickPrev = () => {
+        setDate((oDate) => ({
+            ...oDate,
+            month: oDate.month - 1 < 0 ? 11 : oDate.month - 1,
+            year: oDate.month - 1 < 0 ? oDate.year - 1 : oDate.year
+        }));
+    };
+
+    /** @private */
+    const _onClickNext = () => {
+        setDate((oDate) => ({
+            ...oDate,
+            month: oDate.month + 1 > 11 ? 0 : oDate.month + 1,
+            year: oDate.month + 1 > 11 ? oDate.year + 1 : oDate.year
+        }));
+    };
+
+    /** @private
+     *  @param {Event} oEvt */
+    const _onDateSelected = (oEvt) => {
+        /** @desc Determine the internal date of span element */
+        const dInternalDate = new Date(oEvt.currentTarget.getAttribute("data-internaldate"));
+
+        /** @desc Update date state */
+        if (date.startDate && date.endDate) setDate((oDate) => ({
+            ...oDate,
+            startDate: dInternalDate,
+            endDate: null,
+            datesBetween: []
+        }));
+        else setDate((oDate) => ({
+            ...oDate,
+            startDate: !date.startDate && !date.endDate ? dInternalDate : date.startDate,
+            endDate: date.startDate && !date.endDate ? dInternalDate : date.endDate,
+            datesBetween: date.startDate && date.endDate ? [] : date.datesBetween
+        }));
+    };
+
+    const _onMouseOver = (oEvt) => {
+
+        if (date.startDate && !date.endDate) {
+
+            const dEndDate = new Date(oEvt.currentTarget.getAttribute("data-internaldate"));
+
+            setDate((oDate) => ({
+                ...oDate,
+                // endDate: dEndDate,
+                datesBetween: getDatesBetween(date.startDate, dEndDate)
+            }));
         }
 
-        for (let i = getDaysOfMonth(iYear)[iMonth]; i > 0; i--) {
-            aDays.unshift(<span>{i}</span>);
-        }
+    }
 
-        // for (let i = 1; i < getRemainingDaysOfWeek(getFirstDay(iMonth, iYear)); i++) {
-        //     aNextDays.push(<span>{i}</span>);
-        // }
+    /** @private
+     *  @returns {JSX.Element[]} */
+    const _addMonths = () => {
+        const aMonths = [];
+        for (let iMonth of getMonths()) {
+            aMonths.push(<span
+                onClick={() => {
+                    monthsRefObj.current.classList.remove("show");
+                    setDate((oDate) => ({
+                        ...oDate,
+                        month: iMonth,
+                    }));
+                }}>{getMonthDescription(iMonth)}
+            </span>);
+        } return aMonths;
+    }
 
-
-
-        const b = getDaysOfMonth(iYear)[iMonth];
-
-
-
-        const c = getDaysOfMonth(iYear)[iMonth] + getFirstDay(iMonth, iYear);
-
-        // for (let i = 0; i <=)
-
-
-        // for (let i = 0; i <= getDaysOfMonth(iYear)[iMonth] + getFirstDay(iMonth, iYear) - 1; i++) {
-        //     debugger;
-        //
-        //     debugger
-        // }
-
-        return [...aPrevDays, ...aDays, ...aNextDays];
+    /** @private
+     *  @returns {JSX.Element[]} */
+    const _addYears = () => {
+        const aYears = [];
+        for (let iYear of getYears()) {
+            aYears.push(<span
+                onClick={() => {
+                    yearsRefObj.current.classList.remove("show");
+                    setDate((oDate) => ({
+                        ...oDate,
+                        year: iYear,
+                    }));
+                }}>{iYear}
+            </span>);
+        } return aYears;
     }
 
     return (
         <StyledDatePicker>
             <div className="calendar">
                 <header>
-                    <div className="calendar-nav">
-                        <FontAwesomeIcon icon={FaSolidIcons["faAngleLeft"]} />
+                    <div
+                        className="calendar-nav"
+                        onClick={_onClickPrev}>
+                        <FontAwesomeIcon icon={FaSolidIcons["faAngleLeft"]}/>
                     </div>
                     <div className="calendar-buttons">
-                        <button>
-                            <span>September</span>
+                        <button
+                            onClick={_onClickMonth}>
+                            <span>{getMonthDescription(date.month)}</span>
                         </button>
-                        <button>
-                            <span>2022</span>
+                        <button
+                            onClick={_onClickYear}>
+                            <span>{date.year}</span>
                         </button>
-                        <button>
+                        <button
+                            onClick={_onClickToday}>
                             <span>Heute</span>
                         </button>
                     </div>
-                    <div className="calendar-nav">
+                    <div
+                        className="calendar-nav"
+                        onClick={_onClickNext}>
                         <FontAwesomeIcon icon={FaSolidIcons["faAngleRight"]} />
                     </div>
                 </header>
                 <article>
-                    <div className="calendar-week">
-                        <span>MO</span>
-                        <span>DI</span>
-                        <span>MI</span>
-                        <span>DO</span>
-                        <span>FR</span>
-                        <span>SA</span>
-                        <span>SO</span>
+                    <div className="calendar-select">
+                        <div className="calendar-week">
+                            <span>MO</span>
+                            <span>DI</span>
+                            <span>MI</span>
+                            <span>DO</span>
+                            <span>FR</span>
+                            <span>SA</span>
+                            <span>SO</span>
+                        </div>
+                        <div
+                            ref={calendarDaysRefObj}
+                            className="calendar-days">
+                            {getCalendarDays({
+                                month: date.month,
+                                year: date.year,
+                                startDate: date.startDate,
+                                endDate: date.endDate,
+                                datesBetween: date.datesBetween,
+                                fnDateSelected: _onDateSelected,
+                                fnMouseOver: _onMouseOver
+                            })}
+                        </div>
                     </div>
-                    <div className="calendar-days">
-                        {_addDays()}
+                    <div
+                        ref={monthsRefObj}
+                        className="calendar-months">
+                        {_addMonths()}
+                    </div>
+                    <div
+                        ref={yearsRefObj}
+                        className="calendar-years">
+                        {_addYears()}
                     </div>
                 </article>
                 <footer>

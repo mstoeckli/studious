@@ -18,7 +18,7 @@ export const StyledDatePicker = styled.div`
 
   & button {
     height: 24px;
-    border: 1px solid #e9e9e9;
+    border: 1px solid var(--border-color-default);
     border-radius: 6px;
     outline: none;
     display: inline-flex;
@@ -30,6 +30,15 @@ export const StyledDatePicker = styled.div`
 
     & svg {
       padding-right: 0.5rem;
+    }
+
+    &:hover {
+      border: 1px solid var(--border-color-default-active); 
+      background: var(--background-color-nav-menu-hover);
+      
+      & span, & svg {
+        color: var(--color-nav-menu-hover);
+      }
     }
   }
   
@@ -97,10 +106,65 @@ export const StyledDatePicker = styled.div`
           }
         }
         
-        & .prev {
+        & .current {
+          color: var(--color-nav-menu-hover);
+          border: 1px solid var(--border-color-default);
+          font-weight: 600;
+        }
+        
+        & .active {
+          display: inline-grid !important;
+          background: var(--background-color-nav-menu-hover);
+          color: var(--color-nav-menu-hover);
+          font-weight: 600;
+        }
+        
+        & .hover {
+          background: #f1f1f1;
+        }
+        
+        & .prev,
+        & .next {
           color: #e2e2e2;
         }
       }
+      
+      & .calendar-months,
+      & .calendar-years {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        display: grid;
+        grid-template-columns: repeat(3, auto);
+        background-color: #fff;
+        padding: 8px;
+        gap: 8px;
+        transform: scale(1.5);
+        visibility: hidden;
+        pointer-events: none;
+        transition: all 0.2s ease-in-out;
+        
+        & > span {
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          border-radius: 6px;
+          
+          &:hover {
+            background: var(--background-color-nav-menu-hover);
+            color: var(--color-nav-menu-hover);
+          }
+        }
+      }
+    }
+    
+    & .calendar-months.show,
+    & .calendar-years.show {
+      transform: scale(1);
+      visibility: visible;
+      pointer-events: visible;
     }
     
     & footer {

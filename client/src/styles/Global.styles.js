@@ -18,6 +18,8 @@ export const GlobalStyle = createGlobalStyle`
     --color-product-title-hover: var(--title-color-nav-group);
     --border-color-search-hover: var(--title-color-nav-group);
     --border-color-error: #a93c3c;
+    --border-color-default: #e9e9e9;
+    --border-color-default-active: var(--title-color-nav-group);
     --border-color-dropdown-filter-hover: var(--title-color-nav-group);
     --background-color-dropdown-filter-hover: var(--background-color-nav-menu-hover);
     --background-color-completed: #e0ffe0;
